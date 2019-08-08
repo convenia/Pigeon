@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         verbose="true"
+>
+    <testsuites>
+        <testsuite name="CAmqp Unit">
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="CAmqp Feature">
+            <directory suffix="Test.php">./tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+        <env name="AMQP_ADDRESS" value="localhost"/>
+        <env name="AMQP_PORT" value="15673"/>
+        <env name="AMQP_USER" value="guest"/>
+        <env name="AMQP_PASSWORD" value="guest"/>
+        <env name="AMQP_VHOST" value="/"/>
+        <env name="AMQP_KEEPALIVE" value="true"/>
+        <env name="AMQP_HEARTBEAT" value="60"/>
+        <env name="AMQP_READ_TIMEOUT" value="130"/>
+        <env name="AMQP_WRITE_TIMEOUT" value="130"/>
+    </php>
+</phpunit>

@@ -1,0 +1,38 @@
+{
+    "name": "convenia/amqp",
+    "license": "proprietary",
+    "type": "library",
+    "description": "",
+    "keywords": ["rabbitmq", "laravel", "message", "queue"],
+    "authors": [
+        {
+            "name": "Kauan Sousa",
+            "email": "kauanslr.ks@gmail.com",
+            "role": "Original Maintainer"
+        }
+    ],
+    "require": {
+        "ext-json": "*",
+        "ext-sockets": "*",
+        "php-amqplib/php-amqplib": "2.8.1",
+        "laravel/framework": "5.6.*|5.7.*|5.8.*",
+        "webpatser/laravel-uuid": "^3.0"
+    },
+    "require-dev": {
+        "ext-curl": "*",
+        "phpunit/phpunit": "7.4.*",
+        "squizlabs/php_codesniffer": "^2.5",
+        "orchestra/testbench": "3.6.*|3.7.*|3.8.*",
+        "friendsofphp/php-cs-fixer": "^2.15"
+    },
+    "autoload": {
+        "psr-4": {
+            "Convenia\\AMQP\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Convenia\\AMQP\\Tests\\": "tests/"
+        }
+    }
+}
