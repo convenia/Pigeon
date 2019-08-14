@@ -1,9 +1,9 @@
 {
-    "name": "convenia/amqp",
+    "name": "convenia/pigeon",
     "license": "proprietary",
     "type": "library",
     "description": "",
-    "keywords": ["rabbitmq", "laravel", "message", "queue"],
+    "keywords": ["pigeon", "rabbitmq", "laravel", "message", "queue"],
     "authors": [
         {
             "name": "Kauan Sousa",
@@ -27,12 +27,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Convenia\\AMQP\\": "src/"
+            "Convenia\\Pigeon\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Convenia\\AMQP\\Tests\\": "tests/"
+            "Convenia\\Pigeon\\Tests\\": "tests/"
         }
     }
 }

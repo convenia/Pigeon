@@ -1,112 +1,57 @@
 <?php
 
-namespace Convenia\AMQP\Drivers;
+namespace Convenia\Pigeon\Drivers;
 
-use Exception;
-use Convenia\AMQP\Contracts\Publisher;
-use Convenia\AMQP\Contracts\Consumer;
+use Convenia\Pigeon\Consumer\Consumer;
+use Convenia\Pigeon\Publisher\Publisher;
 use Illuminate\Foundation\Application;
-use Webpatser\Uuid\Uuid;
+use PhpAmqpLib\Connection\AbstractConnection;
+use Convenia\Pigeon\Consumer\ConsumerContract;
+use Convenia\Pigeon\Publisher\PublisherContract;
+use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
+use PhpAmqpLib\Wire\AMQPTable;
 
-/**
- * Class Driver.
- */
-abstract class Driver implements Publisher, Consumer
+abstract class Driver implements DriverContract
 {
-    /**
-     * @var \Closure
-     */
-    protected $callback;
+    public $app;
 
     /**
-     * @var \Closure
+     * @var \PhpAmqpLib\Connection\AbstractConnection
      */
-    protected $fallback;
+    protected $connection;
 
-    /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-
-    /**
-     * Driver constructor.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     */
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->setup();
     }
 
-    /**
-     * Declare a queue.
-     *
-     * @param string $queue
-     * @param array  $props
-     *
-     * @return string
-     */
-    abstract public function declareQueue(string $queue, array $props = []): string;
+    abstract public function getConnection(): AbstractConnection;
 
-    /**
-     * Declare a exchange.
-     *
-     * @param string $exchange
-     * @param string $type
-     * @param array  $props
-     *
-     * @return bool
-     */
-    abstract public function declareExchange(string $exchange, string $type = 'direct', array $props): bool;
-
-    /**
-     * Bind a queue to exchange using or not a routing key.
-     *
-     * @param string      $exchange
-     * @param string      $queue
-     * @param string|null $routingKey
-     */
-    abstract public function bindQueue(string $exchange, string $queue, string $routingKey);
-
-    /**
-     * Setup connection for use.
-     */
-    abstract protected function setup();
-
-    /**
-     * @param \Closure $callback
-     */
-    public function setCallback(\Closure $callback)
+    public function queue(string $name, array $properties = []): ConsumerContract
     {
-        $this->callback = $callback;
+        $this->getChannel()->queue_declare($name, true, true, false, false, false, $properties);
+
+        return new Consumer($this->app, $this, $name);
     }
 
-    /**
-     * @param \Closure $fallback
-     */
-    public function setFallback(\Closure $fallback)
+    public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        $this->fallback = $fallback;
+        $this->getChannel()->exchange_declare($name, $type, true, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
+
+        return new Publisher($this->app, $this, $name);
     }
 
-    /**
-     * @return string
-     */
-    protected function applicationTag(): string
+    public function routing(string $name = null): PublisherContract
     {
-        return $this->app['config']['amqp.consumer.tag'] ?: null;
-    }
+        $exchange = $this->app['config']['pigeon.exchange'];
+        $type = $this->app['config']['pigeon.exchange_type'];
 
-    /**
-     * @return string
-     */
-    protected function correlationId(): string
-    {
-        try {
-            return Uuid::generate(4, $this->applicationTag());
-        } catch (Exception $e) {
-            return uniqid('', true);
-        }
+        $this->getChannel()->exchange_declare($exchange, $type, true, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
+
+        return (new Publisher($this->app, $this, $exchange))->routing($name);
     }
 }

@@ -11,11 +11,14 @@
          verbose="true"
 >
     <testsuites>
-        <testsuite name="CAmqp Unit">
+        <testsuite name="PIGEON Unit Tests">
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
-        <testsuite name="CAmqp Feature">
+        <testsuite name="PIGEON Feature Tests">
             <directory suffix="Test.php">./tests/Feature</directory>
+        </testsuite>
+        <testsuite name="PIGEON Integration Tests">
+            <directory suffix="Test.php">./tests/Integration</directory>
         </testsuite>
     </testsuites>
 
@@ -28,14 +31,12 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
-        <env name="AMQP_ADDRESS" value="localhost"/>
-        <env name="AMQP_PORT" value="15673"/>
-        <env name="AMQP_USER" value="guest"/>
-        <env name="AMQP_PASSWORD" value="guest"/>
-        <env name="AMQP_VHOST" value="/"/>
-        <env name="AMQP_KEEPALIVE" value="true"/>
-        <env name="AMQP_HEARTBEAT" value="60"/>
-        <env name="AMQP_READ_TIMEOUT" value="130"/>
-        <env name="AMQP_WRITE_TIMEOUT" value="130"/>
+        <env name="PIGEON_ADDRESS" value="localhost"/>
+        <env name="PIGEON_PORT" value="5672"/>
+        <env name="PIGEON_USER" value="guest"/>
+        <env name="PIGEON_PASSWORD" value="guest"/>
+        <env name="PIGEON_VHOST" value="/"/>
+        <env name="PIGEON_KEEPALIVE" value="true"/>
+        <env name="PIGEON_HEARTBEAT" value="60"/>
     </php>
 </phpunit>

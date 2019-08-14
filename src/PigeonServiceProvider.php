@@ -1,13 +1,13 @@
 <?php
 
-namespace Convenia\AMQP;
+namespace Convenia\Pigeon;
 
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class AMQPServiceProvider.
+ * Class PigeonServiceProvider.
  */
-class AMQPServiceProvider extends ServiceProvider
+class PigeonServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -21,13 +21,13 @@ class AMQPServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('amqp', static function ($app) {
-            return new AMQPManager($app);
+        $this->app->singleton('pigeon', static function ($app) {
+            return new PigeonManager($app);
         });
 
         $this->mergeConfigFrom(
-            __DIR__.'/../config/amqp.php',
-            'amqp'
+            __DIR__.'/../config/pigeon.php',
+            'pigeon'
         );
     }
 
@@ -38,6 +38,6 @@ class AMQPServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return ['amqp'];
+        return ['pigeon'];
     }
 }
