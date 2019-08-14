@@ -19,8 +19,7 @@ jobs:
   include:
       - name: "Unit Tests"
         script: vendor/bin/phpunit --filter=Unit --coverage-text --configuration=phpunit-ci.xml
-      - stage: "Integration"
-        name: "Integration Tests"
+      - name: "Integration Tests"
         services: rabbitmq
         addons:
           apt:
