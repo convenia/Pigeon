@@ -11,10 +11,6 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-before_install:
-  - pecl install sockets curl json
-  - travis_retry composer self-update
-
 install:
   - travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
 
