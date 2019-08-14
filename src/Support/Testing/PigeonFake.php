@@ -92,8 +92,8 @@ class PigeonFake extends PigeonManager implements DriverContract
         $publisher = (new Publisher($this->app, $this, $exchange))->routing($reply_to);
 
         $this->publishers->push([
-            'exchange' => $exchange,
-            'routing' => $reply_to,
+            'exchange'  => $exchange,
+            'routing'   => $reply_to,
             'publisher' => $publisher,
         ]);
 
@@ -101,7 +101,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
         PHPUnit::assertTrue(
             $this->rpcPushed($reply_to, $response),
-            "No RPC reply with defined body"
+            'No RPC reply with defined body'
         );
     }
 
@@ -162,7 +162,8 @@ class PigeonFake extends PigeonManager implements DriverContract
             ->map($callback);
     }
 
-    public function queue_declare($queue = '') {
+    public function queue_declare($queue = '')
+    {
         if (empty($queue)) {
             return [str_random(7), null, null];
         }
@@ -170,7 +171,9 @@ class PigeonFake extends PigeonManager implements DriverContract
         return [$queue, null, null];
     }
 
-    public function basic_ack(){}
+    public function basic_ack()
+    {
+    }
 
     public function wait()
     {

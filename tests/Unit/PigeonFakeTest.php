@@ -264,18 +264,19 @@ class PigeonFakeTest extends TestCase
         } catch (ExpectationFailedException $e) {
             $this->assertThat($e, new ExceptionMessage("The queue [$queue] has no consumer"));
         }
+
         try {
             $this->fake->queue($queue)
                 ->callback(function ($message, ResolverContract $resolver) use ($data) {
                     $resolver->response([
-                        'wrong' => 'response'
+                        'wrong' => 'response',
                     ]);
                 })
                 ->consume();
             $this->fake->assertCallbackReturn($queue, $message, $data);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("No RPC reply with defined body"));
+            $this->assertThat($e, new ExceptionMessage('No RPC reply with defined body'));
         }
 
         $this->fake->queue($queue)
