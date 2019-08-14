@@ -3,10 +3,10 @@
 namespace Convenia\Pigeon\MessageProcessor;
 
 use Closure;
+use Convenia\Pigeon\Drivers\DriverContract;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Exception;
-use Convenia\Pigeon\Drivers\DriverContract;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
 use ReflectionFunction;
@@ -49,12 +49,13 @@ class MessageProcessor implements MessageProcessorContract
     {
         if (!$this->fallback) {
             Log::error($e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'tracing' => $e->getTraceAsString(),
+                'file'     => $e->getFile(),
+                'line'     => $e->getLine(),
+                'tracing'  => $e->getTraceAsString(),
                 'previous' => $e->getPrevious(),
-                'message' => json_decode($message->body, true),
+                'message'  => json_decode($message->body, true),
             ]);
+
             throw $e;
         }
         call_user_func($this->fallback, $e, $message);
