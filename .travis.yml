@@ -18,10 +18,9 @@ install:
 
 jobs:
   include:
-      - name: "Unit Tests"
-      script: vendor/bin/phpunit --filter=Unit --coverage-text
-      - name: "Feature Tests"
-      script: vendor/bin/phpunit --filter=Feature --coverage-text
-      - name: "Integration Tests"
+      - script: vendor/bin/phpunit --filter=Unit --coverage-text
+      - script: vendor/bin/phpunit --filter=Feature --coverage-text
+      - stage: "Integration"
+      name: "Integration Tests"
       services: rabbitmq
       script: vendor/bin/phpunit --filter=Integration --coverage-text
