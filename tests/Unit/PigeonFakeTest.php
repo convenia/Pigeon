@@ -2,13 +2,13 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Facade\Pigeon;
+use Convenia\Pigeon\Tests\TestCase;
+use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Resolver\ResolverContract;
-use Convenia\Pigeon\Tests\TestCase;
-use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\Constraint\ExceptionMessage;
 
 class PigeonFakeTest extends TestCase
 {
@@ -268,14 +268,14 @@ class PigeonFakeTest extends TestCase
             $this->fake->queue($queue)
                 ->callback(function ($message, ResolverContract $resolver) use ($data) {
                     $resolver->response([
-                        'wrong' => 'response'
+                        'wrong' => 'response',
                     ]);
                 })
                 ->consume();
             $this->fake->assertCallbackReturn($queue, $message, $data);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("No RPC reply with defined body"));
+            $this->assertThat($e, new ExceptionMessage('No RPC reply with defined body'));
         }
 
         $this->fake->queue($queue)

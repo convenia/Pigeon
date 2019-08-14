@@ -2,13 +2,13 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Drivers\Driver;
-use Convenia\Pigeon\Publisher\PublisherContract;
-use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
-use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Wire\AMQPTable;
+use Convenia\Pigeon\Drivers\Driver;
+use Convenia\Pigeon\Tests\TestCase;
+use PhpAmqpLib\Channel\AMQPChannel;
+use Convenia\Pigeon\Consumer\ConsumerContract;
+use Convenia\Pigeon\Publisher\PublisherContract;
 
 class DriverTest extends TestCase
 {

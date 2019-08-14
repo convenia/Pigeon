@@ -2,11 +2,11 @@
 
 namespace Convenia\Pigeon\Publisher;
 
-use Convenia\Pigeon\Drivers\DriverContract;
-use Illuminate\Foundation\Application;
+use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Arr;
 use PhpAmqpLib\Message\AMQPMessage;
-use Webpatser\Uuid\Uuid;
+use Illuminate\Foundation\Application;
+use Convenia\Pigeon\Drivers\DriverContract;
 
 class Publisher implements PublisherContract
 {

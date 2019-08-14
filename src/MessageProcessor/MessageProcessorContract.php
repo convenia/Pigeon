@@ -3,8 +3,8 @@
 namespace Convenia\Pigeon\MessageProcessor;
 
 use Closure;
-use Convenia\Pigeon\Drivers\DriverContract;
 use PhpAmqpLib\Message\AMQPMessage;
+use Convenia\Pigeon\Drivers\DriverContract;
 
 interface MessageProcessorContract
 {

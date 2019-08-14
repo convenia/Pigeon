@@ -10,7 +10,7 @@ class RabbitDriver extends Driver
 {
     public function getConnection(): AbstractConnection
     {
-        if (!$this->connection) {
+        if (! $this->connection) {
             $this->connection = $this->makeConnection();
         }
         if ($this->connection->isConnected()) {

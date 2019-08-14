@@ -3,8 +3,8 @@
 namespace Convenia\Pigeon\Consumer;
 
 use Closure;
-use Convenia\Pigeon\Drivers\DriverContract;
 use Illuminate\Foundation\Application;
+use Convenia\Pigeon\Drivers\DriverContract;
 
 interface ConsumerContract
 {
