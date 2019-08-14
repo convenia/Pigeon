@@ -1,0 +1,48 @@
+dist: xenial
+language: php
+
+env:
+  - TEST_SUITE=Unit
+  - TEST_SUITE=Feature
+  global:
+    - SETUP=stable
+
+branches:
+  only: ["master"]
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.1
+    - php: 7.1
+      env: SETUP=lowest
+    - php: 7.2
+    - php: 7.2
+      env: SETUP=lowest
+    - php: 7.3
+    - php: 7.3
+      env: SETUP=lowest
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - phpenv config-rm xdebug.ini || true
+  - travis_retry composer self-update
+
+install:
+  - if [[ $SETUP = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest; fi
+  - if [[ $SETUP = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable --no-suggest; fi
+
+script: vendor/bin/phpunit --filter=$TEST_SUITE --coverage-text
+
+jobs:
+  include:
+    - stage: Integration Test
+      env: TEST_SUITE=Integration
+      services: rabbitmq
+      before_install:
+        - phpenv config-rm xdebug.ini || true
+        - echo "extension = sockets.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - travis_retry composer self-update
