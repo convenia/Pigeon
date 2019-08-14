@@ -34,12 +34,14 @@ class Resolver implements ResolverContract
     public function response(array $data)
     {
         $props = $this->responseProps();
-        $queue = $this->message->get('reply_to');
-        $msg = new AMQPMessage(json_encode($data), $props);
+        if ($this->message->has('reply_to')) {
+            $queue = $this->message->get('reply_to');
+            $msg = new AMQPMessage(json_encode($data), $props);
 
-        $this->driver
-            ->getChannel()
-            ->basic_publish($msg, '', $queue);
+            $this->driver
+                ->getChannel()
+                ->basic_publish($msg, '', $queue);
+        }
 
         $this->ack();
     }

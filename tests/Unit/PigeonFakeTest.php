@@ -5,6 +5,7 @@ namespace Convenia\Pigeon\Tests\Unit;
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Facade\Pigeon;
 use Convenia\Pigeon\Publisher\Publisher;
+use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
@@ -265,9 +266,23 @@ class PigeonFakeTest extends TestCase
         } catch (ExpectationFailedException $e) {
             $this->assertThat($e, new ExceptionMessage("The queue [$queue] has no consumer"));
         }
+        try {
+            $this->fake->queue($queue)
+                ->callback(function ($message, ResolverContract $resolver) use ($data) {
+                    $resolver->response([
+                        'wrong' => 'response'
+                    ]);
+                })
+                ->consume();
+            $this->fake->assertCallbackReturn($queue, $message, $data);
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("No RPC reply with defined body"));
+        }
+
         $this->fake->queue($queue)
-            ->callback(function () use ($data) {
-                return $data;
+            ->callback(function ($message, ResolverContract $resolver) use ($data) {
+                $resolver->response($data);
             })
             ->consume();
 

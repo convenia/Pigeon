@@ -54,6 +54,19 @@ class PigeonFake extends PigeonManager implements DriverContract
             ->filter($callback)->isNotEmpty();
     }
 
+    public function rpcPushed(string $routing, array $message, $callback = null)
+    {
+        $callback = $callback ?: function ($publisher) use ($routing, $message) {
+            return str_contains($publisher['routing'], 'rpc.')
+                && $publisher['routing'] === $routing
+                && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
+                && isset($publisher['message'])
+                && $publisher['message'] === $message;
+        };
+
+        return $this->pushed($routing, $message, $callback);
+    }
+
     public function dispatchConsumer(string $queue, array $message, array $props = [])
     {
         // avoid tries to start a consumer on null queue
@@ -69,10 +82,27 @@ class PigeonFake extends PigeonManager implements DriverContract
         // avoid tries to start a consumer on null queue
         $this->assertConsuming($queue);
 
-        $message = new AMQPMessage(json_encode($message));
+        $reply_to = 'rpc.'.str_random(5);
+        $delivery_tag = str_random(2);
+        $message = new AMQPMessage(json_encode($message), ['reply_to' => $reply_to]);
         $consumer = $this->consumers->get($queue);
 
-        PHPUnit::assertEquals($response, $consumer->getCallback()->process($message));
+        $message->delivery_info['delivery_tag'] = $delivery_tag;
+        $exchange = $this->app['config']['pigeon.exchange'];
+        $publisher = (new Publisher($this->app, $this, $exchange))->routing($reply_to);
+
+        $this->publishers->push([
+            'exchange' => $exchange,
+            'routing' => $reply_to,
+            'publisher' => $publisher,
+        ]);
+
+        $consumer->getCallback()->process($message);
+
+        PHPUnit::assertTrue(
+            $this->rpcPushed($reply_to, $response),
+            "No RPC reply with defined body"
+        );
     }
 
     public function queue(string $name): ConsumerContract
@@ -132,15 +162,15 @@ class PigeonFake extends PigeonManager implements DriverContract
             ->map($callback);
     }
 
-    public function queue_declare(
-        $queue = ''
-    ) {
+    public function queue_declare($queue = '') {
         if (empty($queue)) {
             return [str_random(7), null, null];
         }
 
         return [$queue, null, null];
     }
+
+    public function basic_ack(){}
 
     public function wait()
     {

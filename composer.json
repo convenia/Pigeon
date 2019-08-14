@@ -22,8 +22,7 @@
         "ext-curl": "*",
         "phpunit/phpunit": "7.4.*",
         "squizlabs/php_codesniffer": "^2.5",
-        "orchestra/testbench": "3.6.*|3.7.*|3.8.*",
-        "friendsofphp/php-cs-fixer": "^2.15"
+        "orchestra/testbench": "3.6.*|3.7.*|3.8.*"
     },
     "autoload": {
         "psr-4": {
