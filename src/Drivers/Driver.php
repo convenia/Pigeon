@@ -2,7 +2,6 @@
 
 namespace Convenia\Pigeon\Drivers;
 
-use Exception;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Consumer\Consumer;
 use Illuminate\Foundation\Application;
