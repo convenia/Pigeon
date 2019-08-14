@@ -2,8 +2,8 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
-use Convenia\Pigeon\Tests\Integration\TestCase;
 use PhpAmqpLib\Message\AMQPMessage;
+use Convenia\Pigeon\Tests\Integration\TestCase;
 
 class PublisherTest extends TestCase
 {
@@ -25,7 +25,7 @@ class PublisherTest extends TestCase
         $this->channel->queue_declare($this->queue);
         $this->channel->queue_bind($this->queue, $this->exchange);
         $data = [
-            'pigeon.foo' => 'dove.bar'
+            'pigeon.foo' => 'dove.bar',
         ];
 
         // act
@@ -43,7 +43,7 @@ class PublisherTest extends TestCase
         $this->channel->exchange_declare($this->exchange, 'direct');
         $this->channel->queue_declare($this->queue);
         $data = [
-            'pigeon.foo' => 'dove.bar'
+            'pigeon.foo' => 'dove.bar',
         ];
         $this->app['config']->set('pigeon.exchange', $this->exchange);
         $this->app['config']->set('pigeon.exchange_type', $this->exchange_type);

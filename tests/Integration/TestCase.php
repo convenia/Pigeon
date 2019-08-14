@@ -46,9 +46,18 @@ class TestCase extends BaseTestCase
 
     protected function tearDown()
     {
-        try {$this->channel->queue_delete($this->queue);} catch (Exception $e) {};
-        try {$this->channel->queue_delete($this->alternative_queue);} catch (Exception $e) {};
-        try {$this->channel->exchange_delete($this->exchange);} catch (Exception $e) {};
+        try {
+            $this->channel->queue_delete($this->queue);
+        } catch (Exception $e) {
+        }
+        try {
+            $this->channel->queue_delete($this->alternative_queue);
+        } catch (Exception $e) {
+        }
+        try {
+            $this->channel->exchange_delete($this->exchange);
+        } catch (Exception $e) {
+        }
         $this->connection->close();
         parent::tearDown();
     }
