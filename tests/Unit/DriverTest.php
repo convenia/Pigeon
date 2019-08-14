@@ -29,7 +29,7 @@ class DriverTest extends TestCase
     {
         // setup and asserts
         $this->channel->shouldReceive('queue_declare')
-            ->with($this->queue, $passive = true, $durable = true, false, $delete = false, false, ['some' => 'prop'])
+            ->with($this->queue, $passive = false, $durable = true, false, $delete = false, false, ['some' => 'prop'])
             ->once();
 
         // act

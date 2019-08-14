@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Drivers;
 
+use Exception;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Consumer\Consumer;
 use Illuminate\Foundation\Application;
@@ -29,7 +30,7 @@ abstract class Driver implements DriverContract
 
     public function queue(string $name, array $properties = []): ConsumerContract
     {
-        $this->getChannel()->queue_declare($name, true, true, false, false, false, $properties);
+        $this->getChannel()->queue_declare($name, false, true, false, false, false, $properties);
 
         return new Consumer($this->app, $this, $name);
     }
