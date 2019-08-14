@@ -18,7 +18,6 @@ class PigeonManager extends Manager
 
     public function createNullDriver()
     {
-        return null;
     }
 
     /**
@@ -44,6 +43,7 @@ class PigeonManager extends Manager
         if (method_exists($this->driver(), $method)) {
             return $this->driver()->$method(...$parameters);
         }
+
         throw new BadMethodCallException(sprintf(
             'Call to undefined method %s::%s()',
             static::class,

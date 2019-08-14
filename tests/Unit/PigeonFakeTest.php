@@ -7,8 +7,6 @@ use Convenia\Pigeon\Facade\Pigeon;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
-use Exception;
-use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\ExpectationFailedException;
 
@@ -45,7 +43,7 @@ class PigeonFakeTest extends TestCase
         // setup
         $queue = 'some.test.queue';
         $message = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
 
         // assert
@@ -76,7 +74,7 @@ class PigeonFakeTest extends TestCase
         // setup
         $queue = 'some.test.queue';
         $message = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
 
         // assert
@@ -95,11 +93,11 @@ class PigeonFakeTest extends TestCase
             ->callback(function ($data) use (&$fail, $message) {
                 $fail = true;
                 $this->assertEquals($data, $message);
-                $this->fail("Callback failed");
+                $this->fail('Callback failed');
             })
             ->fallback(function ($e, $messageInstance) use ($message) {
                 $this->assertEquals($message, json_decode($messageInstance->body, true));
-                $this->assertEquals("Callback failed", $e->getMessage(), "Wrong fallback message");
+                $this->assertEquals('Callback failed', $e->getMessage(), 'Wrong fallback message');
             })
             ->consume();
 
@@ -169,7 +167,7 @@ class PigeonFakeTest extends TestCase
         $type = 'direct';
         $routing = 'my.awesome.application';
         $data = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
 
         $this->app['config']->set('pigeon.exchange', $exchange);
@@ -195,7 +193,7 @@ class PigeonFakeTest extends TestCase
         $type = 'direct';
         $routing = 'my.awesome.application';
         $data = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
 
         $this->app['config']->set('pigeon.exchange', $exchange);
@@ -210,7 +208,7 @@ class PigeonFakeTest extends TestCase
         }
         $this->fake->routing($routing)
             ->publish([
-                'foo' => 'bar'
+                'foo' => 'bar',
             ]);
 
         try {
@@ -228,7 +226,7 @@ class PigeonFakeTest extends TestCase
         $type = 'direct';
         $routing = 'my.awesome.application';
         $data = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
 
         $this->app['config']->set('pigeon.exchange', $exchange);
@@ -253,10 +251,10 @@ class PigeonFakeTest extends TestCase
         // setup
         $queue = 'my.awesome.queue';
         $data = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
         $message = [
-            'bar' => 'baz'
+            'bar' => 'baz',
         ];
 
         // act
