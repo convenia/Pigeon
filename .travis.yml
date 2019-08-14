@@ -1,5 +1,7 @@
 language: php
 
+php:7.1
+
 branches:
   only: ["master"]
 
@@ -19,8 +21,10 @@ jobs:
     - stage: "Tests"
       name: "Unit Tests"
       script: vendor/bin/phpunit --filter=Unit --coverage-text
+    - stage: "Tests"
       name: "Feature Tests"
       script: vendor/bin/phpunit --filter=Feature --coverage-text
+    - stage: "Tests"
       name: "Integration Tests"
       services: rabbitmq
       script: vendor/bin/phpunit --filter=Integration --coverage-text
