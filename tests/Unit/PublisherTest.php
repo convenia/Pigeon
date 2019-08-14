@@ -7,7 +7,6 @@ use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
-use PhpAmqpLib\Wire\AMQPTable;
 
 class PublisherTest extends TestCase
 {
@@ -30,10 +29,10 @@ class PublisherTest extends TestCase
         $exchange = 'my.awesome.exchange';
         $routing = 'my.awesome.service';
         $data = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
         $props = [
-            'priority' => 10
+            'priority' => 10,
         ];
         $publisher = new Publisher($this->app, $this->driver, $exchange);
 
@@ -54,10 +53,10 @@ class PublisherTest extends TestCase
         $exchange = 'my.awesome.exchange';
         $routing = 'my.awesome.service';
         $data = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
         $props = [
-            'priority' => 10
+            'priority' => 10,
         ];
         $publisher = new Publisher($this->app, $this->driver, $exchange);
 
@@ -79,10 +78,10 @@ class PublisherTest extends TestCase
         $first_routing = 'my.first.awesome.service';
         $second_routing = 'my.second.awesome.service';
         $data = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
         $props = [
-            'priority' => 10
+            'priority' => 10,
         ];
 
         $first_publisher = (new Publisher($this->app, $this->driver, $exchange))
@@ -114,13 +113,13 @@ class PublisherTest extends TestCase
         $routing = 'my.awesome.service';
         $response_via = 'amq.asodhoafdsfds89sd87612h1781831_123asd';
         $outgoing = [
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ];
         $incoming = [
-            'my' => 'response'
+            'my' => 'response',
         ];
         $props = [
-            'priority' => 10
+            'priority' => 10,
         ];
         $publisher = new Publisher($this->app, $this->driver, $exchange);
 

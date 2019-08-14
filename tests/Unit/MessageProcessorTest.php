@@ -82,7 +82,7 @@ class MessageProcessorTest extends TestCase
         $data = ['foo' => 'bar'];
         $message = new AMQPMessage(json_encode($data));
         $callback = function () {
-            $this->fail("Callback failing and no fallback set");
+            $this->fail('Callback failing and no fallback set');
         };
 
         // act
@@ -95,14 +95,14 @@ class MessageProcessorTest extends TestCase
             Log::shouldReceive('error')->with(
                 $e->getMessage(),
                 [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'tracing' => $e->getTraceAsString(),
+                    'file'     => $e->getFile(),
+                    'line'     => $e->getLine(),
+                    'tracing'  => $e->getTraceAsString(),
                     'previous' => $e->getPrevious(),
-                    'message' => json_decode($message->body, true),
+                    'message'  => json_decode($message->body, true),
                 ]
             );
-            $this->assertThat($e, new ExceptionMessage("Callback failing and no fallback set"));
+            $this->assertThat($e, new ExceptionMessage('Callback failing and no fallback set'));
         }
     }
 }

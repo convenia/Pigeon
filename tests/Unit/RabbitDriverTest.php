@@ -3,10 +3,9 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\Tests\TestCase;
+use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
-use Mockery;
-use PhpAmqpLib\Wire\AMQPTable;
 
 class RabbitDriverTest extends TestCase
 {

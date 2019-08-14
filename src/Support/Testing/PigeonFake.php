@@ -2,10 +2,10 @@
 
 namespace Convenia\Pigeon\Support\Testing;
 
-use Convenia\Pigeon\PigeonManager;
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\PigeonManager;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Publisher\PublisherContract;
 use Illuminate\Support\Collection;
@@ -93,8 +93,8 @@ class PigeonFake extends PigeonManager implements DriverContract
         $exchange = $this->app['config']['pigeon.exchange'];
         $publisher = (new Publisher($this->app, $this, $exchange))->routing($name);
         $this->publishers->push([
-            'exchange' => $exchange,
-            'routing' => $name,
+            'exchange'  => $exchange,
+            'routing'   => $name,
             'publisher' => $publisher,
         ]);
 

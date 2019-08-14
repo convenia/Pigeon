@@ -23,9 +23,9 @@ class Pigeon extends Facade
     /**
      * Get the registered name of the component.
      *
-     * @return string
-     *
      * @throws \$resp_queueRuntimeException
+     *
+     * @return string
      */
     protected static function getFacadeAccessor(): string
     {

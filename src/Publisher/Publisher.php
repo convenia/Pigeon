@@ -71,11 +71,11 @@ class Publisher implements PublisherContract
     private function getMessageProps(array $userProps): array
     {
         return array_merge([
-            'content_type' => 'application/json',
+            'content_type'     => 'application/json',
             'content_encoding' => 'utf8',
-            'correlation_id' => Uuid::generate()->string,
-            'expiration' => 60000000,
-            'app_id' => $this->app['config']['app_name'],
+            'correlation_id'   => Uuid::generate()->string,
+            'expiration'       => 60000000,
+            'app_id'           => $this->app['config']['app_name'],
         ], $userProps);
     }
 }
