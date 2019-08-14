@@ -3,8 +3,8 @@
 namespace Convenia\Pigeon;
 
 use BadMethodCallException;
-use Convenia\Pigeon\Drivers\RabbitDriver;
 use Illuminate\Support\Manager;
+use Convenia\Pigeon\Drivers\RabbitDriver;
 
 /**
  * Class PigeonManager.

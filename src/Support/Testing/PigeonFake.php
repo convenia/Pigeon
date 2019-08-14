@@ -2,15 +2,15 @@
 
 namespace Convenia\Pigeon\Support\Testing;
 
-use Convenia\Pigeon\Consumer\Consumer;
-use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Drivers\DriverContract;
 use Convenia\Pigeon\PigeonManager;
-use Convenia\Pigeon\Publisher\Publisher;
-use Convenia\Pigeon\Publisher\PublisherContract;
 use Illuminate\Support\Collection;
 use PhpAmqpLib\Message\AMQPMessage;
+use Convenia\Pigeon\Consumer\Consumer;
+use Convenia\Pigeon\Publisher\Publisher;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Consumer\ConsumerContract;
+use Convenia\Pigeon\Publisher\PublisherContract;
 
 class PigeonFake extends PigeonManager implements DriverContract
 {
@@ -101,7 +101,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
         PHPUnit::assertTrue(
             $this->rpcPushed($reply_to, $response),
-            "No RPC reply with defined body"
+            'No RPC reply with defined body'
         );
     }
 
@@ -149,7 +149,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         $callback = function ($publisher) use ($exchange, $routing, $msg) {
             if ($publisher['routing'] === $routing
                 && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
-                && !isset($publisher['message'])
+                && ! isset($publisher['message'])
             ) {
                 $publisher['message'] = json_decode($msg->body, true);
 
@@ -162,7 +162,8 @@ class PigeonFake extends PigeonManager implements DriverContract
             ->map($callback);
     }
 
-    public function queue_declare($queue = '') {
+    public function queue_declare($queue = '')
+    {
         if (empty($queue)) {
             return [str_random(7), null, null];
         }
@@ -170,7 +171,9 @@ class PigeonFake extends PigeonManager implements DriverContract
         return [$queue, null, null];
     }
 
-    public function basic_ack(){}
+    public function basic_ack()
+    {
+    }
 
     public function wait()
     {
