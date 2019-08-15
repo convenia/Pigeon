@@ -32,6 +32,9 @@ class PublisherTest extends TestCase
         $this->pigeon->exchange($this->exchange, 'fanout')
             ->publish($data);
 
+        // wait message go to broker
+        sleep(1);
+
         // assert
         $message = $this->channel->basic_get($this->queue);
         $this->assertEquals($data, json_decode($message->body, true));
