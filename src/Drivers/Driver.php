@@ -6,7 +6,6 @@ use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Consumer\Consumer;
 use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Publisher\Publisher;
-use PhpAmqpLib\Connection\AbstractConnection;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Publisher\PublisherContract;
 use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
