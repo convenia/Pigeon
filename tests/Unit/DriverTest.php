@@ -3,11 +3,11 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
-use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Publisher\PublisherContract;
 

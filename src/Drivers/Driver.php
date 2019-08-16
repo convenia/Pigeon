@@ -71,6 +71,7 @@ abstract class Driver implements DriverContract
         $this->exchange(Driver::EVENT_EXCHANGE)
             ->routing($event)
             ->bind($queue);
+
         return $consumer;
     }
 }
