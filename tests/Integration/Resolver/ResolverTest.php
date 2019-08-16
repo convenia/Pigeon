@@ -53,7 +53,7 @@ class ResolverTest extends TestCase
             false,
             false,
             function () {
-                $this->assertTrue(false, "Queue should not have message.");
+                $this->assertTrue(false, 'Queue should not have message.');
             }
         );
         $this->channel->wait(null, null, $timeout);
