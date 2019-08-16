@@ -6,9 +6,9 @@ use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Consumer\Consumer;
 use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Publisher\Publisher;
-use PhpAmqpLib\Connection\AbstractConnection;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Publisher\PublisherContract;
+use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
 
 abstract class Driver implements DriverContract
@@ -42,11 +42,6 @@ abstract class Driver implements DriverContract
         return new Publisher($this->app, $this, $name);
     }
 
-    public function emmit(string $eventName, array $event): void
-    {
-        $this->exchange(self::EVENT_EXCHANGE)->emmit($eventName, $event);
-    }
-
     public function routing(string $name = null): PublisherContract
     {
         $exchange = $this->app['config']['pigeon.exchange'];
@@ -57,5 +52,25 @@ abstract class Driver implements DriverContract
         ]));
 
         return (new Publisher($this->app, $this, $exchange))->routing($name);
+    }
+
+    public function emmit(string $eventName, array $event): void
+    {
+        throw_if(empty($event), new EmptyEventException());
+        $this->exchange(self::EVENT_EXCHANGE)
+            ->routing($eventName)
+            ->publish($event);
+    }
+
+    public function events(string $event = '*'): ConsumerContract
+    {
+        $app_name = str_replace(' ', '.', $this->app['config']['pigeon.app_name']);
+        $app_name = strtolower($app_name);
+        $queue = "{$event}.{$app_name}";
+        $consumer = $this->queue($queue);
+        $this->exchange(Driver::EVENT_EXCHANGE)
+            ->routing($event)
+            ->bind($queue);
+        return $consumer;
     }
 }

@@ -138,39 +138,4 @@ class PublisherTest extends TestCase
         // assert
         $this->assertEquals($response_via, $reply_to);
     }
-
-    public function test_it_should_publish_event()
-    {
-        // setup
-        $event_name = 'my.event.name';
-        $event_content = [
-            'foo' => 'fighters',
-        ];
-        $publisher = new Publisher($this->app, $this->driver, Driver::EVENT_EXCHANGE);
-
-        // assert
-        $this->channel->shouldReceive('basic_publish')->with(
-            Mockery::type(AMQPMessage::class),
-            Driver::EVENT_EXCHANGE,
-            $event_name
-        )->once();
-
-        // act
-        $publisher->emmit($event_name, $event_content);
-    }
-
-    public function test_it_should_not_publish_empty_event()
-    {
-        // setup
-        $exchange = 'my.awesome.exchange';
-        $event_name = 'my.event.name';
-        $event_content = [];
-        $publisher = new Publisher($this->app, $this->driver, $exchange);
-
-        // assert
-        $this->expectExceptionMessage('Cannot emmit empty event');
-
-        // act
-        $publisher->emmit($event_name, $event_content);
-    }
 }

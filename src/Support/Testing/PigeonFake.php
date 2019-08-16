@@ -193,4 +193,10 @@ class PigeonFake extends PigeonManager implements DriverContract
     {
         return $this;
     }
+
+    public function events(string $event = '*'): ConsumerContract
+    {}
+
+    public function emmit(string $eventName, array $event): void
+    {}
 }

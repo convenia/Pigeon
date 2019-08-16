@@ -79,16 +79,4 @@ class Publisher implements PublisherContract
             'app_id'           => $this->app['config']['app_name'],
         ], $userProps);
     }
-
-    public function emmit(string $eventName, array $event)
-    {
-        throw_if(empty($event), new EmptyEventException());
-
-        $msg = $this->makeMessage($event, []);
-        $this->driver->getChannel()->basic_publish(
-            $msg,
-            $this->exchange,
-            $eventName
-        );
-    }
 }
