@@ -3,7 +3,6 @@
 namespace Convenia\Pigeon\Resolver;
 
 use PhpAmqpLib\Message\AMQPMessage;
-use Convenia\Pigeon\Drivers\DriverContract;
 
 class Resolver implements ResolverContract
 {
