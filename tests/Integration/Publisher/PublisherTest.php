@@ -66,6 +66,8 @@ class PublisherTest extends TestCase
         $this->pigeon->routing($this->routing_key)
             ->publish($data);
 
+        sleep(1);
+
         // assert
         $message = $this->channel->basic_get($this->queue);
         $this->assertEquals($data, json_decode($message->body, true));

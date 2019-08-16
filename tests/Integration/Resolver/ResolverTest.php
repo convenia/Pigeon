@@ -32,51 +32,31 @@ class ResolverTest extends TestCase
             'pigeon.integration.test',
             false,
             false,
-            true,
+            false,
             false,
             function ($request_message) {
                 $resolver = new Resolver($request_message);
                 $resolver->ack();
             }
         );
-
-        do {
-            $this->channel->wait(null, null, 2);
-        } while (false);
+        $this->channel->wait(null, null, 2);
+        $this->channel->basic_cancel('pigeon.integration.test');
 
         // assert
-        $msg = $this->channel->basic_get($this->queue);
-        $this->assertNull($msg);
-    }
-
-    public function test_it_should_reject_message_and_requeue()
-    {
-        // setup
-        $msg_data = ['foo' => 'fighters', 'bar' => 'baz'];
-        $msg = new AMQPMessage(json_encode($msg_data));
-        $this->channel->queue_declare($this->queue, $passive = false, $durable = true, $exclusive = false, $auto_delete = false);
-        $this->channel->basic_publish($msg, '', $this->queue);
-
-        // act
-        $this->channel->basic_qos(null, 1, null);
+        $timeout = 2;
+        $this->expectExceptionMessage("The connection timed out after $timeout sec while awaiting incoming data");
         $this->channel->basic_consume(
             $this->queue,
-            'pigeon.integration.test',
+            'pigeon.integration.test.s',
             false,
             false,
             false,
             false,
-            function ($m) {
-                $resolver = new Resolver($m);
-                $resolver->reject();
+            function () {
+                $this->assertTrue(false, "Queue should not have message.");
             }
         );
-
-        $this->channel->wait();
-        // assert
-        $msg = $this->channel->basic_get($this->queue, true);
-        $this->assertNotNull($msg);
-        $this->assertEquals($msg_data, json_decode($msg->body, true));
+        $this->channel->wait(null, null, $timeout);
     }
 
     public function test_it_should_publish_a_message_reponse()
