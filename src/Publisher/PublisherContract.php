@@ -15,5 +15,7 @@ interface PublisherContract
 
     public function publish(array $message, array $properties = []);
 
+    public function emmit(string $eventName, array $event);
+
     public function rpc(array $message, array $properties = []): string;
 }

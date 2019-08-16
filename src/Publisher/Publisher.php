@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 
 class Publisher implements PublisherContract
 {
@@ -77,5 +78,17 @@ class Publisher implements PublisherContract
             'expiration'       => 60000000,
             'app_id'           => $this->app['config']['app_name'],
         ], $userProps);
+    }
+
+    public function emmit(string $eventName, array $event)
+    {
+        throw_if(empty($event), new EmptyEventException());
+
+        $msg = $this->makeMessage($event, []);
+        $this->driver->getChannel()->basic_publish(
+            $msg,
+            $this->exchange,
+            $eventName
+        );
     }
 }

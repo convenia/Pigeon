@@ -13,11 +13,10 @@ use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
 
 abstract class Driver implements DriverContract
 {
+    public const EVENT_EXCHANGE = 'event';
+
     public $app;
 
-    /**
-     * @var \PhpAmqpLib\Connection\AbstractConnection
-     */
     protected $connection;
 
     public function __construct(Application $app)
@@ -25,7 +24,7 @@ abstract class Driver implements DriverContract
         $this->app = $app;
     }
 
-    abstract public function getConnection(): AbstractConnection;
+    abstract public function getConnection();
 
     public function queue(string $name, array $properties = []): ConsumerContract
     {
@@ -36,11 +35,16 @@ abstract class Driver implements DriverContract
 
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        $this->getChannel()->exchange_declare($name, $type, true, true, false, false, false, new AMQPTable([
+        $this->getChannel()->exchange_declare($name, $type, false, true, false, false, false, new AMQPTable([
             'x-dead-letter-exchange' => 'dead.letter',
         ]));
 
         return new Publisher($this->app, $this, $name);
+    }
+
+    public function emmit(string $eventName, array $event): void
+    {
+        $this->exchange(self::EVENT_EXCHANGE)->emmit($eventName, $event);
     }
 
     public function routing(string $name = null): PublisherContract

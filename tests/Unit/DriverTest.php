@@ -46,7 +46,7 @@ class DriverTest extends TestCase
 
         // setup and asserts
         $this->channel->shouldReceive('exchange_declare')
-            ->with($exchange, $type, true, true, false, false, false, Mockery::type(AMQPTable::class));
+            ->with($exchange, $type, false, true, false, false, false, Mockery::type(AMQPTable::class));
 
         // act
         $publisher = $this->driver->exchange($exchange, $type);
