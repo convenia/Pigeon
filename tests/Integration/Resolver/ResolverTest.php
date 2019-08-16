@@ -2,13 +2,11 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Resolver;
 
-
 //define('AMQP_DEBUG', true);
 
-use Exception;
+use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
-use PhpAmqpLib\Message\AMQPMessage;
 
 class ResolverTest extends TestCase
 {
@@ -45,7 +43,6 @@ class ResolverTest extends TestCase
         do {
             $this->channel->wait(null, null, 2);
         } while (false);
-
 
         // assert
         $msg = $this->channel->basic_get($this->queue);
