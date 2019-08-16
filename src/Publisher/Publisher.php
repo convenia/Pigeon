@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Drivers\DriverContract;
-use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 
 class Publisher implements PublisherContract
 {
