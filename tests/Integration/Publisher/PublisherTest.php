@@ -2,10 +2,10 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
+use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Tests\Integration\TestCase;
-use PhpAmqpLib\Wire\AMQPTable;
 
 class PublisherTest extends TestCase
 {
@@ -104,7 +104,7 @@ class PublisherTest extends TestCase
     {
         // setup
         $event_queue = "event.$this->queue";
-        $event_name = "event.testing.event.sourcing";
+        $event_name = 'event.testing.event.sourcing';
         $event_data = ['it' => 'should bind'];
 
         $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, 'direct', false, true, false, false, false, new AMQPTable([
