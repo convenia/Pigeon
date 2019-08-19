@@ -18,6 +18,7 @@ class PigeonManager extends Manager
 
     public function createNullDriver()
     {
+        return null;
     }
 
     /**
@@ -27,7 +28,7 @@ class PigeonManager extends Manager
      */
     public function getDefaultDriver(): string
     {
-        return $this->app['config']['amqp.default'] ?? 'null';
+        return $this->app['config']['pigeon.default'] ?? 'null';
     }
 
     /**
