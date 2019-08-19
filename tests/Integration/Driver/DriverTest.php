@@ -3,9 +3,9 @@
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
 use Convenia\Pigeon\Drivers\Driver;
+use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
 class DriverTest extends TestCase
 {
