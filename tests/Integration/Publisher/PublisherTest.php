@@ -2,6 +2,8 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
+use PhpAmqpLib\Wire\AMQPTable;
+use Convenia\Pigeon\Drivers\Driver;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 
@@ -21,7 +23,9 @@ class PublisherTest extends TestCase
     public function test_it_should_publish_a_message_using_exchange()
     {
         // setup
-        $this->channel->exchange_declare($this->exchange, 'fanout');
+        $this->channel->exchange_declare($this->exchange, 'fanout', false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
         $this->channel->queue_declare($this->queue);
         $this->channel->queue_bind($this->queue, $this->exchange);
         $data = [
@@ -101,7 +105,9 @@ class PublisherTest extends TestCase
     public function test_it_should_publish_a_remote_procedure_call()
     {
         // setup
-        $this->channel->exchange_declare($this->exchange, 'fanout');
+        $this->channel->exchange_declare($this->exchange, 'fanout', false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
         $this->channel->queue_declare($this->queue);
         $this->channel->queue_bind($this->queue, $this->exchange);
         $this->app['config']->set('pigeon.exchange', $this->exchange);
@@ -121,5 +127,35 @@ class PublisherTest extends TestCase
         $this->assertEquals($data, json_decode($message->body, true));
         $this->assertTrue(str_contains($reply_to, 'amq'));
         $this->channel->queue_delete($reply_to);
+    }
+
+    public function test_it_should_publish_event()
+    {
+        // setup
+        $event_queue = "event.$this->queue";
+        $event_name = 'event.testing.event.sourcing';
+        $event_data = ['it' => 'should bind'];
+
+        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, 'direct', false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
+        $this->channel->queue_declare($event_queue);
+        $this->channel->queue_bind($event_queue, Driver::EVENT_EXCHANGE, $event_name);
+
+        // assert fail
+        $received = $this->channel->basic_get($event_queue);
+        $this->assertNull($received);
+
+        // act
+        $this->pigeon->emmit($event_name, $event_data);
+
+        sleep(1);
+        // assert
+        $received = $this->channel->basic_get($event_queue);
+        $this->assertEquals($event_data, json_decode($received->body, true));
+
+        // teardown
+        $this->channel->queue_delete($event_queue);
+        $this->channel->exchange_delete(Driver::EVENT_EXCHANGE);
     }
 }

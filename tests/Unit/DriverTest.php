@@ -7,6 +7,7 @@ use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Publisher\PublisherContract;
 
@@ -46,7 +47,7 @@ class DriverTest extends TestCase
 
         // setup and asserts
         $this->channel->shouldReceive('exchange_declare')
-            ->with($exchange, $type, true, true, false, false, false, Mockery::type(AMQPTable::class));
+            ->with($exchange, $type, false, true, false, false, false, Mockery::type(AMQPTable::class));
 
         // act
         $publisher = $this->driver->exchange($exchange, $type);
@@ -76,5 +77,81 @@ class DriverTest extends TestCase
 
         // assert
         $this->assertInstanceOf(PublisherContract::class, $publisher);
+    }
+
+    public function test_it_should_publish_event()
+    {
+        // setup
+        $event_name = str_random(8);
+        $event_content = [
+            'foo' => 'fighters',
+        ];
+
+        // assert
+        $this->channel->shouldReceive('basic_publish')->with(
+            Mockery::type(AMQPMessage::class),
+            Driver::EVENT_EXCHANGE,
+            $event_name
+        )->once();
+        $this->channel->shouldReceive('exchange_declare')->with(
+            Driver::EVENT_EXCHANGE,
+            'direct',
+            false,
+            true,
+            false,
+            false,
+            false,
+            Mockery::type(AMQPTable::class)
+        )->once();
+
+        // act
+        $this->driver->emmit($event_name, $event_content);
+    }
+
+    public function test_it_should_not_publish_empty_event()
+    {
+        // setup
+        $event_name = 'my.event.name';
+        $event_content = [];
+
+        // assert
+        $this->expectExceptionMessage('Cannot emmit empty event');
+
+        // act
+        $this->driver->emmit($event_name, $event_content);
+    }
+
+    public function test_it_should_declare_bind_event_queue_and_return_consumer()
+    {
+        $app_name = 'pigeon.testing';
+        $this->app['config']->set('pigeon.app_name', 'Pigeon Testing');
+        $event_name = str_random(8);
+
+        // setup
+        $this->channel->shouldReceive('queue_declare')
+            ->once()
+            ->with("{$event_name}.{$app_name}", false, true, false, false, false, []);
+        $this->channel->shouldReceive('exchange_declare')
+            ->once()
+            ->with(
+                Driver::EVENT_EXCHANGE,
+                'direct',
+                false,
+                true,
+                false,
+                false,
+                false,
+                Mockery::type(AMQPTable::class)
+            );
+        $this->channel->shouldReceive('queue_bind')
+            ->once()
+            ->with("{$event_name}.{$app_name}", Driver::EVENT_EXCHANGE, $event_name);
+
+        // act
+        $consumer = $this->driver
+            ->events($event_name);
+
+        // assert
+        $this->assertInstanceOf(ConsumerContract::class, $consumer);
     }
 }
