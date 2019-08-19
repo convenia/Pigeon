@@ -14,13 +14,13 @@
     "require": {
         "ext-json": "*",
         "ext-sockets": "*",
-        "php-amqplib/php-amqplib": "2.8.1",
+        "php-amqplib/php-amqplib": "2.10.0",
         "laravel/framework": "5.6.*|5.7.*|5.8.*",
         "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
         "ext-curl": "*",
-        "phpunit/phpunit": "7.4.*",
+        "phpunit/phpunit": "7.5.*",
         "squizlabs/php_codesniffer": "^2.5",
         "orchestra/testbench": "3.6.*|3.7.*|3.8.*"
     },
