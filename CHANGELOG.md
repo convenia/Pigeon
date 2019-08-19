@@ -9,4 +9,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Message send using default and custom exchange
 - Consume a queue
 - Remote procedure call
+- Event sourcing
 - Ack, reject and response a message
