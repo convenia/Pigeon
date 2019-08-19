@@ -6,6 +6,7 @@ use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class DriverTest extends TestCase
 {
@@ -30,6 +31,9 @@ class DriverTest extends TestCase
         $event_content = [
             'foo' => 'fighters',
         ];
+        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, 'direct', false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
         $this->channel->queue_bind($this->queue, Driver::EVENT_EXCHANGE, $event_name);
 
         // act
@@ -40,6 +44,7 @@ class DriverTest extends TestCase
         // assert
         $event = $this->channel->basic_get($this->queue);
         $this->assertEquals($event_content, json_decode($event->body, true));
+        $this->channel->exchange_delete(Driver::EVENT_EXCHANGE);
     }
 
     public function test_it_should_consume_event()
