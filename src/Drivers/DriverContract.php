@@ -11,6 +11,10 @@ interface DriverContract
 
     public function exchange(string $name, string $type): PublisherContract;
 
+    public function events(string $event = '*'): ConsumerContract;
+
+    public function emmit(string $eventName, array $event): void;
+
     public function routing(string $name): PublisherContract;
 
     public function getConnection();

@@ -3,12 +3,11 @@
 namespace Convenia\Pigeon\Drivers;
 
 use PhpAmqpLib\Channel\AMQPChannel;
-use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class RabbitDriver extends Driver
 {
-    public function getConnection(): AbstractConnection
+    public function getConnection()
     {
         if (! $this->connection) {
             $this->connection = $this->makeConnection();
