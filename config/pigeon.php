@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'default'    => 'rabbit',
+    'default'    => env('PIGEON_DRIVER', 'null'),
     'connection' => [
         'credentials' => [
             'user'     => env('PIGEON_USER'),
