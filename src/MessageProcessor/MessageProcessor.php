@@ -39,7 +39,7 @@ class MessageProcessor implements MessageProcessorContract
         $args = (new ReflectionFunction($this->callback))->getParameters();
 
         if (count($args) > 1 && ResolverContract::class === $args[1]->getType()->getName()) {
-            call_user_func($this->callback, $data, new Resolver($this->driver, $message));
+            call_user_func($this->callback, $data, new Resolver($message));
         } else {
             call_user_func($this->callback, $data);
         }

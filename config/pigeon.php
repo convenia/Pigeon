@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'default'    => 'rabbit',
+    'default'    => env('PIGEON_DRIVER', 'null'),
     'connection' => [
         'credentials' => [
             'user'     => env('PIGEON_USER'),
@@ -17,7 +17,7 @@ return [
         'read_timeout'  => env('PIGEON_READ_TIMEOUT', 130),
         'write_timeout' => env('PIGEON_WRITE_TIMEOUT', 130),
     ],
-    'exchange'      => env('PIGEON_EXCHANGE', 'cPIGEON'),
+    'exchange'      => env('PIGEON_EXCHANGE', 'pigeon'),
     'exchange_type' => env('PIGEON_EXCHANGE_TYPE', 'direct'),
     'dead'          => [
         'exchange'    => 'amq.direct',

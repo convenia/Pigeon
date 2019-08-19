@@ -85,6 +85,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         $reply_to = 'rpc.'.str_random(5);
         $delivery_tag = str_random(2);
         $message = new AMQPMessage(json_encode($message), ['reply_to' => $reply_to]);
+        $message->delivery_info['channel'] = $this;
         $consumer = $this->consumers->get($queue);
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
@@ -192,5 +193,13 @@ class PigeonFake extends PigeonManager implements DriverContract
     public function getChannel()
     {
         return $this;
+    }
+
+    public function events(string $event = '*'): ConsumerContract
+    {
+    }
+
+    public function emmit(string $eventName, array $event): void
+    {
     }
 }
