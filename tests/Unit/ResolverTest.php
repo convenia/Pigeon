@@ -30,7 +30,8 @@ class ResolverTest extends TestCase
         $message = new AMQPMessage();
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
-        $resolver = new Resolver($this->driver, $message);
+        $message->delivery_info['channel'] = $this->channel;
+        $resolver = new Resolver($message);
 
         //assert
         $this->channel->shouldReceive('basic_ack')
@@ -48,11 +49,12 @@ class ResolverTest extends TestCase
         $requeue = false;
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
-        $resolver = new Resolver($this->driver, $message);
+        $message->delivery_info['channel'] = $this->channel;
+        $resolver = new Resolver($message);
 
         //assert
-        $this->channel->shouldReceive('basic_reject')
-            ->with($delivery_tag, $requeue);
+        $this->channel->shouldReceive('basic_nack')
+            ->with($delivery_tag, false, $requeue);
 
         // act
         $resolver->reject($requeue);
@@ -66,11 +68,12 @@ class ResolverTest extends TestCase
         $requeue = true;
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
-        $resolver = new Resolver($this->driver, $message);
+        $message->delivery_info['channel'] = $this->channel;
+        $resolver = new Resolver($message);
 
         //assert
-        $this->channel->shouldReceive('basic_reject')
-            ->with($delivery_tag, $requeue);
+        $this->channel->shouldReceive('basic_nack')
+            ->with($delivery_tag, false, $requeue);
 
         // act
         $resolver->reject($requeue);
@@ -84,7 +87,8 @@ class ResolverTest extends TestCase
         $message = new AMQPMessage([], ['reply_to' => $reply_to]);
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
-        $resolver = new Resolver($this->driver, $message);
+        $message->delivery_info['channel'] = $this->channel;
+        $resolver = new Resolver($message);
 
         //assert
         $this->channel->shouldReceive('basic_publish')

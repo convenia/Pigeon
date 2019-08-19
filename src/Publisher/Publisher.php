@@ -49,7 +49,7 @@ class Publisher implements PublisherContract
     public function rpc(array $message, array $properties = []): string
     {
         [$response_via,] = $this->driver->getChannel()->queue_declare();
-        Arr::add($properties, 'reply_to', $response_via);
+        $properties = Arr::add($properties, 'reply_to', $response_via);
         $msg = $this->makeMessage($message, $properties);
         $this->driver->getChannel()->basic_publish(
             $msg,
