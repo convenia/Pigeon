@@ -31,7 +31,7 @@ class DriverTest extends TestCase
         $event_content = [
             'foo' => 'fighters',
         ];
-        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, 'direct', false, true, false, false, false, new AMQPTable([
+        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, Driver::EVENT_EXCHANGE_TYPE, false, true, false, false, false, new AMQPTable([
             'x-dead-letter-exchange' => 'dead.letter',
         ]));
         $this->channel->queue_bind($this->queue, Driver::EVENT_EXCHANGE, $event_name);
