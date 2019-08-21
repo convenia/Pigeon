@@ -14,6 +14,7 @@ use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
 abstract class Driver implements DriverContract
 {
     public const EVENT_EXCHANGE = 'event';
+    public const EVENT_EXCHANGE_TYPE = 'topic';
 
     public $app;
 
@@ -57,18 +58,18 @@ abstract class Driver implements DriverContract
     public function emmit(string $eventName, array $event): void
     {
         throw_if(empty($event), new EmptyEventException());
-        $this->exchange(self::EVENT_EXCHANGE)
+        $this->exchange(self::EVENT_EXCHANGE, self::EVENT_EXCHANGE_TYPE)
             ->routing($eventName)
             ->publish($event);
     }
 
-    public function events(string $event = '*'): ConsumerContract
+    public function events(string $event = '#'): ConsumerContract
     {
         $app_name = str_replace(' ', '.', $this->app['config']['pigeon.app_name']);
         $app_name = strtolower($app_name);
         $queue = "{$event}.{$app_name}";
         $consumer = $this->queue($queue);
-        $this->exchange(Driver::EVENT_EXCHANGE)
+        $this->exchange(self::EVENT_EXCHANGE, self::EVENT_EXCHANGE_TYPE)
             ->routing($event)
             ->bind($queue);
 

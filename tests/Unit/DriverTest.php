@@ -95,7 +95,7 @@ class DriverTest extends TestCase
         )->once();
         $this->channel->shouldReceive('exchange_declare')->with(
             Driver::EVENT_EXCHANGE,
-            'direct',
+            Driver::EVENT_EXCHANGE_TYPE,
             false,
             true,
             false,
@@ -135,7 +135,7 @@ class DriverTest extends TestCase
             ->once()
             ->with(
                 Driver::EVENT_EXCHANGE,
-                'direct',
+                Driver::EVENT_EXCHANGE_TYPE,
                 false,
                 true,
                 false,

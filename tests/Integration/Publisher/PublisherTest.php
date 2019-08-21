@@ -136,7 +136,7 @@ class PublisherTest extends TestCase
         $event_name = 'event.testing.event.sourcing';
         $event_data = ['it' => 'should bind'];
 
-        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, 'direct', false, true, false, false, false, new AMQPTable([
+        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, Driver::EVENT_EXCHANGE_TYPE, false, true, false, false, false, new AMQPTable([
             'x-dead-letter-exchange' => 'dead.letter',
         ]));
         $this->channel->queue_declare($event_queue);

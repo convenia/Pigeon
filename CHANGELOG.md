@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Fixed `getDefaultDriver` return from config
+### Change
+- Change event listen wildcard from `*` to `#`
+- Change event exchange type from `direct` to `topic`
 
 ## [v1.0.0-alpha]
 ### Added
