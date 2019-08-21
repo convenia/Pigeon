@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Change
 - Change event listen wildcard from `*` to `#`
 - Change event exchange type from `direct` to `topic`
+- Change `php-amqplib` to `>=2.8`
 
 ## [v1.0.0-alpha]
 ### Added
