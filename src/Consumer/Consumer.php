@@ -26,7 +26,7 @@ class Consumer implements ConsumerContract
         $this->channel = $driver->getChannel();
     }
 
-    public function consume(int $timeout = 5, bool $multiple = true)
+    public function consume(int $timeout = 0, bool $multiple = true)
     {
         $this->channel->basic_qos(null, 1, null);
         $this->channel->basic_consume(
