@@ -18,7 +18,7 @@ class DriverTest extends TestCase
 
     private $queue = 'some.queue';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->channel = Mockery::mock(AMQPChannel::class);

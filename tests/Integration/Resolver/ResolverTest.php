@@ -12,7 +12,7 @@ class ResolverTest extends TestCase
 {
     protected $pigeon;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->pigeon = $this->app['pigeon']->driver('rabbit');
@@ -95,7 +95,7 @@ class ResolverTest extends TestCase
         $this->channel->queue_delete($reply_to);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->pigeon->getConnection()->close();
         parent::tearDown();

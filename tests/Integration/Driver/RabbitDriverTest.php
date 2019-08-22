@@ -11,7 +11,7 @@ class RabbitDriverTest extends TestCase
      */
     protected $pigeon;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->pigeon = $this->app['pigeon'];
