@@ -9,6 +9,12 @@ branches:
   only:
     - /.*/
 
+services: rabbitmq
+addons:
+  apt:
+    packages:
+      - rabbitmq-server
+
 matrix:
   fast_finish: true
   include:
@@ -30,14 +36,6 @@ install:
   - if [[ $SETUP = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest; fi
   - if [[ $SETUP = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --no-suggest; fi
 
-jobs:
-  include:
-      - name: "Unit Tests"
-        script: vendor/bin/phpunit --filter=Unit --coverage-text --configuration=phpunit-ci.xml
-      - name: "Integration Tests"
-        services: rabbitmq
-        addons:
-          apt:
-            packages:
-              - rabbitmq-server
-        script: vendor/bin/phpunit --filter=Integration --coverage-text --configuration=phpunit-ci.xml
+script:
+  - vendor/bin/phpunit --filter=Unit --coverage-text --configuration=phpunit-ci.xml
+  - vendor/bin/phpunit --filter=Integration --coverage-text --configuration=phpunit-ci.xml
