@@ -15,7 +15,7 @@ class DriverTest extends TestCase
      */
     protected $driver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->driver = $this->getMockForAbstractClass(Driver::class, [$this->app]);

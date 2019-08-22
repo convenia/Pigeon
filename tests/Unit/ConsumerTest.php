@@ -21,7 +21,7 @@ class ConsumerTest extends TestCase
      */
     private $channel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

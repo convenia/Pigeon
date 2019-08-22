@@ -18,7 +18,7 @@ class MessageProcessorTest extends TestCase
 
     protected $channel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->channel = Mockery::mock(AMQPChannel::class);

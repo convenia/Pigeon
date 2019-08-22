@@ -14,7 +14,7 @@ class PigeonFakeTest extends TestCase
 {
     protected $fake;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->fake = Pigeon::fake();
