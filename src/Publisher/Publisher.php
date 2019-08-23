@@ -77,13 +77,13 @@ class Publisher implements PublisherContract
             'correlation_id'   => Uuid::generate()->string,
             'expiration'       => 60000000,
             'app_id'           => $this->app['config']['app_name'],
-            'application_headers' => Arr::dot($this->headers)
+            'application_headers' => Arr::dot($this->headers),
         ], $userProps);
     }
 
     public function header(string $key, $value): PublisherContract
     {
-        $this->headers = Arr::add($this->headers,$key, $value);
+        $this->headers = Arr::add($this->headers, $key, $value);
         return $this;
     }
 }
