@@ -151,8 +151,8 @@ class PublisherTest extends TestCase
             'foo_bar' => 'baz',
             'foo' => 'fighters',
             'deep' => [
-                'level' => 1
-            ]
+                'level' => 1,
+            ],
         ];
         $publisher = new Publisher($this->app, $this->driver, $exchange);
 
