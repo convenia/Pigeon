@@ -13,6 +13,8 @@ interface PublisherContract
 
     public function bind(string $queue): self;
 
+    public function publish(array $message);
+
     public function header(string $key, $value): self;
 
     public function rpc(array $message): string;
