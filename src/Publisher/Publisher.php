@@ -14,6 +14,7 @@ class Publisher implements PublisherContract
     protected $driver;
     protected $exchange;
     protected $routing;
+    protected $headers = [];
 
     public function __construct(Application $app, DriverContract $driver, string $exchange)
     {
@@ -38,7 +39,7 @@ class Publisher implements PublisherContract
 
     public function publish(array $message, array $properties = [])
     {
-        $msg = $this->makeMessage($message, $properties);
+        $msg = $this->makeMessage($message);
         $this->driver->getChannel()->basic_publish(
             $msg,
             $this->exchange,
@@ -46,10 +47,10 @@ class Publisher implements PublisherContract
         );
     }
 
-    public function rpc(array $message, array $properties = []): string
+    public function rpc(array $message): string
     {
         [$response_via,] = $this->driver->getChannel()->queue_declare();
-        $properties = Arr::add($properties, 'reply_to', $response_via);
+        $properties = ['reply_to' => $response_via];
         $msg = $this->makeMessage($message, $properties);
         $this->driver->getChannel()->basic_publish(
             $msg,
@@ -60,7 +61,7 @@ class Publisher implements PublisherContract
         return $response_via;
     }
 
-    private function makeMessage(array $data, array $properties)
+    private function makeMessage(array $data, array $properties = [])
     {
         return new AMQPMessage(
             json_encode($data),
@@ -76,6 +77,13 @@ class Publisher implements PublisherContract
             'correlation_id'   => Uuid::generate()->string,
             'expiration'       => 60000000,
             'app_id'           => $this->app['config']['app_name'],
+            'application_headers' => Arr::dot($this->headers)
         ], $userProps);
+    }
+
+    public function header(string $key, $value): PublisherContract
+    {
+        $this->headers = Arr::add($this->headers,$key, $value);
+        return $this;
     }
 }
