@@ -3,6 +3,7 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
+use Illuminate\Support\Arr;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -136,5 +137,38 @@ class PublisherTest extends TestCase
 
         // assert
         $this->assertEquals($response_via, $reply_to);
+    }
+
+    public function test_it_should_add_all_headers()
+    {
+        // setup
+        $exchange = 'my.awesome.exchange';
+        $routing = 'my.awesome.service';
+        $data = [
+            'foo' => 'fighters',
+        ];
+        $headers = [
+            'foo_bar' => 'baz',
+            'foo' => 'fighters',
+            'deep' => [
+                'level' => 1,
+            ],
+        ];
+        $publisher = new Publisher($this->app, $this->driver, $exchange);
+
+        // assert
+        $this->channel->shouldReceive('basic_publish')->with(
+            Mockery::on(function (AMQPMessage $arg) use ($headers) {
+                return Arr::dot($headers) === $arg->get_properties()['application_headers'];
+            }),
+            $exchange,
+            null
+        )->once();
+
+        // act
+        foreach ($headers as $key => $value) {
+            $publisher->header($key, $value);
+        }
+        $publisher->publish($data);
     }
 }
