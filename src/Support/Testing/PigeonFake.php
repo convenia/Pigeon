@@ -4,6 +4,7 @@ namespace Convenia\Pigeon\Support\Testing;
 
 use Convenia\Pigeon\PigeonManager;
 use Illuminate\Support\Collection;
+use Convenia\Pigeon\Drivers\Driver;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Publisher\Publisher;
@@ -20,11 +21,14 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     protected $publishers;
 
+    protected $events;
+
     public function __construct($app)
     {
         parent::__construct($app);
         $this->consumers = new Collection();
         $this->publishers = new Collection();
+        $this->events = new Collection();
     }
 
     public function assertConsuming(string $queue)
@@ -32,11 +36,27 @@ class PigeonFake extends PigeonManager implements DriverContract
         PHPUnit::assertTrue($this->consumers->has($queue), "The queue [$queue] has no consumer");
     }
 
+    public function assertConsumingEvent(string $event)
+    {
+        PHPUnit::assertTrue(
+            $this->consumers->has($event),
+            "No event consumer for [$event] event"
+        );
+    }
+
     public function assertPublished(string $routing, array $message)
     {
         PHPUnit::assertTrue(
             $this->pushed($routing, $message),
             "No message published in [$routing] with body"
+        );
+    }
+
+    public function assertEmitted(string $category, array $data)
+    {
+        PHPUnit::assertTrue(
+            $this->emitted($category, $data),
+            "No event [$category] emitted with body"
         );
     }
 
@@ -52,6 +72,16 @@ class PigeonFake extends PigeonManager implements DriverContract
         return $this->publishers
             ->where('routing', $routing)
             ->filter($callback)->isNotEmpty();
+    }
+
+    public function emitted(string $event, array $data, $callback = null)
+    {
+        $callback = $callback ?: function ($e) use ($event, $data) {
+            return ($e['event'] == $event) && ($e['data'] == $data);
+        };
+
+        return $this->events->filter($callback)
+            ->isNotEmpty();
     }
 
     public function rpcPushed(string $routing, array $message, $callback = null)
@@ -74,6 +104,19 @@ class PigeonFake extends PigeonManager implements DriverContract
 
         $message = new AMQPMessage(json_encode($message), $props);
         $consumer = $this->consumers->get($queue);
+        $consumer->getCallback()->process($message);
+    }
+
+    public function dispatchListener(string $event, array $message)
+    {
+        // avoid tries to start a consumer on null queue
+        PHPUnit::assertTrue(
+            $this->consumers->has($event),
+            "The event [$event] has no listeners"
+        );
+
+        $message = new AMQPMessage(json_encode($message));
+        $consumer = $this->consumers->get($event);
         $consumer->getCallback()->process($message);
     }
 
@@ -130,6 +173,22 @@ class PigeonFake extends PigeonManager implements DriverContract
         ]);
 
         return $publisher;
+    }
+
+    public function events(string $event = '#'): ConsumerContract
+    {
+        $consumer = new Consumer($this->app, $this, $event);
+        $this->consumers->put($event, $consumer);
+
+        return $consumer;
+    }
+
+    public function emmit(string $eventName, array $event): void
+    {
+        $this->events->push([
+            'event'   => $eventName,
+            'data' => $event,
+        ]);
     }
 
     public function driver($driver = null)
@@ -193,13 +252,5 @@ class PigeonFake extends PigeonManager implements DriverContract
     public function getChannel()
     {
         return $this;
-    }
-
-    public function events(string $event = '*'): ConsumerContract
-    {
-    }
-
-    public function emmit(string $eventName, array $event): void
-    {
     }
 }
