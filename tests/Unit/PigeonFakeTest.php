@@ -320,7 +320,8 @@ class PigeonFakeTest extends TestCase
             $this->assertThat($e, new ExceptionMessage("No event consumer for [$category] event"));
         }
         $this->fake->events($category)
-            ->callback(function () {})
+            ->callback(function () {
+            })
             ->consume();
 
         $this->fake->assertConsumingEvent($category);

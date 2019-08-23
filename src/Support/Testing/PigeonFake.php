@@ -2,9 +2,9 @@
 
 namespace Convenia\Pigeon\Support\Testing;
 
-use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\PigeonManager;
 use Illuminate\Support\Collection;
+use Convenia\Pigeon\Drivers\Driver;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Publisher\Publisher;
