@@ -286,4 +286,75 @@ class PigeonFakeTest extends TestCase
 
         $this->fake->assertCallbackReturn($queue, $message, $data);
     }
+
+    public function test_it_should_assert_event_emitted()
+    {
+        // setup
+        $category = 'some.event.category';
+        $data = [
+            'foo' => 'fighters',
+        ];
+
+        // act
+        try {
+            $this->fake->assertEmitted($category, $data);
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("No event [$category] emitted with body"));
+        }
+        $this->fake->emmit($category, $data);
+
+        $this->fake->assertEmitted($category, $data);
+    }
+
+    public function test_it_should_assert_consuming_event()
+    {
+        // setup
+        $category = 'some.event.category';
+
+        // act
+        try {
+            $this->fake->assertConsumingEvent($category);
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("No event consumer for [$category] event"));
+        }
+        $this->fake->events($category)
+            ->callback(function () {})
+            ->consume();
+
+        $this->fake->assertConsumingEvent($category);
+    }
+
+    public function test_it_should_call_event_callback()
+    {
+        // setup
+        $event = 'some.test.event';
+        $message = [
+            'foo' => 'fighters',
+        ];
+
+        // assert
+        try {
+            $this->fake->dispatchListener($event, $message);
+
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("The event [$event] has no listeners"));
+        }
+
+        // act
+        $ran = false;
+        $this->fake
+            ->events($event)
+            ->callback(function ($msg) use (&$ran, $message) {
+                $this->assertEquals($message, $msg);
+                $ran = true;
+            })
+            ->consume();
+
+        // assert
+        $this->fake->dispatchListener($event, $message);
+        $this->assertTrue($ran, "Event [$event] callback did not run");
+    }
 }
