@@ -15,5 +15,5 @@ interface PublisherContract
 
     public function header(string $key, $value): self;
 
-    public function rpc(array $message, array $properties = []): string;
+    public function rpc(array $message): string;
 }
