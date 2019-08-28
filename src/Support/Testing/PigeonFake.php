@@ -103,6 +103,8 @@ class PigeonFake extends PigeonManager implements DriverContract
         $this->assertConsuming($queue);
 
         $message = new AMQPMessage(json_encode($message), $props);
+        $message->delivery_info['channel'] = $this;
+        $message->delivery_info['delivery_tag'] = str_random(3);
         $consumer = $this->consumers->get($queue);
         $consumer->getCallback()->process($message);
     }
@@ -116,6 +118,8 @@ class PigeonFake extends PigeonManager implements DriverContract
         );
 
         $message = new AMQPMessage(json_encode($message));
+        $message->delivery_info['channel'] = $this;
+        $message->delivery_info['delivery_tag'] = str_random(3);
         $consumer = $this->consumers->get($event);
         $consumer->getCallback()->process($message);
     }

@@ -358,4 +358,42 @@ class PigeonFakeTest extends TestCase
         $this->fake->dispatchListener($event, $message);
         $this->assertTrue($ran, "Event [$event] callback did not run");
     }
+
+    public function test_it_should_ack_events_sent_by_dispatch_consumer()
+    {
+        // setup
+        $queue = 'some.test.event';
+
+        $run = false;
+
+        $this->fake
+        ->events($queue)
+        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+            $resolver->ack();
+            $run = true;
+        })->consume();
+
+        $this->fake->dispatchConsumer($queue, []);
+
+        $this->assertTrue($run);
+    }
+
+    public function test_it_should_ack_events_sent_by_dispatch_listener()
+    {
+        // setup
+        $queue = 'some.test.event';
+
+        $run = false;
+
+        $this->fake
+        ->events($queue)
+        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+            $resolver->ack();
+            $run = true;
+        })->consume();
+
+        $this->fake->dispatchListener($queue, []);
+
+        $this->assertTrue($run);
+    }
 }
