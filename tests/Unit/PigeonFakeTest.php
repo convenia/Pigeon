@@ -247,7 +247,6 @@ class PigeonFakeTest extends TestCase
 
     public function test_it_should_assert_callback_response_for_message()
     {
-
         // setup
         $queue = 'my.awesome.queue';
         $data = [
@@ -359,7 +358,7 @@ class PigeonFakeTest extends TestCase
         $this->assertTrue($ran, "Event [$event] callback did not run");
     }
 
-    public function test_it_should_ack_events_sent_by_dispatch_consumer()
+    public function test_message_should_have_channel_on_events_consumer_resolver()
     {
         // setup
         $queue = 'some.test.event';
@@ -378,7 +377,7 @@ class PigeonFakeTest extends TestCase
         $this->assertTrue($run);
     }
 
-    public function test_it_should_ack_events_sent_by_dispatch_listener()
+    public function test_message_should_have_channel_on_consumer_resolver()
     {
         // setup
         $queue = 'some.test.event';
@@ -386,8 +385,9 @@ class PigeonFakeTest extends TestCase
         $run = false;
 
         $this->fake
-        ->events($queue)
+        ->queue($queue)
         ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+            $event;
             $resolver->ack();
             $run = true;
         })->consume();
