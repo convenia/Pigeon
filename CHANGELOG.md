@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `dispatchListener` to `Pigeon::fake()`
 ### Change
 - Default timeout from 5 to 0
+### Fixed
+- Fix acknowledge with fake
 ### Removed
 - Remove `$properties` from `PublisherContract::publish()`, `PublisherContract::rpc()`
 
