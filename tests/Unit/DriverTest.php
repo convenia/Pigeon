@@ -3,13 +3,13 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
+use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Publisher\PublisherContract;
-use PhpAmqpLib\Wire\AMQPTable;
 
 class DriverTest extends TestCase
 {
@@ -171,7 +171,7 @@ class DriverTest extends TestCase
         $this->assertInstanceOf(AMQPTable::class, $props);
         $this->assertEquals([
             'x-dead-letter-exchange' => $exchange,
-            'x-dead-letter-routing-key' => $routing
+            'x-dead-letter-routing-key' => $routing,
         ], $props->getNativeData());
     }
 
@@ -183,7 +183,7 @@ class DriverTest extends TestCase
 
         // act
         $props = $this->driver->getProps([
-            'another_prop' => $propValue = 'some_value'
+            'another_prop' => $propValue = 'some_value',
         ]);
 
         // assert
@@ -191,7 +191,7 @@ class DriverTest extends TestCase
         $this->assertEquals([
             'x-dead-letter-exchange' => $exchange,
             'x-dead-letter-routing-key' => $routing,
-            'another_prop' => $propValue
+            'another_prop' => $propValue,
         ], $props->getNativeData());
     }
 
