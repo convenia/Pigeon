@@ -29,16 +29,14 @@ abstract class Driver implements DriverContract
 
     public function queue(string $name, array $properties = []): ConsumerContract
     {
-        $this->getChannel()->queue_declare($name, false, true, false, false, false, $properties);
+        $this->getChannel()->queue_declare($name, false, true, false, false, false, $this->getProps($properties));
 
         return new Consumer($this->app, $this, $name);
     }
 
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        $this->getChannel()->exchange_declare($name, $type, false, true, false, false, false, new AMQPTable([
-            'x-dead-letter-exchange' => 'dead.letter',
-        ]));
+        $this->getChannel()->exchange_declare($name, $type, false, true, false, false, false, $this->getProps());
 
         return new Publisher($this->app, $this, $name);
     }
@@ -48,9 +46,7 @@ abstract class Driver implements DriverContract
         $exchange = $this->app['config']['pigeon.exchange'];
         $type = $this->app['config']['pigeon.exchange_type'];
 
-        $this->getChannel()->exchange_declare($exchange, $type, true, true, false, false, false, new AMQPTable([
-            'x-dead-letter-exchange' => 'dead.letter',
-        ]));
+        $this->getChannel()->exchange_declare($exchange, $type, true, true, false, false, false, $this->getProps());
 
         return (new Publisher($this->app, $this, $exchange))->routing($name);
     }
@@ -74,5 +70,20 @@ abstract class Driver implements DriverContract
             ->bind($queue);
 
         return $consumer;
+    }
+
+    public function getProps(array $userProps = [])
+    {
+        $deadExchange = $this->app['config']['pigeon.dead.exchange'];
+        $deadRouting = $this->app['config']['pigeon.dead.routing_key'];
+
+        $dead = [];
+
+        if ($deadExchange)
+            $dead['x-dead-letter-exchange'] = $deadExchange;
+        if ($deadExchange && $deadRouting)
+            $dead['x-dead-letter-routing-key'] = $deadRouting;
+
+        return new AMQPTable(array_merge($dead, $userProps));
     }
 }

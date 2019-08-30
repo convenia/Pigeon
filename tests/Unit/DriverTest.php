@@ -3,16 +3,19 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
-use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Publisher\PublisherContract;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class DriverTest extends TestCase
 {
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject | Driver
+     */
     private $driver;
     private $channel;
 
@@ -30,7 +33,7 @@ class DriverTest extends TestCase
     {
         // setup and asserts
         $this->channel->shouldReceive('queue_declare')
-            ->with($this->queue, $passive = false, $durable = true, false, $delete = false, false, ['some' => 'prop'])
+            ->with($this->queue, $passive = false, $durable = true, false, $delete = false, false, Mockery::type(AMQPTable::class))
             ->once();
 
         // act
@@ -130,7 +133,7 @@ class DriverTest extends TestCase
         // setup
         $this->channel->shouldReceive('queue_declare')
             ->once()
-            ->with("{$event_name}.{$app_name}", false, true, false, false, false, []);
+            ->with("{$event_name}.{$app_name}", false, true, false, false, false, Mockery::type(AMQPTable::class));
         $this->channel->shouldReceive('exchange_declare')
             ->once()
             ->with(
@@ -153,5 +156,56 @@ class DriverTest extends TestCase
 
         // assert
         $this->assertInstanceOf(ConsumerContract::class, $consumer);
+    }
+
+    public function test_it_should_return_props_without_user_defined()
+    {
+        // Setup
+        $this->app['config']->set('pigeon.dead.exchange', $exchange = 'dead');
+        $this->app['config']->set('pigeon.dead.routing_key', $routing = 'dead_routing');
+
+        // act
+        $props = $this->driver->getProps();
+
+        // assert
+        $this->assertInstanceOf(AMQPTable::class, $props);
+        $this->assertEquals([
+            'x-dead-letter-exchange' => $exchange,
+            'x-dead-letter-routing-key' => $routing
+        ], $props->getNativeData());
+    }
+
+    public function test_it_should_return_props_with_user_defined()
+    {
+        // Setup
+        $this->app['config']->set('pigeon.dead.exchange', $exchange = 'dead');
+        $this->app['config']->set('pigeon.dead.routing_key', $routing = 'dead_routing');
+
+        // act
+        $props = $this->driver->getProps([
+            'another_prop' => $propValue = 'some_value'
+        ]);
+
+        // assert
+        $this->assertInstanceOf(AMQPTable::class, $props);
+        $this->assertEquals([
+            'x-dead-letter-exchange' => $exchange,
+            'x-dead-letter-routing-key' => $routing,
+            'another_prop' => $propValue
+        ], $props->getNativeData());
+    }
+
+    public function test_it_should_return_props_without_dead_letter()
+    {
+
+        // Setup
+        $this->app['config']->set('pigeon.dead', null);
+
+        // act
+        $props = $this->driver->getProps();
+
+        // assert
+        $this->assertInstanceOf(AMQPTable::class, $props);
+        $this->assertEquals([], $props->getNativeData());
     }
 }
