@@ -35,5 +35,15 @@
         "psr-4": {
             "Convenia\\Pigeon\\Tests\\": "tests/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Convenia\\Pigeon\\PigeonServiceProvider"
+            ],
+            "aliases": {
+                "Pigeon": "Convenia\\Pigeon\\Facade\\Pigeon"
+            }
+        }
     }
 }
