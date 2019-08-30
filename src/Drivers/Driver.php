@@ -79,10 +79,12 @@ abstract class Driver implements DriverContract
 
         $dead = [];
 
-        if ($deadExchange)
+        if ($deadExchange) {
             $dead['x-dead-letter-exchange'] = $deadExchange;
-        if ($deadExchange && $deadRouting)
+        }
+        if ($deadExchange && $deadRouting) {
             $dead['x-dead-letter-routing-key'] = $deadRouting;
+        }
 
         return new AMQPTable(array_merge($dead, $userProps));
     }
