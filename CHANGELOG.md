@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `dispatchListener` to `Pigeon::fake()`
 - Added dead letter exchange to queue/exchange declare
 - Added laravel auto discovery
+- Added config as publishable using `pigeon.config`
 ### Change
 - Default timeout from 5 to 0
 ### Fixed

@@ -20,7 +20,7 @@ class PigeonServiceProvider extends ServiceProvider
     {
         $this->publishes([
             $this->configPath() => config_path('pigeon.php'),
-        ]);
+        ], 'pigeon.config');
     }
 
     /**
