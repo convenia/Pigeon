@@ -3,7 +3,6 @@
 namespace Convenia\Pigeon\Facade;
 
 use Illuminate\Support\Facades\Facade;
-use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Support\Testing\PigeonFake;
 
 /**
