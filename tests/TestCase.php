@@ -12,7 +12,7 @@ class TestCase extends BaseTestCase
         return [\Convenia\Pigeon\PigeonServiceProvider::class];
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Mockery::close();

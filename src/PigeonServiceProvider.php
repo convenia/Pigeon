@@ -16,6 +16,13 @@ class PigeonServiceProvider extends ServiceProvider
      */
     protected $defer = true;
 
+    public function boot()
+    {
+        $this->publishes([
+            $this->configPath() => config_path('pigeon.php'),
+        ], 'pigeon.config');
+    }
+
     /**
      * Register any application services.
      */
@@ -26,7 +33,7 @@ class PigeonServiceProvider extends ServiceProvider
         });
 
         $this->mergeConfigFrom(
-            __DIR__.'/../config/pigeon.php',
+            $this->configPath(),
             'pigeon'
         );
     }
@@ -39,5 +46,10 @@ class PigeonServiceProvider extends ServiceProvider
     public function provides(): array
     {
         return ['pigeon'];
+    }
+
+    private function configPath()
+    {
+        return __DIR__.'/../config/pigeon.php';
     }
 }

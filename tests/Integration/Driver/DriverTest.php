@@ -15,7 +15,7 @@ class DriverTest extends TestCase
      */
     protected $driver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->driver = $this->getMockForAbstractClass(Driver::class, [$this->app]);
@@ -31,7 +31,7 @@ class DriverTest extends TestCase
         $event_content = [
             'foo' => 'fighters',
         ];
-        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, 'direct', false, true, false, false, false, new AMQPTable([
+        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, Driver::EVENT_EXCHANGE_TYPE, false, true, false, false, false, new AMQPTable([
             'x-dead-letter-exchange' => 'dead.letter',
         ]));
         $this->channel->queue_bind($this->queue, Driver::EVENT_EXCHANGE, $event_name);
@@ -56,7 +56,7 @@ class DriverTest extends TestCase
         ];
         $this->app['config']->set('pigeon.app_name', 'pigeon');
         $queue = "{$event_name}.pigeon";
-        $this->channel->queue_declare($queue, false, true, false, false, false, []);
+        $this->channel->queue_declare($queue, false, true, false, false, false, $this->driver->getProps());
         $this->channel->basic_publish(new AMQPMessage(json_encode($event_content)), '', $queue);
 
         // act

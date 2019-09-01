@@ -14,7 +14,7 @@ class ConsumerTest extends TestCase
      */
     protected $pigeon;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->pigeon = $this->app['pigeon']->driver('rabbit');
@@ -68,7 +68,7 @@ class ConsumerTest extends TestCase
         $consumer->callback($callback)->consume(1);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->channel->queue_delete($this->queue);
         $this->connection->close();

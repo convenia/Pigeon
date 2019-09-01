@@ -14,7 +14,7 @@ class PigeonFakeTest extends TestCase
 {
     protected $fake;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->fake = Pigeon::fake();
@@ -247,7 +247,6 @@ class PigeonFakeTest extends TestCase
 
     public function test_it_should_assert_callback_response_for_message()
     {
-
         // setup
         $queue = 'my.awesome.queue';
         $data = [
@@ -285,5 +284,116 @@ class PigeonFakeTest extends TestCase
             ->consume();
 
         $this->fake->assertCallbackReturn($queue, $message, $data);
+    }
+
+    public function test_it_should_assert_event_emitted()
+    {
+        // setup
+        $category = 'some.event.category';
+        $data = [
+            'foo' => 'fighters',
+        ];
+
+        // act
+        try {
+            $this->fake->assertEmitted($category, $data);
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("No event [$category] emitted with body"));
+        }
+        $this->fake->emmit($category, $data);
+
+        $this->fake->assertEmitted($category, $data);
+    }
+
+    public function test_it_should_assert_consuming_event()
+    {
+        // setup
+        $category = 'some.event.category';
+
+        // act
+        try {
+            $this->fake->assertConsumingEvent($category);
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("No event consumer for [$category] event"));
+        }
+        $this->fake->events($category)
+            ->callback(function () {
+            })
+            ->consume();
+
+        $this->fake->assertConsumingEvent($category);
+    }
+
+    public function test_it_should_call_event_callback()
+    {
+        // setup
+        $event = 'some.test.event';
+        $message = [
+            'foo' => 'fighters',
+        ];
+
+        // assert
+        try {
+            $this->fake->dispatchListener($event, $message);
+
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("The event [$event] has no listeners"));
+        }
+
+        // act
+        $ran = false;
+        $this->fake
+            ->events($event)
+            ->callback(function ($msg) use (&$ran, $message) {
+                $this->assertEquals($message, $msg);
+                $ran = true;
+            })
+            ->consume();
+
+        // assert
+        $this->fake->dispatchListener($event, $message);
+        $this->assertTrue($ran, "Event [$event] callback did not run");
+    }
+
+    public function test_message_should_have_channel_on_events_consumer_resolver()
+    {
+        // setup
+        $queue = 'some.test.event';
+
+        $run = false;
+
+        $this->fake
+        ->events($queue)
+        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+            $resolver->ack();
+            $run = true;
+        })->consume();
+
+        $this->fake->dispatchConsumer($queue, []);
+
+        $this->assertTrue($run);
+    }
+
+    public function test_message_should_have_channel_on_consumer_resolver()
+    {
+        // setup
+        $queue = 'some.test.event';
+
+        $run = false;
+
+        $this->fake
+        ->queue($queue)
+        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+            $event;
+            $resolver->ack();
+            $run = true;
+        })->consume();
+
+        $this->fake->dispatchListener($queue, []);
+
+        $this->assertTrue($run);
     }
 }

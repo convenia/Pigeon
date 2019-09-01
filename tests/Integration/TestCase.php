@@ -22,7 +22,7 @@ class TestCase extends BaseTestCase
 
     protected $alternative_queue = 'pigeon.test.alternative';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->connection = new AMQPStreamConnection(
@@ -44,7 +44,7 @@ class TestCase extends BaseTestCase
         $this->channel = $this->connection->channel(1);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         try {
             $this->channel->queue_delete($this->queue);
