@@ -14,6 +14,7 @@ use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
 abstract class Driver implements DriverContract
 {
     public const EVENT_EXCHANGE = 'event';
+
     public const EVENT_EXCHANGE_TYPE = 'topic';
 
     public $app;
@@ -23,9 +24,17 @@ abstract class Driver implements DriverContract
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->setup();
     }
 
-    abstract public function getConnection();
+    public function setup()
+    {
+        if (extension_loaded('pcntl')) {
+            $this->listenSignals();
+        }
+
+        $this->app->terminating([$this, 'quitHard']);
+    }
 
     public function queue(string $name, array $properties = []): ConsumerContract
     {
@@ -88,4 +97,36 @@ abstract class Driver implements DriverContract
 
         return new AMQPTable(array_merge($dead, $userProps));
     }
+
+    protected function listenSignals(): void
+    {
+        defined('AMQP_WITHOUT_SIGNALS') ?: define('AMQP_WITHOUT_SIGNALS', false);
+
+        pcntl_async_signals(TRUE);
+
+        pcntl_signal(SIGTERM, [$this, 'signalHandler']);
+        pcntl_signal(SIGINT, [$this, 'signalHandler']);
+        pcntl_signal(SIGQUIT, [$this, 'signalHandler']);
+    }
+
+    public function signalHandler($signalNumber)
+    {
+        switch ($signalNumber) {
+            case SIGTERM:  // 15 : supervisor default stop
+                $this->quitHard();
+                break;
+            case SIGQUIT:  // 3  : kill -s QUIT
+                $this->quitHard();
+                break;
+            case SIGINT:   // 2  : ctrl+c
+                $this->quit();
+                break;
+        }
+    }
+
+    abstract public function quitHard();
+
+    abstract public function quit();
+
+    abstract public function getConnection();
 }
