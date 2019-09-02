@@ -9,4 +9,6 @@ interface ResolverContract
     public function reject(bool $requeue = true);
 
     public function response(array $data);
+
+    public function headers(string $key = null);
 }
