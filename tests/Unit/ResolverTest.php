@@ -3,11 +3,11 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
+use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
-use PhpAmqpLib\Wire\AMQPTable;
 
 class ResolverTest extends TestCase
 {
@@ -109,8 +109,8 @@ class ResolverTest extends TestCase
         $definedHeaders = [
             'reply_to' => 'some.queue',
             'application_headers' => new AMQPTable($appHeaders = [
-                'my' => 'header'
-            ])
+                'my' => 'header',
+            ]),
         ];
         $message = new AMQPMessage([], $definedHeaders);
 
