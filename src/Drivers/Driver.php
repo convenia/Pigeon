@@ -102,7 +102,7 @@ abstract class Driver implements DriverContract
     {
         defined('AMQP_WITHOUT_SIGNALS') ?: define('AMQP_WITHOUT_SIGNALS', false);
 
-        pcntl_async_signals(TRUE);
+        pcntl_async_signals(true);
 
         pcntl_signal(SIGTERM, [$this, 'signalHandler']);
         pcntl_signal(SIGINT, [$this, 'signalHandler']);
