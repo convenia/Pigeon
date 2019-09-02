@@ -33,7 +33,7 @@ abstract class Driver implements DriverContract
             $this->listenSignals();
         }
 
-        $this->app->terminating([$this, 'quitHard']);
+        $this->app->terminating(\Closure::fromCallable([$this, 'quitHard']));
     }
 
     public function queue(string $name, array $properties = []): ConsumerContract
