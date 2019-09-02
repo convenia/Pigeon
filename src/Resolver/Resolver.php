@@ -47,11 +47,4 @@ class Resolver implements ResolverContract
 
         return $message_props;
     }
-
-    public function headers(string $key = null)
-    {
-        return is_null($key)
-            ? $this->message->get_properties()
-            : $this->message->get($key);
-    }
 }
