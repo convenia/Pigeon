@@ -68,6 +68,25 @@ class ConsumerTest extends TestCase
         $consumer->callback($callback)->consume(1);
     }
 
+    /**
+     * @requires extension pcntl
+     * @
+     */
+    public function test_it_should_handle_sigterm_signal()
+    {
+        // should create queue
+        $consumer = $this->pigeon->queue($this->queue);
+        $msg = new AMQPMessage(json_encode(['some' => 'data']));
+        $this->channel->basic_publish($msg, '', $this->queue);
+
+        $callback = function () {
+            posix_kill(posix_getpid(), SIGTERM);
+        };
+
+        $consumer->callback($callback)->consume(30, true);
+        $this->assertTrue(true, 'It should not throw error.');
+    }
+
     protected function tearDown(): void
     {
         $this->channel->queue_delete($this->queue);

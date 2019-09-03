@@ -45,4 +45,14 @@ class RabbitDriver extends Driver
             $heartbeat = (int) $this->app['config']['pigeon.connection.heartbeat']
         );
     }
+
+    public function quitHard()
+    {
+        $this->getConnection()->close();
+    }
+
+    public function quit()
+    {
+        $this->quitHard();
+    }
 }
