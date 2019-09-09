@@ -3,6 +3,7 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
+use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -100,5 +101,24 @@ class ResolverTest extends TestCase
 
         // act
         $resolver->response(['foo' => 'fighters']);
+    }
+
+    public function test_it_should_return_message_headers()
+    {
+        // setup
+        $definedHeaders = [
+            'reply_to' => 'some.queue',
+            'application_headers' => new AMQPTable($appHeaders = [
+                'my' => 'header',
+            ]),
+        ];
+        $message = new AMQPMessage([], $definedHeaders);
+
+        // act
+        $resolver = new Resolver($message);
+
+        // assert
+        $this->assertEquals($definedHeaders, $resolver->headers());
+        $this->assertEquals($definedHeaders['reply_to'], $resolver->headers('reply_to'));
     }
 }
