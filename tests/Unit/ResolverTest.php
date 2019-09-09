@@ -3,6 +3,7 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -27,7 +28,7 @@ class ResolverTest extends TestCase
     public function test_it_should_ack_message()
     {
         // setup
-        $delivery_tag = str_random(5);
+        $delivery_tag = Str::random(5);
         $message = new AMQPMessage();
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
@@ -45,7 +46,7 @@ class ResolverTest extends TestCase
     public function test_it_should_reject_message_without_requeue()
     {
         // setup
-        $delivery_tag = str_random(5);
+        $delivery_tag = Str::random(5);
         $message = new AMQPMessage();
         $requeue = false;
 
@@ -64,7 +65,7 @@ class ResolverTest extends TestCase
     public function test_it_should_reject_message_with_requeue()
     {
         // setup
-        $delivery_tag = str_random(5);
+        $delivery_tag = Str::random(5);
         $message = new AMQPMessage();
         $requeue = true;
 
@@ -84,7 +85,7 @@ class ResolverTest extends TestCase
     {
         // setup
         $reply_to = 'some.reply.queue';
-        $delivery_tag = str_random(5);
+        $delivery_tag = Str::random(5);
         $message = new AMQPMessage([], ['reply_to' => $reply_to]);
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
