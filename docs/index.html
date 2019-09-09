@@ -7,23 +7,59 @@
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
+  <style>
+    html:root {
+      --cover-background-color: #f0f0f0;
+      --sidebar-background: var(--cover-background-color);
+    }
+    .loader {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    .loader .logo {
+      position: relative;
+      left: 50%;
+      top: 50%;
+      width: fit-content;
+      transform: translate(-50%, -50%);
+    }
+    .app-name-link {
+      display: block;
+      width: 100px;
+      position: relative;
+    }
+    .app-name-link img {
+      position: relative;
+      left: 50%;
+      top: 50%;
+    }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div class="loader" id="app">
+    <div class="logo">
+      <img src="./_media/pigeon_simbol.svg" alt="Pigeon" width="50" height="50">
+    </div>
+  </div>
   <script>
     window.$docsify = {
+      el: '#app',
       name: 'Pigeon',
-      themeColor: '#8246FF',
+      themeColor: '#121e48',
       repo: 'https://github.com/convenia/Pigeon',
+      logo: '/_media/pigeon_simbol.svg',
+      mergeNavbar: true,
       loadSidebar: true,
       subMaxLevel: 2,
       search: 'auto', // default
-
+      coverpage: true,
+      onlyCover: true,
+      auto2top: true,
       search : [
         '/',            // => /README.md
         '/installation',// => /installation.md
       ],
-
       // complete configuration parameters
       search: {
         maxAge: 86400000, // Expiration time, the default one day
@@ -46,5 +82,6 @@
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
   <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="https://unpkg.com/docsify-copy-code@2"></script>
 </body>
 </html>
