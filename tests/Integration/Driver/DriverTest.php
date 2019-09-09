@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
+use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -27,7 +28,7 @@ class DriverTest extends TestCase
     public function test_it_should_publish_event()
     {
         // setup
-        $event_name = str_random(7);
+        $event_name = Str::random(7);
         $event_content = [
             'foo' => 'fighters',
         ];
@@ -50,7 +51,7 @@ class DriverTest extends TestCase
     public function test_it_should_consume_event()
     {
         // setup
-        $event_name = str_random(8);
+        $event_name = Str::random(8);
         $event_content = [
             'foo' => 'fighters',
         ];
