@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Support\Testing;
 
+use Illuminate\Support\Str;
 use Convenia\Pigeon\PigeonManager;
 use Illuminate\Support\Collection;
 use Convenia\Pigeon\Drivers\Driver;
@@ -87,7 +88,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     public function rpcPushed(string $routing, array $message, $callback = null)
     {
         $callback = $callback ?: function ($publisher) use ($routing, $message) {
-            return str_contains($publisher['routing'], 'rpc.')
+            return Str::contains($publisher['routing'], 'rpc.')
                 && $publisher['routing'] === $routing
                 && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
                 && isset($publisher['message'])
@@ -104,7 +105,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
         $message = new AMQPMessage(json_encode($message), $props);
         $message->delivery_info['channel'] = $this;
-        $message->delivery_info['delivery_tag'] = str_random(3);
+        $message->delivery_info['delivery_tag'] = Str::random(3);
         $consumer = $this->consumers->get($queue);
         $consumer->getCallback()->process($message);
     }
@@ -119,7 +120,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
         $message = new AMQPMessage(json_encode($message));
         $message->delivery_info['channel'] = $this;
-        $message->delivery_info['delivery_tag'] = str_random(3);
+        $message->delivery_info['delivery_tag'] = Str::random(3);
         $consumer = $this->consumers->get($event);
         $consumer->getCallback()->process($message);
     }
@@ -129,8 +130,8 @@ class PigeonFake extends PigeonManager implements DriverContract
         // avoid tries to start a consumer on null queue
         $this->assertConsuming($queue);
 
-        $reply_to = 'rpc.'.str_random(5);
-        $delivery_tag = str_random(2);
+        $reply_to = 'rpc.'.Str::random(5);
+        $delivery_tag = Str::random(2);
         $message = new AMQPMessage(json_encode($message), ['reply_to' => $reply_to]);
         $message->delivery_info['channel'] = $this;
         $consumer = $this->consumers->get($queue);
@@ -229,7 +230,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     public function queue_declare($queue = '')
     {
         if (empty($queue)) {
-            return [str_random(7), null, null];
+            return [Str::random(7), null, null];
         }
 
         return [$queue, null, null];

@@ -3,6 +3,7 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\TestCase;
@@ -85,7 +86,7 @@ class DriverTest extends TestCase
     public function test_it_should_publish_event()
     {
         // setup
-        $event_name = str_random(8);
+        $event_name = Str::random(8);
         $event_content = [
             'foo' => 'fighters',
         ];
@@ -128,7 +129,7 @@ class DriverTest extends TestCase
     {
         $app_name = 'pigeon.testing';
         $this->app['config']->set('pigeon.app_name', 'Pigeon Testing');
-        $event_name = str_random(8);
+        $event_name = Str::random(8);
 
         // setup
         $this->channel->shouldReceive('queue_declare')

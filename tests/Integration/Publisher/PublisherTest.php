@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
+use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -125,7 +126,7 @@ class PublisherTest extends TestCase
         $message = $this->channel->basic_get($this->queue);
         $this->assertEquals($reply_to, $message->get('reply_to'));
         $this->assertEquals($data, json_decode($message->body, true));
-        $this->assertTrue(str_contains($reply_to, 'amq'));
+        $this->assertTrue(Str::contains($reply_to, 'amq'));
         $this->channel->queue_delete($reply_to);
     }
 
