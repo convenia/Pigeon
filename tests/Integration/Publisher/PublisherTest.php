@@ -48,7 +48,6 @@ class PublisherTest extends TestCase
     public function test_it_should_publish_a_message_using_routing()
     {
         // setup
-        $this->channel->exchange_declare($this->exchange, 'direct');
         $this->channel->queue_declare($this->queue);
         $data = [
             'pigeon.foo' => 'dove.bar',
@@ -81,7 +80,6 @@ class PublisherTest extends TestCase
     public function test_it_should_bind_exchange_and_queue()
     {
         // setup
-        $this->channel->exchange_declare($this->exchange, 'direct');
         $this->channel->queue_declare($this->queue);
         $this->app['config']->set('pigeon.exchange', $this->exchange);
         $this->app['config']->set('pigeon.exchange_type', 'direct');

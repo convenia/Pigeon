@@ -55,7 +55,7 @@ abstract class Driver implements DriverContract
         $exchange = $this->app['config']['pigeon.exchange'];
         $type = $this->app['config']['pigeon.exchange_type'];
 
-        $this->getChannel()->exchange_declare($exchange, $type, true, true, false, false, false, $this->getProps());
+        $this->getChannel()->exchange_declare($exchange, $type, false, true, false, false, false, $this->getProps());
 
         return (new Publisher($this->app, $this, $exchange))->routing($name);
     }
