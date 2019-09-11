@@ -69,7 +69,7 @@ class DriverTest extends TestCase
 
         // setup and asserts
         $this->channel->shouldReceive('exchange_declare')
-            ->with($exchange, $type, true, true, false, false, false, Mockery::type(AMQPTable::class));
+            ->with($exchange, $type, false, true, false, false, false, Mockery::type(AMQPTable::class));
         $this->channel->shouldReceive('queue_bind')->with($queue, $exchange, $routing)->once();
 
         $this->app['config']->set('pigeon.exchange', $exchange);
