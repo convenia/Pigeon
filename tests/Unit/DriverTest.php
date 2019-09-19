@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
+use Illuminate\Support\Arr;
 use Mockery;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
@@ -110,6 +111,42 @@ class DriverTest extends TestCase
 
         // act
         $this->driver->emmit($event_name, $event_content);
+    }
+
+    public function test_it_should_publish_event_with_headers()
+    {
+        // setup
+        $event_name = Str::random(8);
+        $event_content = [
+            'foo' => 'fighters',
+        ];
+        $meta = [
+            'auth_user' => random_int(100,21312)
+        ];
+
+        // assert
+        $this->channel->shouldReceive('basic_publish')->withArgs(
+            function ($message, $exchange, $event) use ($meta, $event_name) {
+                $app_headers =  $message->get('application_headers');
+
+                return ($app_headers instanceof AMQPTable)
+                    && ($app_headers->getNativeData() === Arr::dot($meta))
+                    && ($event === $event_name)
+                    && ($exchange === Driver::EVENT_EXCHANGE);
+            })->once();
+        $this->channel->shouldReceive('exchange_declare')->with(
+            Driver::EVENT_EXCHANGE,
+            Driver::EVENT_EXCHANGE_TYPE,
+            false,
+            true,
+            false,
+            false,
+            false,
+            Mockery::type(AMQPTable::class)
+        )->once();
+
+        // act
+        $this->driver->emmit($event_name, $event_content, $meta);
     }
 
     public function test_it_should_not_publish_empty_event()
