@@ -2,8 +2,6 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
-use Convenia\Pigeon\Publisher\Publisher;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;

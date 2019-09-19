@@ -2,9 +2,9 @@
 
 namespace Convenia\Pigeon\Publisher;
 
+use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Arr;
 use PhpAmqpLib\Wire\AMQPTable;
-use Webpatser\Uuid\Uuid;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Drivers\DriverContract;
