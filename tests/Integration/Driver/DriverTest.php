@@ -49,14 +49,14 @@ class DriverTest extends TestCase
         $this->channel->exchange_delete(Driver::EVENT_EXCHANGE);
     }
 
-    public function  test_it_should_publish_event_with_meta()
+    public function test_it_should_publish_event_with_meta()
     {
         $event_name = Str::random(8);
         $event_content = [
             'foo' => 'fighters',
         ];
         $meta = [
-            'auth_user' => random_int(100,21312)
+            'auth_user' => random_int(100, 21312),
         ];
 
         $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, Driver::EVENT_EXCHANGE_TYPE, false, true, false, false, false, new AMQPTable([
@@ -111,10 +111,10 @@ class DriverTest extends TestCase
             'foo' => 'fighters',
         ];
         $meta = [
-            'auth_user' => random_int(100,21312),
+            'auth_user' => random_int(100, 21312),
             'deep' => [
-                'key' => 'value'
-            ]
+                'key' => 'value',
+            ],
         ];
 
         $this->app['config']->set('pigeon.app_name', 'pigeon');

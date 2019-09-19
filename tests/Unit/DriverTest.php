@@ -2,8 +2,8 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Illuminate\Support\Arr;
 use Mockery;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
@@ -121,13 +121,13 @@ class DriverTest extends TestCase
             'foo' => 'fighters',
         ];
         $meta = [
-            'auth_user' => random_int(100,21312)
+            'auth_user' => random_int(100, 21312),
         ];
 
         // assert
         $this->channel->shouldReceive('basic_publish')->withArgs(
             function ($message, $exchange, $event) use ($meta, $event_name) {
-                $app_headers =  $message->get('application_headers');
+                $app_headers = $message->get('application_headers');
 
                 return ($app_headers instanceof AMQPTable)
                     && ($app_headers->getNativeData() === Arr::dot($meta))
