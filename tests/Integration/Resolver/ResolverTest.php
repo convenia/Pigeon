@@ -4,6 +4,7 @@ namespace Convenia\Pigeon\Tests\Integration\Resolver;
 
 //define('AMQP_DEBUG', true);
 
+use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
@@ -107,7 +108,7 @@ class ResolverTest extends TestCase
                     'header' => 'level'
                 ]
             ]),
-            'correlation_id' => str_random(),
+            'correlation_id' => Str::random(16),
         ];
         $msg = new AMQPMessage(json_encode($msg_data), $headers);
         $this->channel->queue_declare($this->queue, $passive = false, $durable = true, $exclusive = false, $auto_delete = false);
