@@ -4,10 +4,10 @@ namespace Convenia\Pigeon\Tests\Integration\Resolver;
 
 //define('AMQP_DEBUG', true);
 
+use PhpAmqpLib\Wire\AMQPTable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
-use PhpAmqpLib\Wire\AMQPTable;
 
 class ResolverTest extends TestCase
 {
@@ -104,8 +104,8 @@ class ResolverTest extends TestCase
             'application_headers' => new AMQPTable([
                 'my' => 'header',
                 'deep' => [
-                    'header' => 'level'
-                ]
+                    'header' => 'level',
+                ],
             ]),
             'correlation_id' => str_random(),
         ];
@@ -121,7 +121,7 @@ class ResolverTest extends TestCase
             false,
             false,
             false,
-            function ($request_message) use ($headers){
+            function ($request_message) use ($headers) {
                 $resolver = new Resolver($request_message);
                 $this->assertEquals($headers, $resolver->headers());
             }
