@@ -4,6 +4,7 @@ namespace Convenia\Pigeon\Publisher;
 
 use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Arr;
+use PhpAmqpLib\Wire\AMQPTable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Drivers\DriverContract;
@@ -77,7 +78,7 @@ class Publisher implements PublisherContract
             'correlation_id'   => Uuid::generate()->string,
             'expiration'       => 60000000,
             'app_id'           => $this->app['config']['app_name'],
-            'application_headers' => Arr::dot($this->headers),
+            'application_headers' => new AMQPTable($this->headers),
         ], $userProps);
     }
 

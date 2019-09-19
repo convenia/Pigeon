@@ -3,7 +3,7 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Mockery;
-use Illuminate\Support\Arr;
+use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Tests\TestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -159,7 +159,10 @@ class PublisherTest extends TestCase
         // assert
         $this->channel->shouldReceive('basic_publish')->with(
             Mockery::on(function (AMQPMessage $arg) use ($headers) {
-                return Arr::dot($headers) === $arg->get_properties()['application_headers'];
+                $app_headers = $arg->get('application_headers');
+
+                return ($app_headers instanceof AMQPTable)
+                    && ($headers === $app_headers->getNativeData());
             }),
             $exchange,
             null

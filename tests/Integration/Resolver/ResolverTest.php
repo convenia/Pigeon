@@ -4,6 +4,8 @@ namespace Convenia\Pigeon\Tests\Integration\Resolver;
 
 //define('AMQP_DEBUG', true);
 
+use Illuminate\Support\Str;
+use PhpAmqpLib\Wire\AMQPTable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
@@ -93,6 +95,55 @@ class ResolverTest extends TestCase
         $this->assertEquals($response_data, json_decode($response_msg->body, true));
 
         $this->channel->queue_delete($reply_to);
+    }
+
+    public function test_it_should_get_message_headers()
+    {
+        // setup
+        $msg_data = ['foo' => 'fighters', 'bar' => 'baz'];
+        $headers = [
+            'application_headers' => new AMQPTable([
+                'my' => 'header',
+                'deep' => [
+                    'header' => 'level',
+                ],
+            ]),
+            'correlation_id' => Str::random(16),
+        ];
+        $msg = new AMQPMessage(json_encode($msg_data), $headers);
+        $this->channel->queue_declare($this->queue, $passive = false, $durable = true, $exclusive = false, $auto_delete = false);
+        $this->channel->basic_publish($msg, '', $this->queue);
+
+        // act
+        $this->channel->basic_consume(
+            $this->queue,
+            'pigeon.integration.test',
+            false,
+            false,
+            false,
+            false,
+            function ($request_message) use ($headers) {
+                $resolver = new Resolver($request_message);
+                $this->assertEquals($headers, $resolver->headers());
+            }
+        );
+        $this->channel->wait(null, null, 2);
+        $this->channel->basic_cancel('pigeon.integration.test');
+
+        $timeout = 2;
+        $this->expectExceptionMessage("The connection timed out after $timeout sec while awaiting incoming data");
+        $this->channel->basic_consume(
+            $this->queue,
+            'pigeon.integration.test.s',
+            false,
+            false,
+            false,
+            false,
+            function () {
+                $this->assertTrue(false, 'Queue should not have message.');
+            }
+        );
+        $this->channel->wait(null, null, $timeout);
     }
 
     protected function tearDown(): void

@@ -157,4 +157,48 @@ class PublisherTest extends TestCase
         $this->channel->queue_delete($event_queue);
         $this->channel->exchange_delete(Driver::EVENT_EXCHANGE);
     }
+
+    public function test_it_should_add_all_headers()
+    {
+        // setup
+        $exchange = 'my.awesome.exchange';
+        $routing = 'my.awesome.service';
+        $data = [
+            'foo' => 'fighters',
+        ];
+        $headers = [
+            'foo_bar' => 'baz',
+            'foo' => 'fighters',
+            'deep' => [
+                'level' => 1,
+            ],
+        ];
+        // setup
+        $this->channel->exchange_declare($this->exchange, 'fanout', false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
+        $this->channel->queue_declare($this->queue);
+        $this->channel->queue_bind($this->queue, $this->exchange);
+
+        // act
+        $pub = $this->pigeon->exchange($this->exchange, 'fanout');
+
+        // act
+        foreach ($headers as $key => $value) {
+            $pub->header($key, $value);
+        }
+        $pub->publish($data);
+
+        // wait message go to broker
+        sleep(1);
+
+        // assert
+        $message = $this->channel->basic_get($this->queue);
+        $this->assertEquals($data, json_decode($message->body, true));
+
+        /* @var $msg_headers AMQPTable */
+        $msg_headers = $message->get('application_headers');
+        $this->assertInstanceOf(AMQPTable::class, $msg_headers);
+        $this->assertEquals($headers, $msg_headers->getNativeData());
+    }
 }
