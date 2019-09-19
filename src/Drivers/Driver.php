@@ -60,12 +60,16 @@ abstract class Driver implements DriverContract
         return (new Publisher($this->app, $this, $exchange))->routing($name);
     }
 
-    public function emmit(string $eventName, array $event): void
+    public function emmit(string $eventName, array $event, array $meta = []): void
     {
         throw_if(empty($event), new EmptyEventException());
-        $this->exchange(self::EVENT_EXCHANGE, self::EVENT_EXCHANGE_TYPE)
-            ->routing($eventName)
-            ->publish($event);
+        $publisher = $this->exchange(self::EVENT_EXCHANGE, self::EVENT_EXCHANGE_TYPE)->routing($eventName);
+
+        foreach ($meta as $key => $value) {
+            $publisher->header($key, $value);
+        }
+
+        $publisher->publish($event);
     }
 
     public function events(string $event = '#'): ConsumerContract

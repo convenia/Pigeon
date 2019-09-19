@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
 use PhpAmqpLib\Message\AMQPMessage;
+use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
@@ -48,6 +49,36 @@ class DriverTest extends TestCase
         $this->channel->exchange_delete(Driver::EVENT_EXCHANGE);
     }
 
+    public function test_it_should_publish_event_with_meta()
+    {
+        $event_name = Str::random(8);
+        $event_content = [
+            'foo' => 'fighters',
+        ];
+        $meta = [
+            'auth_user' => random_int(100, 21312),
+        ];
+
+        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, Driver::EVENT_EXCHANGE_TYPE, false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
+        $this->channel->queue_bind($this->queue, Driver::EVENT_EXCHANGE, $event_name);
+
+        // act
+        $this->driver->emmit($event_name, $event_content, $meta);
+
+        sleep(1);
+
+        // assert
+        /* @var $event AMQPMessage */
+        $event = $this->channel->basic_get($this->queue);
+        $this->assertEquals($event_content, json_decode($event->body, true));
+
+        /* @var $event_meta AMQPTable */
+        $event_meta = $event->get('application_headers');
+        $this->assertEquals($meta, $event_meta->getNativeData());
+    }
+
     public function test_it_should_consume_event()
     {
         // setup
@@ -64,6 +95,39 @@ class DriverTest extends TestCase
         $this->driver->events($event_name)
             ->callback(function ($event) use ($event_content) {
                 // assert
+                $this->assertEquals($event_content, $event);
+            })
+            ->consume(2, false);
+
+        // teardown
+        $this->channel->queue_delete($queue);
+    }
+
+    public function test_it_should_consume_event_with_meta()
+    {
+        // setup
+        $event_name = Str::random(8);
+        $event_content = [
+            'foo' => 'fighters',
+        ];
+        $meta = [
+            'auth_user' => random_int(100, 21312),
+            'deep' => [
+                'key' => 'value',
+            ],
+        ];
+
+        $this->app['config']->set('pigeon.app_name', 'pigeon');
+        $queue = "{$event_name}.pigeon";
+        $this->channel->queue_declare($queue, false, true, false, false, false, $this->driver->getProps());
+        $this->channel->basic_publish(new AMQPMessage(json_encode($event_content), ['application_headers' => new AMQPTable($meta)]), '', $queue);
+
+        // act
+        $this->driver->events($event_name)
+            ->callback(function ($event, ResolverContract $resolver) use ($event_content, $meta) {
+                // assert
+                $this->assertInstanceOf(AMQPTable::class, $resolver->headers('application_headers'));
+                $this->assertEquals($meta, $resolver->headers('application_headers')->getNativeData());
                 $this->assertEquals($event_content, $event);
             })
             ->consume(2, false);
