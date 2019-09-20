@@ -19,6 +19,7 @@ class DriverTest extends TestCase
      * @var \PHPUnit\Framework\MockObject\MockObject | Driver
      */
     private $driver;
+
     private $channel;
 
     private $queue = 'some.queue';
@@ -33,10 +34,11 @@ class DriverTest extends TestCase
 
     public function test_it_should_declare_a_queue()
     {
+        $props = ['some' => 'prop'];
         // setup and asserts
-        $this->channel->shouldReceive('queue_declare')
-            ->with($this->queue, $passive = false, $durable = true, false, $delete = false, false, Mockery::type(AMQPTable::class))
-            ->once();
+        $this->driver->expects($this->once())
+            ->method('queueDeclare')
+            ->with($this->queue, $props);
 
         // act
         $consumer = $this->driver->queue($this->queue, ['some' => 'prop']);
@@ -169,9 +171,10 @@ class DriverTest extends TestCase
         $event_name = Str::random(8);
 
         // setup
-        $this->channel->shouldReceive('queue_declare')
-            ->once()
-            ->with("{$event_name}.{$app_name}", false, true, false, false, false, Mockery::type(AMQPTable::class));
+        $this->driver->expects($this->once())
+            ->method('queueDeclare')
+            ->with("{$event_name}.{$app_name}", []);
+
         $this->channel->shouldReceive('exchange_declare')
             ->once()
             ->with(

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Add `application_headers` to `Pigeon::emmit` as last parameter
+- Add configurable precondition catch on queue creation
 ### Fixed
 - Auto declare exchange with `routing`
 - Fix `application_headers` to `AMQPTable`
