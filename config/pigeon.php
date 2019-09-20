@@ -31,5 +31,5 @@ return [
         'automatic_ack' => false,
     ],
     'queue_declare' => env('PIGEON_DECLARE_QUEUES', true),
-    'queue_declare_exists' => Constants::IGNORE_PRECONDITION
+    'queue_declare_exists' => Constants::IGNORE_PRECONDITION,
 ];

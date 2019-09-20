@@ -39,6 +39,7 @@ abstract class Driver implements DriverContract
     public function queue(string $name, array $properties = []): ConsumerContract
     {
         $this->queueDeclare($name, $properties);
+
         return new Consumer($this->app, $this, $name);
     }
 
