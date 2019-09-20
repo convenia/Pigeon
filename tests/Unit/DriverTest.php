@@ -19,7 +19,7 @@ class DriverTest extends TestCase
      * @var \PHPUnit\Framework\MockObject\MockObject | Driver
      */
     private $driver;
-    
+
     private $channel;
 
     private $queue = 'some.queue';
