@@ -1,5 +1,7 @@
 <?php
 
+use Convenia\Pigeon\Support\Constants;
+
 return [
     'default'    => env('PIGEON_DRIVER', 'null'),
     'connection' => [
@@ -28,5 +30,6 @@ return [
         'tag'           => env('PIGEON_CONSUMER_TAG', null),
         'automatic_ack' => false,
     ],
-
+    'queue_declare' => env('PIGEON_DECLARE_QUEUES', true),
+    'queue_declare_exists' => Constants::IGNORE_PRECONDITION
 ];

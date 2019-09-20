@@ -2,7 +2,11 @@
 
 namespace Convenia\Pigeon\Drivers;
 
+use Exception;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Channel\AMQPChannel;
+use Illuminate\Support\Facades\Log;
+use Convenia\Pigeon\Support\Constants;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class RabbitDriver extends Driver
@@ -24,6 +28,32 @@ class RabbitDriver extends Driver
     public function getChannel(): AMQPChannel
     {
         return $this->getConnection()->channel(1);
+    }
+
+    public function queueDeclare(string $name, array $properties)
+    {
+        try {
+            $this->getChannel()->queue_declare($name, false, true, false, false, false, $this->getProps($properties));
+        } catch (Exception $e) {
+            Str::contains($e->getMessage(), 'PRECONDITION') ?: $this->handleQueuePrecondition($e, $name, $properties);
+        }
+    }
+
+    protected function handleQueuePrecondition(Exception $e, string $name, array $properties)
+    {
+        switch ($this->app['config']['pigeon.queue_declare_exists']) {
+            case Constants::IGNORE_PRECONDITION:
+                Log::info('Handling declare precondition with: Constants::IGNORE_PRECONDITION');
+                return null;
+            case Constants::REPLACE_ON_PRECONDITION:
+                Log::critical('Handling declare precondition with: Constants::REPLACE_ON_PRECONDITION');
+                $this->getChannel()->queue_delete($name);
+                $this->queueDeclare($name, $properties);
+                return null;
+        }
+
+
+        throw $e;
     }
 
     public function makeConnection()

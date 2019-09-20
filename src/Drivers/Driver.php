@@ -38,8 +38,7 @@ abstract class Driver implements DriverContract
 
     public function queue(string $name, array $properties = []): ConsumerContract
     {
-        $this->getChannel()->queue_declare($name, false, true, false, false, false, $this->getProps($properties));
-
+        $this->queueDeclare($name, $properties);
         return new Consumer($this->app, $this, $name);
     }
 
@@ -133,4 +132,6 @@ abstract class Driver implements DriverContract
     abstract public function quit();
 
     abstract public function getConnection();
+
+    abstract public function queueDeclare(string $name, array $properties);
 }
