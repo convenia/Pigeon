@@ -23,7 +23,7 @@
         "ext-curl": "*",
         "phpunit/phpunit": "7.5.*|8.0.*",
         "squizlabs/php_codesniffer": "^2.5",
-        "orchestra/testbench": "3.6.*|3.7.*|3.8.*|4.0.*",
+        "orchestra/testbench": "^3.8.5",
         "mockery/mockery": "1.2.*"
     },
     "autoload": {
