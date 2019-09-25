@@ -42,7 +42,7 @@ use Pigeon;
 
 Pigeon::queue('queue.name')
     ->callback($closure)
-    ->wait();
+    ->consume($timeout = 0, $multiple = true);
  ```
 
 ### Queue
@@ -65,7 +65,7 @@ $callback = function ($message) {
 
 Pigeon::queue('my.awesome.queue')
     ->callback($callback)
-    ->wait();
+    ->consume($timeout = 0, $multiple = true);
  ```
 
 The above code create a queue called `my.awesome.queue` and configured a consumer in that.
@@ -88,7 +88,7 @@ $callback = function ($message, Resolver $resolver) {
 
 Pigeon::queue('my.awesome.queue')
     ->callback($callback)
-    ->wait();
+    ->consume($timeout = 0, $multiple = true);
  ```
 
 Your callback closure can receive a second argument, which is the resolver. The resolver can do the acknowledge and the
@@ -113,7 +113,7 @@ It contains 2 arguments, which is the Exception and AMQPMessage instances.
  Pigeon::queue('my.awesome.queue')
      ->callback($callback)
      ->fallback($fallback)
-     ->wait();
+     ->consume($timeout = 0, $multiple = true);
   ```
 
 !> The behaviour of fallback is going be changed to be compatible with callback interface.
@@ -131,6 +131,11 @@ use Pigeon;
 
 $responseQueue = Pigeon::routing('rpc.')
     ->rpc($message);
+    
+Pigeon::queue($responseQueue)
+    ->callback($callback)
+    ->fallback($fallback)
+    ->consume($timeout = 5, $multiple = false);
 ```
 
 The RPC method return the response queue name, so you can consume it to receive the response message.
