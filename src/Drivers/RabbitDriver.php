@@ -27,7 +27,7 @@ class RabbitDriver extends Driver
 
     public function getChannel(): AMQPChannel
     {
-        return $this->getConnection()->channel(1);
+        return $this->getConnection()->channel();
     }
 
     public function queueDeclare(string $name, array $properties)
