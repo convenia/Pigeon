@@ -119,8 +119,8 @@ It contains 2 arguments, which is the Exception and AMQPMessage instances.
 !> The behaviour of fallback is going be changed to be compatible with callback interface.
 
 ### Waiting
-After setup a consumer you need to start to listen the queue adn for this you use the `wait` method.
-You can pass a timeout in seconds to `wait`, so it'll start to consume the queue and it it reach the time without receive data
+After setup a consumer you need to start to listen the queue adn for this you use the `consume` method.
+You can pass a timeout in seconds to `consume`, so it'll start to consume the queue and it it reach the time without receive data
 it thrown a timeout exception.
 It can receive a second argument which is a boolean that specify if you want to consume multiple messages or not.
 
