@@ -47,18 +47,21 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function assertPublished(string $routing, array $message)
     {
-        PHPUnit::assertTrue(
-            $this->pushed($routing, $message),
+        PHPUnit::assertNotNull(
+            $found = $this->pushed($routing, $message),
             "No message published in [$routing] with body"
         );
+        PHPUnit::assertEquals($message, $found['message']);
     }
 
     public function assertEmitted(string $category, array $data)
     {
-        PHPUnit::assertTrue(
-            $this->emitted($category, $data),
+        PHPUnit::assertNotNull(
+            $found = $this->emitted($category, $data),
             "No event [$category] emitted with body"
         );
+
+        PHPUnit::assertEquals($data, $found['data']);
     }
 
     public function pushed(string $routing, array $message, $callback = null)
@@ -72,7 +75,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
         return $this->publishers
             ->where('routing', $routing)
-            ->filter($callback)->isNotEmpty();
+            ->filter($callback)->first();
     }
 
     public function emitted(string $event, array $data, $callback = null)
@@ -82,7 +85,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         };
 
         return $this->events->filter($callback)
-            ->isNotEmpty();
+            ->first();
     }
 
     public function rpcPushed(string $routing, array $message, $callback = null)
@@ -148,10 +151,11 @@ class PigeonFake extends PigeonManager implements DriverContract
 
         $consumer->getCallback()->process($message);
 
-        PHPUnit::assertTrue(
-            $this->rpcPushed($reply_to, $response),
+        PHPUnit::assertNotNull(
+            $found = $this->rpcPushed($reply_to, $response),
             'No RPC reply with defined body'
         );
+        PHPUnit::assertEquals($response, $found['message']);
     }
 
     public function queue(string $name): ConsumerContract
