@@ -30,7 +30,6 @@ class RabbitDriverTest extends TestCase
             ->once()
             ->andReturn($this->connection);
         $this->connection->shouldReceive('channel')
-            ->with(1)
             ->andReturn($this->channel);
         $this->connection->shouldReceive('isConnected')
             ->andReturn(false, true);

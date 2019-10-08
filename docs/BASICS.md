@@ -42,7 +42,7 @@ use Pigeon;
 
 Pigeon::queue('queue.name')
     ->callback($closure)
-    ->wait();
+    ->consume($timeout = 0, $multiple = true);
  ```
 
 ### Queue
@@ -65,7 +65,7 @@ $callback = function ($message) {
 
 Pigeon::queue('my.awesome.queue')
     ->callback($callback)
-    ->wait();
+    ->consume($timeout = 0, $multiple = true);
  ```
 
 The above code create a queue called `my.awesome.queue` and configured a consumer in that.
@@ -88,7 +88,7 @@ $callback = function ($message, Resolver $resolver) {
 
 Pigeon::queue('my.awesome.queue')
     ->callback($callback)
-    ->wait();
+    ->consume($timeout = 0, $multiple = true);
  ```
 
 Your callback closure can receive a second argument, which is the resolver. The resolver can do the acknowledge and the
@@ -113,14 +113,14 @@ It contains 2 arguments, which is the Exception and AMQPMessage instances.
  Pigeon::queue('my.awesome.queue')
      ->callback($callback)
      ->fallback($fallback)
-     ->wait();
+     ->consume($timeout = 0, $multiple = true);
   ```
 
 !> The behaviour of fallback is going be changed to be compatible with callback interface.
 
 ### Waiting
-After setup a consumer you need to start to listen the queue adn for this you use the `wait` method.
-You can pass a timeout in seconds to `wait`, so it'll start to consume the queue and it it reach the time without receive data
+After setup a consumer you need to start to listen the queue adn for this you use the `consume` method.
+You can pass a timeout in seconds to `consume`, so it'll start to consume the queue and it it reach the time without receive data
 it thrown a timeout exception.
 It can receive a second argument which is a boolean that specify if you want to consume multiple messages or not.
 
@@ -131,6 +131,11 @@ use Pigeon;
 
 $responseQueue = Pigeon::routing('rpc.')
     ->rpc($message);
+    
+Pigeon::queue($responseQueue)
+    ->callback($callback)
+    ->fallback($fallback)
+    ->consume($timeout = 5, $multiple = false);
 ```
 
 The RPC method return the response queue name, so you can consume it to receive the response message.
