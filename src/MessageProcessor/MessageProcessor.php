@@ -4,12 +4,10 @@ namespace Convenia\Pigeon\MessageProcessor;
 
 use Closure;
 use Exception;
-use ReflectionFunction;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Drivers\DriverContract;
-use Convenia\Pigeon\Resolver\ResolverContract;
 
 class MessageProcessor implements MessageProcessorContract
 {
