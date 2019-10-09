@@ -76,6 +76,28 @@ class MessageProcessorTest extends TestCase
         $processor->process($message);
     }
 
+    public function test_it_should_call_user_fallback_with_resolver()
+    {
+        // setup
+        $ran = false;
+        $message = new AMQPMessage();
+        $exception = 'Testing user fallback';
+        $callback = function ($received) use ($exception) {
+            $this->fail($exception);
+        };
+        $fallback = function ($e, $received, $resolver) use ($exception, $message, &$ran) {
+            $ran = true;
+            $this->assertEquals($e->getMessage(), $exception);
+            $this->assertEquals($received, $message);
+            $this->assertInstanceOf(ResolverContract::class, $resolver);
+        };
+
+        // act
+        $processor = new MessageProcessor($this->driver, $callback, $fallback);
+        $processor->process($message);
+        $this->assertTrue($ran, 'Test did not run');
+    }
+
     public function test_it_should_have_default_fallback()
     {
         // setup

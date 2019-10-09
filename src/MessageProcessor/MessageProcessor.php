@@ -4,12 +4,10 @@ namespace Convenia\Pigeon\MessageProcessor;
 
 use Closure;
 use Exception;
-use ReflectionFunction;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Drivers\DriverContract;
-use Convenia\Pigeon\Resolver\ResolverContract;
 
 class MessageProcessor implements MessageProcessorContract
 {
@@ -36,17 +34,13 @@ class MessageProcessor implements MessageProcessorContract
     private function callUserCallback($message)
     {
         $data = json_decode($message->body, true);
-        $args = (new ReflectionFunction($this->callback))->getParameters();
 
-        if (count($args) > 1 && ResolverContract::class === $args[1]->getType()->getName()) {
-            call_user_func($this->callback, $data, new Resolver($message));
-        } else {
-            call_user_func($this->callback, $data);
-        }
+        call_user_func($this->callback, $data, new Resolver($message));
     }
 
     private function callUserFallback(Exception $e, $message)
     {
+        $resolver = new Resolver($message);
         if (! $this->fallback) {
             Log::error($e->getMessage(), [
                 'file'     => $e->getFile(),
@@ -58,6 +52,6 @@ class MessageProcessor implements MessageProcessorContract
 
             throw $e;
         }
-        call_user_func($this->fallback, $e, $message);
+        call_user_func($this->fallback, $e, $message, $resolver);
     }
 }
