@@ -69,7 +69,7 @@ abstract class Driver implements DriverContract
             $publisher->header($key, $value);
         }
 
-        $publisher->publish($event);
+        $publisher->publish($event, [], 2);
     }
 
     public function events(string $event = '#'): ConsumerContract

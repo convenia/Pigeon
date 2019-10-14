@@ -19,5 +19,5 @@ interface DriverContract
 
     public function getConnection();
 
-    public function getChannel();
+    public function getChannel(int $id = null);
 }
