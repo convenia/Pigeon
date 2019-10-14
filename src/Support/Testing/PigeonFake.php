@@ -254,7 +254,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     /**
      * @codeCoverageIgnore
      */
-    public function getChannel()
+    public function getChannel(int $id = null)
     {
         return $this;
     }
