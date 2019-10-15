@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Convenia\Pigeon\Exceptions\Driver;
 
 use Exception;

@@ -2,9 +2,9 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
 use Convenia\Pigeon\PigeonManager;
 use Convenia\Pigeon\Tests\TestCase;
+use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
 
 class PigeonManagerTest extends TestCase
 {
