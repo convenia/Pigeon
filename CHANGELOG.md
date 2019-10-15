@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bugs test suite
 ### Fixed
 - Fix `No free channel id` message when emit large amount of events
+- Fix env example
 
 ## [1.2.0-beta.2]
 ### Fixed

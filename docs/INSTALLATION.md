@@ -25,14 +25,13 @@ After installing Pigeon you should configure it to connect to you broker.
 Typically, the pigeon environment configurations live in the `.env` file of your Laravel application.
 
 ```dotenv
-PIGEON_DRIVER=rabbit
 PIGEON_ADDRESS=localhost # Your AMQP host
-PIGEON_PORT=15672 # Your AMQP port
+PIGEON_PORT=5672 # Your AMQP port
 PIGEON_USER=guest
 PIGEON_PASSWORD=guest
 PIGEON_VHOST=/
 PIGEON_EXCHANGE=application # OPTIONAL - Your applciaton default exchange
-PIGEON_EXCHANGE_TYPE=fanout # OPTIONAL - Your applciaton default exchange type
+PIGEON_EXCHANGE_TYPE=topic # OPTIONAL - Your applciaton default exchange type
 PIGEON_CONSUMER_TAG=application # OPTIONAL - Your applciaton name
 PIGEON_HEARTBEAT= # OPTIONAL -  The heart beat of connection
 ```
