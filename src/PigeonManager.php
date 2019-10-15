@@ -5,6 +5,7 @@ namespace Convenia\Pigeon;
 use BadMethodCallException;
 use Illuminate\Support\Manager;
 use Convenia\Pigeon\Drivers\RabbitDriver;
+use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
 
 /**
  * Class PigeonManager.
@@ -18,7 +19,7 @@ class PigeonManager extends Manager
 
     public function createNullDriver()
     {
-        return null;
+        throw new NullDriverException();
     }
 
     /**

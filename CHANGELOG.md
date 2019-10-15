@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Bugs test suite
+- Null driver use throw `Convenia\Pigeon\Exceptions\Driver\NullDriverException` exception
 ### Fixed
 - Fix `No free channel id` message when emit large amount of events
 - Fix env example
+### Changed
+- CHange default driver to `rabbit`
 
 ## [1.2.0-beta.2]
 ### Fixed

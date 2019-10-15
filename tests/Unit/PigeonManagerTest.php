@@ -4,6 +4,7 @@ namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\PigeonManager;
 use Convenia\Pigeon\Tests\TestCase;
+use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
 
 class PigeonManagerTest extends TestCase
 {
@@ -23,5 +24,13 @@ class PigeonManagerTest extends TestCase
         // assert
         $this->assertEquals($default_driver, $driver);
         $this->assertEquals('null', $null_driver);
+    }
+
+    public function test_null_driver_should_throw_exception()
+    {
+        $this->expectException(NullDriverException::class);
+        $manager = new PigeonManager($this->app);
+        $this->app['config']->set('pigeon.default', $default_driver = 'null');
+        $manager->driver();
     }
 }

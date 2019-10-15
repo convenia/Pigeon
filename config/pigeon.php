@@ -3,7 +3,7 @@
 use Convenia\Pigeon\Support\Constants;
 
 return [
-    'default'    => env('PIGEON_DRIVER', 'null'),
+    'default'    => env('PIGEON_DRIVER', 'rabbit'),
     'connection' => [
         'credentials' => [
             'user'     => env('PIGEON_USER'),
