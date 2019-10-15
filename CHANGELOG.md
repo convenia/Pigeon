@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.2.0]
 ### Added
 - Bugs test suite
 - Null driver use throw `Convenia\Pigeon\Exceptions\Driver\NullDriverException` exception
@@ -12,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix `No free channel id` message when emit large amount of events
 - Fix env example
 ### Changed
-- CHange default driver to `rabbit`
+- Change default driver to `rabbit`
 
 ## [1.2.0-beta.2]
 ### Fixed
