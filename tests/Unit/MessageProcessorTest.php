@@ -98,11 +98,13 @@ class MessageProcessorTest extends TestCase
         $this->assertTrue($ran, 'Test did not run');
     }
 
-    public function test_it_should_have_default_fallback()
+    public function test_it_should_have_default_fallback_throw_exception_on_unexpected_config()
     {
         // setup
         $data = ['foo' => 'bar'];
         $message = new AMQPMessage(json_encode($data));
+        $this->app['config']['pigeon.consumer.on_failure'] = 'unexpected_config';
+
         $callback = function () {
             $this->fail('Callback failing and no fallback set');
         };
@@ -125,6 +127,81 @@ class MessageProcessorTest extends TestCase
                 ]
             );
             $this->assertThat($e, new ExceptionMessage('Callback failing and no fallback set'));
+        }
+    }
+
+    public function test_it_should_have_default_fallback_ack_on_configured()
+    {
+        // setup
+        $data = ['foo' => 'bar'];
+        $message = new AMQPMessage(json_encode($data));
+        $channel = Mockery::mock(AMQPChannel::class);
+        $message->delivery_info['channel'] = $channel;
+        $message->delivery_info['delivery_tag'] = $tag = random_int(1, 12445);
+        $this->app['config']['pigeon.consumer.on_failure'] = 'ack';
+        $channel->shouldReceive('basic_ack')
+            ->with($tag)->once();
+
+        $callback = function () {
+            $this->fail('Callback failing and no fallback set');
+        };
+
+        // act
+        $processor = new MessageProcessor($this->driver, $callback);
+
+        try {
+            $processor->process($message);
+            $this->fail();
+        } catch (Exception $e) {
+            Log::shouldReceive('error')->with(
+                $e->getMessage(),
+                [
+                    'file'     => $e->getFile(),
+                    'line'     => $e->getLine(),
+                    'tracing'  => $e->getTraceAsString(),
+                    'previous' => $e->getPrevious(),
+                    'message'  => json_decode($message->body, true),
+                ]
+            );
+
+        }
+    }
+
+    public function test_it_should_have_default_fallback_reject_on_configured()
+    {
+        // setup
+        $data = ['foo' => 'bar'];
+        $message = new AMQPMessage(json_encode($data));
+        $channel = Mockery::mock(AMQPChannel::class);
+        $message->delivery_info['channel'] = $channel;
+        $message->delivery_info['delivery_tag'] = $tag = random_int(1, 12445);
+        $this->app['config']['pigeon.consumer.on_failure'] = 'reject';
+        $channel->shouldReceive('basic_nack')
+            ->with($tag, false, false)
+            ->once();
+
+        $callback = function () {
+            $this->fail('Callback failing and no fallback set');
+        };
+
+        // act
+        $processor = new MessageProcessor($this->driver, $callback);
+
+        try {
+            $processor->process($message);
+            $this->fail();
+        } catch (Exception $e) {
+            Log::shouldReceive('error')->with(
+                $e->getMessage(),
+                [
+                    'file'     => $e->getFile(),
+                    'line'     => $e->getLine(),
+                    'tracing'  => $e->getTraceAsString(),
+                    'previous' => $e->getPrevious(),
+                    'message'  => json_decode($message->body, true),
+                ]
+            );
+
         }
     }
 }

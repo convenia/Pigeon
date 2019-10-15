@@ -42,16 +42,30 @@ class MessageProcessor implements MessageProcessorContract
     {
         $resolver = new Resolver($message);
         if (! $this->fallback) {
-            Log::error($e->getMessage(), [
-                'file'     => $e->getFile(),
-                'line'     => $e->getLine(),
-                'tracing'  => $e->getTraceAsString(),
-                'previous' => $e->getPrevious(),
-                'message'  => json_decode($message->body, true),
-            ]);
-
-            throw $e;
+            $this->defaultFallback($e, $message, $resolver);
         }
         call_user_func($this->fallback, $e, $message, $resolver);
+    }
+
+    private function defaultFallback(Exception $e, $message, $resolver)
+    {
+        Log::error($e->getMessage(), [
+            'file'     => $e->getFile(),
+            'line'     => $e->getLine(),
+            'tracing'  => $e->getTraceAsString(),
+            'previous' => $e->getPrevious(),
+            'message'  => json_decode($message->body, true),
+        ]);
+
+        switch (config('pigeon.consumer.on_failure')) {
+            case 'ack':
+                $resolver->ack();
+                break;
+            case 'reject':
+                $resolver->reject(false);
+                break;
+            default:
+                throw $e;
+        }
     }
 }
