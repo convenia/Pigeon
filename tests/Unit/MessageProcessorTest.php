@@ -163,7 +163,6 @@ class MessageProcessorTest extends TestCase
                     'message'  => json_decode($message->body, true),
                 ]
             );
-
         }
     }
 
@@ -201,7 +200,6 @@ class MessageProcessorTest extends TestCase
                     'message'  => json_decode($message->body, true),
                 ]
             );
-
         }
     }
 }
