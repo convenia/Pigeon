@@ -35,13 +35,13 @@ class Bug85 extends TestCase
         $this->channel->shouldReceive('basic_publish')
             ->once();
         $this->connection->shouldReceive('channel')
-            ->with(null)
+            ->with(2)
             ->once()
             ->andReturn($this->channel);
 
         $this->connection->shouldReceive('channel')
             ->once()
-            ->with(2)
+            ->with(3)
             ->andReturn($this->channel);
 
         $this->driver->emmit('anything', ['foo' => 'bar']);

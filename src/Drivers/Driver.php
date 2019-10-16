@@ -45,7 +45,7 @@ abstract class Driver implements DriverContract
 
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        $this->getChannel()->exchange_declare($name, $type, false, true, false, false, false, $this->getProps());
+        $this->getChannel(2)->exchange_declare($name, $type, false, true, false, false, false, $this->getProps());
 
         return new Publisher($this->app, $this, $name);
     }
@@ -55,7 +55,7 @@ abstract class Driver implements DriverContract
         $exchange = $this->app['config']['pigeon.exchange'];
         $type = $this->app['config']['pigeon.exchange_type'];
 
-        $this->getChannel()->exchange_declare($exchange, $type, false, true, false, false, false, $this->getProps());
+        $this->getChannel(2)->exchange_declare($exchange, $type, false, true, false, false, false, $this->getProps());
 
         return (new Publisher($this->app, $this, $exchange))->routing($name);
     }
@@ -69,7 +69,7 @@ abstract class Driver implements DriverContract
             $publisher->header($key, $value);
         }
 
-        $publisher->publish($event, [], 2);
+        $publisher->publish($event, [], 3);
     }
 
     public function events(string $event = '#'): ConsumerContract
