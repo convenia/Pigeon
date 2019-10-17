@@ -14,8 +14,8 @@ class PigeonManager extends Manager
 {
     public function headers(array $headers)
     {
-        $old = $this->config->get($key = 'pigeon.headers');
-        $this->config->set($key, array_merge($old, $headers));
+        $old = $this->app['config']->get($key = 'pigeon.headers');
+        $this->app['config']->set($key, array_merge($old, $headers));
     }
 
     public function createRabbitDriver()
