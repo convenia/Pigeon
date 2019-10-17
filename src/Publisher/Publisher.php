@@ -78,7 +78,7 @@ class Publisher implements PublisherContract
             'correlation_id'   => Uuid::generate()->string,
             'expiration'       => 60000000,
             'app_id'           => $this->app['config']['app_name'],
-            'application_headers' => new AMQPTable($this->headers),
+            'application_headers' => new AMQPTable($this->getHeaders()),
         ], $userProps);
     }
 
@@ -87,5 +87,11 @@ class Publisher implements PublisherContract
         $this->headers = Arr::add($this->headers, $key, $value);
 
         return $this;
+    }
+
+    public function getHeaders(): array
+    {
+        $configHeaders = Arr::dot($this->app['config']->get('pigeon.headers'));
+        return array_merge($configHeaders, $this->headers);
     }
 }

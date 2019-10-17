@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Added "on-failure" config to ack, reject or throw exception
+- Added `on-failure` config to ack, reject or throw exception
+- Added `Pigeon::headers([])` and config `headers` key
 
 ## [1.2.0]
 ### Added

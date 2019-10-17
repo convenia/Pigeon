@@ -154,15 +154,19 @@ class PublisherTest extends TestCase
                 'level' => 1,
             ],
         ];
+        $this->app['config']->set('pigeon.headers', $configHeaders = [
+            'my' => 'user'
+        ]);
+
         $publisher = new Publisher($this->app, $this->driver, $exchange);
 
         // assert
         $this->channel->shouldReceive('basic_publish')->with(
-            Mockery::on(function (AMQPMessage $arg) use ($headers) {
+            Mockery::on(function (AMQPMessage $arg) use ($headers, $configHeaders) {
                 $app_headers = $arg->get('application_headers');
 
                 return ($app_headers instanceof AMQPTable)
-                    && ($headers === $app_headers->getNativeData());
+                    && (array_merge($configHeaders, $headers) === $app_headers->getNativeData());
             }),
             $exchange,
             null

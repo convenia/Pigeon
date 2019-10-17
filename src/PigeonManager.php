@@ -12,6 +12,12 @@ use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
  */
 class PigeonManager extends Manager
 {
+    public function headers(array $headers)
+    {
+        $old = $this->config->get($key = 'pigeon.headers');
+        $this->config->set($key, array_merge($old, $headers));
+    }
+
     public function createRabbitDriver()
     {
         return new RabbitDriver($this->app);
