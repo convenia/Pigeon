@@ -29,6 +29,7 @@ return [
     'consumer' => [
         'tag'           => env('PIGEON_CONSUMER_TAG', null),
         'automatic_ack' => false,
+        'on_failure' => 'ack', // 'ack' or 'reject'
     ],
     'queue_declare' => env('PIGEON_DECLARE_QUEUES', true),
     'queue_declare_exists' => Constants::IGNORE_PRECONDITION,
