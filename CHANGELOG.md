@@ -5,12 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added "on-failure" config to ack, reject or throw exception
 
 ## [1.2.0]
 ### Added
 - Added bugs test suite
 - Added null driver throw `Convenia\Pigeon\Exceptions\Driver\NullDriverException` exception
-- Added "on-failure" config to ack, reject or throw exception
 ### Fixed
 - Fix `No free channel id` message when emit large amount of events
 - Fix env example
