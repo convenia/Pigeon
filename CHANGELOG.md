@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0]
 ### Added
-- Bugs test suite
-- Null driver use throw `Convenia\Pigeon\Exceptions\Driver\NullDriverException` exception
+- Added bugs test suite
+- Added null driver throw `Convenia\Pigeon\Exceptions\Driver\NullDriverException` exception
+- Added "on-failure" config to ack, reject or throw exception
 ### Fixed
 - Fix `No free channel id` message when emit large amount of events
 - Fix env example
