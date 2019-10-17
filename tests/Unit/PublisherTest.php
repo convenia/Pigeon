@@ -155,7 +155,7 @@ class PublisherTest extends TestCase
             ],
         ];
         $this->app['config']->set('pigeon.headers', $configHeaders = [
-            'my' => 'user'
+            'my' => 'user',
         ]);
 
         $publisher = new Publisher($this->app, $this->driver, $exchange);

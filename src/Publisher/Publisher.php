@@ -92,6 +92,7 @@ class Publisher implements PublisherContract
     public function getHeaders(): array
     {
         $configHeaders = Arr::dot($this->app['config']->get('pigeon.headers'));
+
         return array_merge($configHeaders, $this->headers);
     }
 }

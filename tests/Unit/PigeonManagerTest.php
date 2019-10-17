@@ -41,7 +41,7 @@ class PigeonManagerTest extends TestCase
         $this->assertEmpty($this->app['config']->get('pigeon.headers'));
 
         $manager->headers($headers = [
-            'my' => 'header'
+            'my' => 'header',
         ]);
         $this->assertEquals($headers, $this->app['config']->get('pigeon.headers'));
     }
@@ -51,11 +51,11 @@ class PigeonManagerTest extends TestCase
         $manager = new PigeonManager($this->app);
 
         $default = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
         $this->app['config']->set('pigeon.headers', $default);
         $manager->headers($headers = [
-            'my' => 'header'
+            'my' => 'header',
         ]);
         $this->assertEquals(array_merge($default, $headers), $this->app['config']->get('pigeon.headers'));
     }
@@ -67,13 +67,13 @@ class PigeonManagerTest extends TestCase
         $default = [
             'foo' => 'bar',
             'my' => [
-                'deep' => 'header'
-            ]
+                'deep' => 'header',
+            ],
         ];
         $this->app['config']->set('pigeon.headers', $default);
         $manager->headers($headers = [
             'my' => 'header',
-            'foo' => 'fighters'
+            'foo' => 'fighters',
         ]);
         $this->assertEquals($headers, $this->app['config']->get('pigeon.headers'));
     }
