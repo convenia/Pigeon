@@ -33,4 +33,5 @@ return [
     ],
     'queue_declare' => env('PIGEON_DECLARE_QUEUES', true),
     'queue_declare_exists' => Constants::IGNORE_PRECONDITION,
+    'headers' => [],
 ];
