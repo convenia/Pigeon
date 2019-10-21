@@ -93,6 +93,7 @@ class Publisher implements PublisherContract
     {
         $configHeaders = Arr::dot($this->app['config']->get('pigeon.headers'));
         $mapped = $this->mapToValues($configHeaders);
+
         return array_merge($mapped, $this->headers);
     }
 
@@ -102,6 +103,7 @@ class Publisher implements PublisherContract
         foreach ($headers as $key => $value) {
             $result[$key] = is_callable($value) ? call_user_func($value) : $value;
         }
+
         return $result;
     }
 }

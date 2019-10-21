@@ -186,11 +186,11 @@ class PublisherTest extends TestCase
             'string' => 'my string',
             'callable' => function () {
                 return 'my callable';
-            }
+            },
         ]);
         $this->assertSame([
             'string' => 'my string',
-            'callable' => 'my callable'
+            'callable' => 'my callable',
         ], $publisher->getHeaders());
     }
 }
