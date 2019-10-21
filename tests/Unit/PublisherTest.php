@@ -178,4 +178,19 @@ class PublisherTest extends TestCase
         }
         $publisher->publish($data);
     }
+
+    public function test_it_should_use_callable_value()
+    {
+        $publisher = new Publisher($this->app, $this->driver, 'exg');
+        $this->app['config']->set('pigeon.headers', $headers = [
+            'string' => 'my string',
+            'callable' => function () {
+                return 'my callable';
+            }
+        ]);
+        $this->assertSame([
+            'string' => 'my string',
+            'callable' => 'my callable'
+        ], $publisher->getHeaders());
+    }
 }

@@ -92,7 +92,16 @@ class Publisher implements PublisherContract
     public function getHeaders(): array
     {
         $configHeaders = Arr::dot($this->app['config']->get('pigeon.headers'));
+        $mapped = $this->mapToValues($configHeaders);
+        return array_merge($mapped, $this->headers);
+    }
 
-        return array_merge($configHeaders, $this->headers);
+    protected function mapToValues(array $headers)
+    {
+        $result = [];
+        foreach ($headers as $key => $value) {
+            $result[$key] = is_callable($value) ? call_user_func($value) : $value;
+        }
+        return $result;
     }
 }

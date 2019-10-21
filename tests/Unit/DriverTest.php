@@ -123,16 +123,16 @@ class DriverTest extends TestCase
             'foo' => 'fighters',
         ];
         $meta = [
-            'auth_user' => random_int(100, 21312),
+            $key = 'auth_user' => $value = random_int(100, 21312),
         ];
 
         // assert
         $this->channel->shouldReceive('basic_publish')->withArgs(
-            function ($message, $exchange, $event) use ($meta, $event_name) {
+            function ($message, $exchange, $event) use ($key, $value, $event_name) {
                 $app_headers = $message->get('application_headers');
-
                 return ($app_headers instanceof AMQPTable)
-                    && ($app_headers->getNativeData() === Arr::dot($meta))
+                    && (array_key_exists($key, $app_headers->getNativeData()))
+                    && ($app_headers->getNativeData()[$key] === $value)
                     && ($event === $event_name)
                     && ($exchange === Driver::EVENT_EXCHANGE);
             })->once();
