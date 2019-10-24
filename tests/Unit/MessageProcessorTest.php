@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\ResolverContract;
-use PHPUnit\Framework\Constraint\ExceptionMessage;
 use Convenia\Pigeon\MessageProcessor\MessageProcessor;
 
 class MessageProcessorTest extends TestCase
