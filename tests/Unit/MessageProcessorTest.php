@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\ResolverContract;
-use PHPUnit\Framework\Constraint\ExceptionMessage;
 use Convenia\Pigeon\MessageProcessor\MessageProcessor;
 
 class MessageProcessorTest extends TestCase
@@ -105,28 +104,29 @@ class MessageProcessorTest extends TestCase
         $message = new AMQPMessage(json_encode($data));
         $this->app['config']['pigeon.consumer.on_failure'] = 'unexpected_config';
 
-        $callback = function () {
-            $this->fail('Callback failing and no fallback set');
+        $exception = new Exception('Callback failing and no fallback set');
+        $callback = function () use ($exception) {
+            throw $exception;
         };
 
         // act
         $processor = new MessageProcessor($this->driver, $callback);
 
+        Log::shouldReceive('error')->with(
+            $exception->getMessage(),
+            [
+                'file'     => $exception->getFile(),
+                'line'     => $exception->getLine(),
+                'tracing'  => $exception->getTraceAsString(),
+                'previous' => $exception->getPrevious(),
+                'message'  => json_decode($message->body, true),
+            ]
+        );
+
         try {
             $processor->process($message);
-            $this->fail();
         } catch (Exception $e) {
-            Log::shouldReceive('error')->with(
-                $e->getMessage(),
-                [
-                    'file'     => $e->getFile(),
-                    'line'     => $e->getLine(),
-                    'tracing'  => $e->getTraceAsString(),
-                    'previous' => $e->getPrevious(),
-                    'message'  => json_decode($message->body, true),
-                ]
-            );
-            $this->assertThat($e, new ExceptionMessage('Callback failing and no fallback set'));
+            $this->assertSame($e, $exception);
         }
     }
 
@@ -142,28 +142,25 @@ class MessageProcessorTest extends TestCase
         $channel->shouldReceive('basic_ack')
             ->with($tag)->once();
 
-        $callback = function () {
-            $this->fail('Callback failing and no fallback set');
+        $exception = new Exception('Callback failing and no fallback set');
+        $callback = function () use ($exception) {
+            throw $exception;
         };
 
         // act
         $processor = new MessageProcessor($this->driver, $callback);
 
-        try {
-            $processor->process($message);
-            $this->fail();
-        } catch (Exception $e) {
-            Log::shouldReceive('error')->with(
-                $e->getMessage(),
-                [
-                    'file'     => $e->getFile(),
-                    'line'     => $e->getLine(),
-                    'tracing'  => $e->getTraceAsString(),
-                    'previous' => $e->getPrevious(),
-                    'message'  => json_decode($message->body, true),
-                ]
-            );
-        }
+        Log::shouldReceive('error')->with(
+            $exception->getMessage(),
+            [
+                'file'     => $exception->getFile(),
+                'line'     => $exception->getLine(),
+                'tracing'  => $exception->getTraceAsString(),
+                'previous' => $exception->getPrevious(),
+                'message'  => json_decode($message->body, true),
+            ]
+        );
+        $processor->process($message);
     }
 
     public function test_it_should_have_default_fallback_reject_on_configured()
@@ -179,27 +176,24 @@ class MessageProcessorTest extends TestCase
             ->with($tag, false, false)
             ->once();
 
-        $callback = function () {
-            $this->fail('Callback failing and no fallback set');
+        $exception = new Exception('Callback failing and no fallback set');
+        $callback = function () use ($exception) {
+            throw $exception;
         };
+        Log::shouldReceive('error')->with(
+            $exception->getMessage(),
+            [
+                'file'     => $exception->getFile(),
+                'line'     => $exception->getLine(),
+                'tracing'  => $exception->getTraceAsString(),
+                'previous' => $exception->getPrevious(),
+                'message'  => json_decode($message->body, true),
+            ]
+        );
 
         // act
         $processor = new MessageProcessor($this->driver, $callback);
 
-        try {
-            $processor->process($message);
-            $this->fail();
-        } catch (Exception $e) {
-            Log::shouldReceive('error')->with(
-                $e->getMessage(),
-                [
-                    'file'     => $e->getFile(),
-                    'line'     => $e->getLine(),
-                    'tracing'  => $e->getTraceAsString(),
-                    'previous' => $e->getPrevious(),
-                    'message'  => json_decode($message->body, true),
-                ]
-            );
-        }
+        $processor->process($message);
     }
 }

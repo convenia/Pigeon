@@ -42,7 +42,7 @@ class MessageProcessor implements MessageProcessorContract
     {
         $resolver = new Resolver($message);
         if (! $this->fallback) {
-            $this->defaultFallback($e, $message, $resolver);
+            return $this->defaultFallback($e, $message, $resolver);
         }
         call_user_func($this->fallback, $e, $message, $resolver);
     }
