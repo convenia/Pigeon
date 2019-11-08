@@ -65,6 +65,7 @@ abstract class Driver implements DriverContract
         throw_if(empty($event), new EmptyEventException());
         $publisher = $this->exchange(self::EVENT_EXCHANGE, self::EVENT_EXCHANGE_TYPE)->routing($eventName);
 
+        $publisher->header('category', $eventName);
         foreach ($meta as $key => $value) {
             $publisher->header($key, $value);
         }

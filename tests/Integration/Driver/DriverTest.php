@@ -76,7 +76,7 @@ class DriverTest extends TestCase
 
         /* @var $event_meta AMQPTable */
         $event_meta = $event->get('application_headers');
-        $this->assertEquals($meta, $event_meta->getNativeData());
+        $this->assertEquals(array_merge($meta, ['category' => $event_name]), $event_meta->getNativeData());
     }
 
     public function test_it_should_consume_event()
