@@ -3,11 +3,11 @@
 namespace Convenia\Pigeon\MessageProcessor;
 
 use Closure;
+use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Resolver\Resolver;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
-use Convenia\Pigeon\Resolver\Resolver;
-use Convenia\Pigeon\Drivers\DriverContract;
 
 class MessageProcessor implements MessageProcessorContract
 {

@@ -2,8 +2,8 @@
 
 namespace Convenia\Pigeon\Facade;
 
-use Illuminate\Support\Facades\Facade;
 use Convenia\Pigeon\Support\Testing\PigeonFake;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * Class Pigeon.

@@ -2,11 +2,11 @@
 
 namespace Convenia\Pigeon\Drivers;
 
-use Exception;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
-use PhpAmqpLib\Channel\AMQPChannel;
 use Convenia\Pigeon\Support\Constants;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class RabbitDriver extends Driver

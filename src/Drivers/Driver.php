@@ -2,14 +2,14 @@
 
 namespace Convenia\Pigeon\Drivers;
 
-use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Consumer\Consumer;
-use Illuminate\Foundation\Application;
-use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Publisher\PublisherContract;
-use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
+use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
+use Convenia\Pigeon\Publisher\Publisher;
+use Convenia\Pigeon\Publisher\PublisherContract;
+use Illuminate\Foundation\Application;
+use PhpAmqpLib\Wire\AMQPTable;
 
 abstract class Driver implements DriverContract
 {

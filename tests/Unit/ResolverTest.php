@@ -2,13 +2,13 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Mockery;
-use Illuminate\Support\Str;
-use PhpAmqpLib\Wire\AMQPTable;
+use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Tests\TestCase;
+use Illuminate\Support\Str;
+use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
-use Convenia\Pigeon\Resolver\Resolver;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class ResolverTest extends TestCase
 {

@@ -2,13 +2,13 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
-use Illuminate\Support\Str;
-use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
-use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class DriverTest extends TestCase
 {

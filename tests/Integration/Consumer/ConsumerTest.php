@@ -2,10 +2,10 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Consumer;
 
-use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\ResolverContract;
-use PhpAmqpLib\Exception\AMQPTimeoutException;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use PhpAmqpLib\Exception\AMQPTimeoutException;
+use PhpAmqpLib\Message\AMQPMessage;
 
 class ConsumerTest extends TestCase
 {

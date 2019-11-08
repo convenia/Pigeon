@@ -2,17 +2,17 @@
 
 namespace Convenia\Pigeon\Support\Testing;
 
-use Illuminate\Support\Str;
-use Convenia\Pigeon\PigeonManager;
-use Illuminate\Support\Collection;
-use Convenia\Pigeon\Drivers\Driver;
-use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Consumer\Consumer;
-use Convenia\Pigeon\Publisher\Publisher;
-use PHPUnit\Framework\Assert as PHPUnit;
-use Convenia\Pigeon\Drivers\DriverContract;
 use Convenia\Pigeon\Consumer\ConsumerContract;
+use Convenia\Pigeon\Drivers\Driver;
+use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\PigeonManager;
+use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Publisher\PublisherContract;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use PhpAmqpLib\Message\AMQPMessage;
+use PHPUnit\Framework\Assert as PHPUnit;
 
 class PigeonFake extends PigeonManager implements DriverContract
 {

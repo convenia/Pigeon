@@ -2,9 +2,9 @@
 
 namespace Convenia\Pigeon\Tests\Integration;
 
+use Convenia\Pigeon\Tests\TestCase as BaseTestCase;
 use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use Convenia\Pigeon\Tests\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {

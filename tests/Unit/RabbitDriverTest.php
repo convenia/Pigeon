@@ -2,8 +2,8 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Mockery;
 use Convenia\Pigeon\Tests\TestCase;
+use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
 

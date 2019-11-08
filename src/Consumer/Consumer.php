@@ -3,10 +3,10 @@
 namespace Convenia\Pigeon\Consumer;
 
 use Closure;
-use PhpAmqpLib\Message\AMQPMessage;
-use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Drivers\DriverContract;
 use Convenia\Pigeon\MessageProcessor\MessageProcessor;
+use Illuminate\Foundation\Application;
+use PhpAmqpLib\Message\AMQPMessage;
 
 class Consumer implements ConsumerContract
 {
