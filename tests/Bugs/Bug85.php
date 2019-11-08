@@ -2,10 +2,10 @@
 
 namespace Convenia\Pigeon\Tests\Bugs;
 
-use Mockery;
-use Convenia\Pigeon\Tests\TestCase;
-use PhpAmqpLib\Channel\AMQPChannel;
 use Convenia\Pigeon\Drivers\RabbitDriver;
+use Convenia\Pigeon\Tests\TestCase;
+use Mockery;
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class Bug85 extends TestCase

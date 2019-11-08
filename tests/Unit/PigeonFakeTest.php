@@ -2,13 +2,13 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Convenia\Pigeon\Facade\Pigeon;
-use Convenia\Pigeon\Tests\TestCase;
 use Convenia\Pigeon\Consumer\Consumer;
+use Convenia\Pigeon\Facade\Pigeon;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Resolver\ResolverContract;
-use PHPUnit\Framework\ExpectationFailedException;
+use Convenia\Pigeon\Tests\TestCase;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
+use PHPUnit\Framework\ExpectationFailedException;
 
 class PigeonFakeTest extends TestCase
 {

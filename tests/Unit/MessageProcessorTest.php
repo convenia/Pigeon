@@ -2,14 +2,14 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Mockery;
-use Exception;
+use Convenia\Pigeon\MessageProcessor\MessageProcessor;
+use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
+use Exception;
 use Illuminate\Support\Facades\Log;
+use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
-use Convenia\Pigeon\Resolver\ResolverContract;
-use Convenia\Pigeon\MessageProcessor\MessageProcessor;
 
 class MessageProcessorTest extends TestCase
 {

@@ -4,11 +4,11 @@ namespace Convenia\Pigeon\Tests\Integration\Resolver;
 
 //define('AMQP_DEBUG', true);
 
-use Illuminate\Support\Str;
-use PhpAmqpLib\Wire\AMQPTable;
-use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\Resolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use Illuminate\Support\Str;
+use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class ResolverTest extends TestCase
 {

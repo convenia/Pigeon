@@ -2,13 +2,13 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
-use Illuminate\Support\Str;
-use PhpAmqpLib\Wire\AMQPTable;
 use Convenia\Pigeon\Drivers\Driver;
-use PhpAmqpLib\Message\AMQPMessage;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class DriverTest extends TestCase
 {
@@ -76,7 +76,7 @@ class DriverTest extends TestCase
 
         /* @var $event_meta AMQPTable */
         $event_meta = $event->get('application_headers');
-        $this->assertEquals($meta, $event_meta->getNativeData());
+        $this->assertEquals(array_merge($meta, ['category' => $event_name]), $event_meta->getNativeData());
     }
 
     public function test_it_should_consume_event()

@@ -2,12 +2,12 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Mockery;
-use PhpAmqpLib\Wire\AMQPTable;
+use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Tests\TestCase;
+use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
-use Convenia\Pigeon\Publisher\Publisher;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class PublisherTest extends TestCase
 {

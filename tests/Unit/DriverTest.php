@@ -2,15 +2,15 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Mockery;
-use Illuminate\Support\Str;
-use PhpAmqpLib\Wire\AMQPTable;
+use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Drivers\Driver;
+use Convenia\Pigeon\Publisher\PublisherContract;
 use Convenia\Pigeon\Tests\TestCase;
+use Illuminate\Support\Str;
+use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
-use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Publisher\PublisherContract;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class DriverTest extends TestCase
 {

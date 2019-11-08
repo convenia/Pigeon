@@ -2,8 +2,8 @@
 
 namespace Convenia\Pigeon\Publisher;
 
-use Illuminate\Foundation\Application;
 use Convenia\Pigeon\Drivers\DriverContract;
+use Illuminate\Foundation\Application;
 
 interface PublisherContract
 {
