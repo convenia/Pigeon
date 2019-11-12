@@ -10,6 +10,12 @@ interface ConsumerContract
 {
     public function __construct(Application $app, DriverContract $driver, string $queue);
 
+    public function exchange(string $name, string $type): self;
+
+    public function routing(string $name): self;
+
+    public function bind(string $queue): self;
+
     public function consume(int $timeout = 5, bool $multiple = true);
 
     public function callback(Closure $callback): self;

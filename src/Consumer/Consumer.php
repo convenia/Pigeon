@@ -15,6 +15,8 @@ class Consumer implements ConsumerContract
     public $fallback;
 
     protected $queue;
+    protected $exchange;
+    protected $routing;
     protected $driver;
     protected $channel;
 
@@ -24,6 +26,28 @@ class Consumer implements ConsumerContract
         $this->queue = $queue;
         $this->driver = $driver;
         $this->channel = $driver->getChannel();
+    }
+
+    public function exchange(string $name, string $type = 'direct'): ConsumerContract
+    {
+        $this->driver->getChannel(2)->exchange_declare($name, $type, false, true, false, false, false, $this->driver->getProps());
+        $this->exchange = $name;
+
+        return $this;
+    }
+
+    public function routing(string $key): ConsumerContract
+    {
+        $this->routing = $key;
+
+        return $this;
+    }
+
+    public function bind(string $queue): ConsumerContract
+    {
+        $this->driver->getChannel(2)->queue_bind($queue, $this->exchange, $this->routing);
+
+        return $this;
     }
 
     public function consume(int $timeout = 0, bool $multiple = true)

@@ -94,6 +94,18 @@ Pigeon::queue('my.awesome.queue')
 Your callback closure can receive a second argument, which is the resolver. The resolver can do the acknowledge and the
 unacknowledged of message with the `ack` and `reject` methods.
 
+Exchanges, routing keys and bindings declarations are possible from the consumer, after the `queue()` method.
+
+```php
+Pigeon::queue($queue)
+    ->exchange($exchange)
+    ->routing($rountingKey)
+    ->bind($queue)
+    ->callback($callback)->consume(0, true);
+```
+
+!> `exchange()` method needs to be called before `rounting()` and `bind()`.
+
 ### Fallback
 The consumer fallback is a closure that is called every time a callback throw a exception.
 It contains 2 arguments, which is the Exception and AMQPMessage instances.

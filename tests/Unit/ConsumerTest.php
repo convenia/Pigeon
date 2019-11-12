@@ -27,10 +27,37 @@ class ConsumerTest extends TestCase
 
         $this->channel = Mockery::mock(AMQPChannel::class);
         $this->driver = Mockery::mock(RabbitDriver::class);
+    }
 
+    public function test_it_should_bind_in_an_exchange_with_routing_keys_and_declare_the_exchange()
+    {
         $this->driver->shouldReceive('getChannel')
-            ->once()
+            ->times(3)
             ->andReturn($this->channel);
+
+        // setup
+        $exchange = 'my.awesome.exchange';
+        $type = 'my.awesome.exchange.type';
+        $routing = 'my.awesome.service';
+        $queue = 'my.awesome.queue';
+
+        // assert
+        $this->channel->shouldReceive('queue_bind')->with(
+            $queue,
+            $exchange,
+            $routing
+        )->once();
+
+        $this->driver->shouldReceive('getProps')
+            ->once()
+            ->andReturn([]);
+
+        $this->channel->shouldReceive('exchange_declare')
+            ->with($exchange, $type, false, true, false, false, false, []);
+
+        // act
+        $consumer = new Consumer($this->app, $this->driver, $queue);
+        $consumer->exchange($exchange, $type)->routing($routing)->bind($queue);
     }
 
     public function test_it_should_consume_queue_without_multiple_loops()
@@ -38,6 +65,10 @@ class ConsumerTest extends TestCase
         $queue = 'some.queue';
 
         // setup
+        $this->driver->shouldReceive('getChannel')
+            ->once()
+            ->andReturn($this->channel);
+
         $this->channel->shouldReceive('basic_qos')->once();
         $this->channel->shouldReceive('wait')->once()->with(null, null, 5);
         $this->channel->callbacks = [
@@ -63,6 +94,10 @@ class ConsumerTest extends TestCase
         ];
 
         // setup
+        $this->driver->shouldReceive('getChannel')
+            ->once()
+            ->andReturn($this->channel);
+
         $this->channel->shouldReceive('basic_qos')->once();
         $this->channel->shouldReceive('wait')
             ->twice()
@@ -87,6 +122,10 @@ class ConsumerTest extends TestCase
     public function test_it_should_return_a_message_processor()
     {
         //setup
+        $this->driver->shouldReceive('getChannel')
+            ->once()
+            ->andReturn($this->channel);
+
         $queue = 'some.queue';
         $consumer = new Consumer($this->app, $this->driver, $queue);
         $consumer->callback(function () {
