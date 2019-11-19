@@ -1,6 +1,6 @@
 {
     "name": "convenia/pigeon",
-    "license": "proprietary",
+    "license": "mit",
     "type": "library",
     "description": "",
     "keywords": ["pigeon", "rabbitmq", "laravel", "message", "queue"],
