@@ -22,7 +22,7 @@ return [
     'exchange'      => env('PIGEON_EXCHANGE', 'pigeon'),
     'exchange_type' => env('PIGEON_EXCHANGE_TYPE', 'direct'),
     'dead'          => [
-        'exchange'    => 'amq.fanout',
+        'exchange'    => 'amq.direct',
         'routing_key' => 'dead',
     ],
     'app_name' => env('PIGEON_CONSUMER_TAG', null),
