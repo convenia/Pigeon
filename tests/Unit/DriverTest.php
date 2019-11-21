@@ -62,6 +62,20 @@ class DriverTest extends TestCase
         $this->assertInstanceOf(PublisherContract::class, $publisher);
     }
 
+    public function test_it_should_use_default_exchange_if_name_not_provided_to_exchange_method()
+    {
+        $type = 'fanout';
+
+        // setup and asserts
+        $this->channel->shouldNotReceive('exchange_declare');
+
+        // act
+        $publisher = $this->driver->exchange('', $type);
+
+        // assert
+        $this->assertInstanceOf(PublisherContract::class, $publisher);
+    }
+
     public function test_it_should_declare_exchange_bind_key()
     {
         $exchange = 'my.exchange';
@@ -135,7 +149,8 @@ class DriverTest extends TestCase
                     && ($app_headers->getNativeData()[$key] === $value)
                     && ($event === $event_name)
                     && ($exchange === Driver::EVENT_EXCHANGE);
-            })->once();
+            }
+        )->once();
         $this->channel->shouldReceive('exchange_declare')->with(
             Driver::EVENT_EXCHANGE,
             Driver::EVENT_EXCHANGE_TYPE,

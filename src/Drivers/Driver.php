@@ -45,7 +45,7 @@ abstract class Driver implements DriverContract
 
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        $this->getChannel(2)->exchange_declare($name, $type, false, true, false, false, false, $this->getProps());
+        $name && $this->getChannel(2)->exchange_declare($name, $type, false, true, false, false, false, $this->getProps());
 
         return new Publisher($this->app, $this, $name);
     }
