@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
 - Added hability to send to default exchange when the exchange name is empty in `exchange()` method
+### Fixed
+-Fixed use of empty string on exchange to use default AMQP queue
 
 ## [v1.3.1]
 ### Added
