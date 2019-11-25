@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added hability to send to default exchange when the exchange name is empty in `exchange()` method
 ### Fixed
--Fixed use of empty string on exchange to use default AMQP queue
+- Fixed use of empty string on exchange to use default AMQP queue
 
 ## [v1.3.1]
 ### Added
