@@ -178,7 +178,7 @@ class PigeonFakeTest extends TestCase
         } catch (ExpectationFailedException $e) {
             $this->assertThat($e, new ExceptionMessage("The queue [$queue] does not match consumer timeout"));
         }
-    
+
         $this->fake->assertConsuming($queue, 5);
     }
 
@@ -200,7 +200,7 @@ class PigeonFakeTest extends TestCase
         } catch (ExpectationFailedException $e) {
             $this->assertThat($e, new ExceptionMessage("The queue [$queue] does not match consumer multiplicity"));
         }
-    
+
         $this->fake->assertConsuming($queue, 5, false);
     }
 

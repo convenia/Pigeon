@@ -40,7 +40,7 @@ class PigeonFake extends PigeonManager implements DriverContract
             "The queue [$queue] has no consumer"
         );
 
-        if  (!is_null($timeout)) {
+        if (! is_null($timeout)) {
             PHPUnit::assertEquals(
                 $timeout,
                 $comsumer->timeout,
@@ -48,7 +48,7 @@ class PigeonFake extends PigeonManager implements DriverContract
             );
         }
 
-        if (!is_null($multiple)) {
+        if (! is_null($multiple)) {
             PHPUnit::assertEquals(
                 $multiple,
                 $comsumer->multiple,
@@ -66,7 +66,7 @@ class PigeonFake extends PigeonManager implements DriverContract
             "No event consumer for [$event] event"
         );
 
-        if  (!is_null($timeout)) {
+        if (! is_null($timeout)) {
             PHPUnit::assertEquals(
                 $timeout,
                 $comsumer->timeout,
@@ -74,7 +74,7 @@ class PigeonFake extends PigeonManager implements DriverContract
             );
         }
 
-        if (!is_null($multiple)) {
+        if (! is_null($multiple)) {
             PHPUnit::assertEquals(
                 $multiple,
                 $comsumer->multiple,
@@ -168,7 +168,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         // avoid tries to start a consumer on null queue
         $this->assertConsuming($queue);
 
-        $reply_to = 'rpc.' . Str::random(5);
+        $reply_to = 'rpc.'.Str::random(5);
         $delivery_tag = Str::random(2);
         $message = new AMQPMessage(json_encode($message), ['reply_to' => $reply_to]);
         $message->delivery_info['channel'] = $this;
@@ -252,7 +252,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         $callback = function ($publisher) use ($exchange, $routing, $msg) {
             if ($publisher['routing'] === $routing
                 && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
-                && !isset($publisher['message'])
+                && ! isset($publisher['message'])
             ) {
                 $publisher['message'] = json_decode($msg->body, true);
 
