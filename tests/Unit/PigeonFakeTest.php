@@ -160,6 +160,50 @@ class PigeonFakeTest extends TestCase
         $this->fake->assertConsuming($queue);
     }
 
+    public function test_it_should_assert_a_queue_has_consumers_with_specific_timeout()
+    {
+        // setup
+        $queue = 'some.test.queue';
+
+        $this->fake
+            ->queue($queue)
+            ->callback(function () {
+            })->consume(5);
+
+        try {
+            //check for a wrong timeout
+            $this->fake->assertConsuming($queue, 3);
+
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("The queue [$queue] does not match consumer timeout"));
+        }
+    
+        $this->fake->assertConsuming($queue, 5);
+    }
+
+    public function test_it_should_assert_a_queue_has_consumers_with_specific_multiplicity()
+    {
+        // setup
+        $queue = 'some.test.queue';
+
+        $this->fake
+            ->queue($queue)
+            ->callback(function () {
+            })->consume(5, false);
+
+        try {
+            //check for a wrong multiplicity
+            $this->fake->assertConsuming($queue, 5, true);
+
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("The queue [$queue] does not match consumer multiplicity"));
+        }
+    
+        $this->fake->assertConsuming($queue, 5, false);
+    }
+
     public function test_it_should_assert_message_published_using_routing()
     {
         // setup
@@ -324,6 +368,46 @@ class PigeonFakeTest extends TestCase
             ->consume();
 
         $this->fake->assertConsumingEvent($category);
+    }
+
+    public function test_it_should_assert_consuming_event_with_specific_timeout()
+    {
+        // setup
+        $category = 'some.event.category';
+
+        $this->fake->events($category)
+        ->callback(function () {
+        })->consume(5);
+
+        // act
+        try {
+            $this->fake->assertConsumingEvent($category, 3);
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("The event [$category] does not match consumer timeout"));
+        }
+
+        $this->fake->assertConsumingEvent($category, 5);
+    }
+
+    public function test_it_should_assert_consuming_event_with_specific_multiplicity()
+    {
+        // setup
+        $category = 'some.event.category';
+
+        $this->fake->events($category)
+        ->callback(function () {
+        })->consume(5, false);
+
+        // act
+        try {
+            $this->fake->assertConsumingEvent($category, 5, true);
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("The event [$category] does not match consumer multiplicity"));
+        }
+
+        $this->fake->assertConsumingEvent($category, 5, false);
     }
 
     public function test_it_should_call_event_callback()

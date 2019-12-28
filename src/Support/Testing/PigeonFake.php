@@ -4,7 +4,6 @@ namespace Convenia\Pigeon\Support\Testing;
 
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Drivers\DriverContract;
 use Convenia\Pigeon\PigeonManager;
 use Convenia\Pigeon\Publisher\Publisher;
@@ -32,17 +31,56 @@ class PigeonFake extends PigeonManager implements DriverContract
         $this->events = new Collection();
     }
 
-    public function assertConsuming(string $queue)
+    public function assertConsuming(string $queue, int $timeout = null, bool $multiple = null)
     {
-        PHPUnit::assertTrue($this->consumers->has($queue), "The queue [$queue] has no consumer");
+        $comsumer = $this->consumers->get($queue);
+
+        PHPUnit::assertNotNull(
+            $comsumer,
+            "The queue [$queue] has no consumer"
+        );
+
+        if  (!is_null($timeout)) {
+            PHPUnit::assertEquals(
+                $timeout,
+                $comsumer->timeout,
+                "The queue [$queue] does not match consumer timeout"
+            );
+        }
+
+        if (!is_null($multiple)) {
+            PHPUnit::assertEquals(
+                $multiple,
+                $comsumer->multiple,
+                "The queue [$queue] does not match consumer multiplicity"
+            );
+        }
     }
 
-    public function assertConsumingEvent(string $event)
+    public function assertConsumingEvent(string $event, int $timeout = null, bool $multiple = null)
     {
-        PHPUnit::assertTrue(
-            $this->consumers->has($event),
+        $comsumer = $this->consumers->get($event);
+
+        PHPUnit::assertNotNull(
+            $comsumer,
             "No event consumer for [$event] event"
         );
+
+        if  (!is_null($timeout)) {
+            PHPUnit::assertEquals(
+                $timeout,
+                $comsumer->timeout,
+                "The event [$event] does not match consumer timeout"
+            );
+        }
+
+        if (!is_null($multiple)) {
+            PHPUnit::assertEquals(
+                $multiple,
+                $comsumer->multiple,
+                "The event [$event] does not match consumer multiplicity"
+            );
+        }
     }
 
     public function assertPublished(string $routing, array $message)
@@ -130,7 +168,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         // avoid tries to start a consumer on null queue
         $this->assertConsuming($queue);
 
-        $reply_to = 'rpc.'.Str::random(5);
+        $reply_to = 'rpc.' . Str::random(5);
         $delivery_tag = Str::random(2);
         $message = new AMQPMessage(json_encode($message), ['reply_to' => $reply_to]);
         $message->delivery_info['channel'] = $this;
@@ -172,8 +210,8 @@ class PigeonFake extends PigeonManager implements DriverContract
         $exchange = $this->app['config']['pigeon.exchange'];
         $publisher = (new Publisher($this->app, $this, $exchange))->routing($name);
         $this->publishers->push([
-            'exchange'  => $exchange,
-            'routing'   => $name,
+            'exchange' => $exchange,
+            'routing' => $name,
             'publisher' => $publisher,
         ]);
 
@@ -191,7 +229,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     public function emmit(string $eventName, array $event, array $meta = []): void
     {
         $this->events->push([
-            'event'   => $eventName,
+            'event' => $eventName,
             'data' => $event,
         ]);
     }
@@ -214,7 +252,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         $callback = function ($publisher) use ($exchange, $routing, $msg) {
             if ($publisher['routing'] === $routing
                 && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
-                && ! isset($publisher['message'])
+                && !isset($publisher['message'])
             ) {
                 $publisher['message'] = json_decode($msg->body, true);
 
