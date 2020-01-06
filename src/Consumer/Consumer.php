@@ -13,6 +13,8 @@ class Consumer implements ConsumerContract
     public $app;
     public $callback;
     public $fallback;
+    public $multiple;
+    public $timeout;
 
     protected $queue;
     protected $driver;
@@ -24,6 +26,8 @@ class Consumer implements ConsumerContract
         $this->queue = $queue;
         $this->driver = $driver;
         $this->channel = $driver->getChannel();
+        $this->multiple = true;
+        $this->timeout = 0;
     }
 
     public function consume(int $timeout = 0, bool $multiple = true)
@@ -41,6 +45,8 @@ class Consumer implements ConsumerContract
             }
         );
 
+        $this->timeout = $timeout;
+        $this->multiple = $multiple;
         $this->wait($timeout, $multiple);
     }
 

@@ -39,12 +39,14 @@ Pigeon::assertPublished(
 
 ### Consume
 Like asserting a message was published, you can easily assert a consumer has started in the correct queue using the `assertConsuming`.
+
+The `timeout` and `multiple` params are optional, if you dont pass this params then timeout and multiplicity wont be checked. 
 ```php
 Pigeon::fake();
 
 // Call the consumer start
 
-Pigeon::assertConsuming('the.queue.name');
+Pigeon::assertConsuming('the.queue.name', $timeout = 5, $multiple = true);
 ```
 
 You can also call the callback configured in the consumer using the `dispatchConsumer`
