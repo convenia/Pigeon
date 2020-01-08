@@ -6,7 +6,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/convenia/pigeon/v/unstable)](https://packagist.org/packages/convenia/pigeon)
 [![License](https://poser.pugx.org/convenia/pigeon/license)](https://packagist.org/packages/convenia/pigeon)
 
-Pigeon is a Laravel package for dealing with AMQP messaging messaging with easy syntax on top of php-amqplib. 
+Pigeon is a Laravel package for dealing with AMQP messaging with easy syntax on top of php-amqplib. 
 
 ## Documentation
 [Documentation](https://convenia.github.io/Pigeon)
