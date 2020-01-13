@@ -6,14 +6,14 @@
  3. [RPC](#remote-procedure-call)
  
 ## Introducing
- The Pigeon was made to be a simple interface to messaging, with a fast way of publish and consume messages
+ Pigeon was made to be a simple messaging interface with fast ways of publishing and consuming messages
  and a Laravel way of testing the application.
  
- Pigeon will automatically create the exchange that you are using, the queue and bind the routing key. 
+ Pigeon will automatically create the exchange, queue and bind the routing key. 
   
 
 ## Publish
- To publish a message using the application exchange and a routing key: 
+ To publish a message using the application's exchange and a routing key: 
  
 ```php
 use Pigeon;
@@ -24,7 +24,7 @@ Pigeon::routing($routing)
     ]);
  ```
 
-To bind a routing key to queue you can use the `bind` method:
+To bind a routing key to a queue you can use the `bind` method:
 
 ```php
 use Pigeon;
@@ -34,8 +34,8 @@ Pigeon::routing($routing)
  ```
 
 ## Consume
-To consume a queue you can use the `queue` method to setup the consumer followed by `callback` and `fallback`
-to respectively setup a callback and a fallback and the `wait`:
+To consume a queue you can call the `queue` method to setup the consumer followed by `callback` and `fallback`
+to setup a callback and a fallback and the `wait`:
 
 ```php
 use Pigeon;
