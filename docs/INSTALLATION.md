@@ -18,7 +18,7 @@ composer require convenia/pigeon
 
 ## Configuring
 Pigeon utilizes laravel auto-discovery feature, so you don't need to setup any service provider or facade.
-After installing Pigeon configure it to connect to you broker.??????
+After installing Pigeon configure it to connect to your broker.
 
 ### Application env file
 Typically, Pigeon's environment configurations can be found in the `.env` file of your Laravel application.
@@ -29,17 +29,17 @@ PIGEON_PORT=5672 # Your AMQP port
 PIGEON_USER=guest
 PIGEON_PASSWORD=guest
 PIGEON_VHOST=/
-PIGEON_EXCHANGE=application # OPTIONAL - The applicaton default exchange
-PIGEON_EXCHANGE_TYPE=topic # OPTIONAL - The applicaton default exchange type
-PIGEON_CONSUMER_TAG=application # OPTIONAL - Your applicaton name
-PIGEON_HEARTBEAT= # OPTIONAL -  The heart beat of connection
+PIGEON_EXCHANGE=application # OPTIONAL - The applicaton's default exchange
+PIGEON_EXCHANGE_TYPE=topic # OPTIONAL - The applicaton's default exchange type
+PIGEON_CONSUMER_TAG=application # OPTIONAL - The applicaton's name
+PIGEON_HEARTBEAT= # OPTIONAL -  The heartbeat of the connection
 ```
 
 ### Configuration File
-As any laravel library, you can publish the config to `config/pigeon.php` using the command below
+As any laravel library, you can publish the config to `config/pigeon.php` using the command below.
 
 ```bash
 php artisan vendor:publish --tag=pigeon.config
 ```
 
-It'll publish a config file that contains all needle configuration you can change.
+It'll publish a config file that contains all the necessary configuration.

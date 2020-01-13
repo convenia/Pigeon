@@ -13,7 +13,7 @@
   
 
 ## Publish
- To publish a message using the application's exchange and a routing key: 
+ To publish a message using the application's exchange and a routing key see the example below: 
  
 ```php
 use Pigeon;
@@ -46,15 +46,15 @@ Pigeon::queue('queue.name')
  ```
 
 ### Queue
-The `queue` method will receive the name of queue you want to use in the consumer. When ypu call it
+The `queue` method will receive the name of the queue you want to use in the consumer. When you call it
 the package will automatically declare it for you, so you don't need to declare it manually.
 
-As second argument, the `queue` method receive some queue properties, passed to broker through `php-amqplib`,
+In the second argument, the `queue` method receives some properties, passed to the broker through `php-amqplib`,
 so you can pass ttl, dead letter exchange, max priority, etc.
 
 ### Callback
 The consumer callback is a closure that is called every time a message is received.
-It need to contain at last 1 argument, what is the received message.
+It needs to contain at least 1 argument, that is the received message.
 
 ```php
 use Pigeon;
@@ -68,13 +68,13 @@ Pigeon::queue('my.awesome.queue')
     ->consume($timeout = 0, $multiple = true);
  ```
 
-The above code create a queue called `my.awesome.queue` and configured a consumer in that.
+The code above creates a queue called `my.awesome.queue` and configures a consumer binded to that queue.
 Using the callback, every time a message is published in that queue, it'll dump the message content.
 
-!> For now Pigeon only support array messages.
+!> For now Pigeon only supports array messages.
 
-You will need to send a acknowledge signal to broker every time you consume a message successfully,
-and you can do this from you callback with Pigeon.
+You must send an acknowledgement signal to the broker every time you successfully consume a message,
+and you can do this with Pigeon's callback.
 
 
 ```php
@@ -91,12 +91,12 @@ Pigeon::queue('my.awesome.queue')
     ->consume($timeout = 0, $multiple = true);
  ```
 
-Your callback closure can receive a second argument, which is the resolver. The resolver can do the acknowledge and the
-unacknowledged of message with the `ack` and `reject` methods.
+Your callback closure can receive a second argument, the resolver. The resolver can do the acknowledgement and the
+unacknowledgedment of a message with the `ack` and `reject` methods.
 
 ### Fallback
-The consumer fallback is a closure that is called every time a callback throw a exception.
-It contains 2 arguments, which is the Exception and AMQPMessage instances.
+The consumer fallback is a closure that is called every time a callback throws an exception.
+It contains 2 arguments, which are the Exception and the AMQPMessage instance.
 
  ```php
  use Pigeon;
@@ -106,7 +106,7 @@ It contains 2 arguments, which is the Exception and AMQPMessage instances.
      thow new Exception('Pigeon is awesome');
  };
 
- $fallback = function ($e, $message) {
+ $fallback = function    ($e, $message) {
      // Handle the exception
  };
 
@@ -116,16 +116,16 @@ It contains 2 arguments, which is the Exception and AMQPMessage instances.
      ->consume($timeout = 0, $multiple = true);
   ```
 
-!> The behaviour of fallback is going be changed to be compatible with callback interface.
+!> The fallback's behavior is going be changed to be compatible with the callback interface.
 
 ### Waiting
-After setup a consumer you need to start to listen the queue adn for this you use the `consume` method.
-You can pass a timeout in seconds to `consume`, so it'll start to consume the queue and it it reach the time without receive data
-it thrown a timeout exception.
-It can receive a second argument which is a boolean that specify if you want to consume multiple messages or not.
+After setting up a consumer you need to start listening for the queue using the `consume` method.
+You can pass a timeout in seconds to `consume`, so it'll start to consume the queue and if it reaches the time without receiving any data
+a timeout exception is thrown.
+It can receive a second argument which is a boolean that specifies if you want to consume multiple messages or not.
 
 ## Remote Procedure Call
-Pigeon also support RPC's with a simple interface:
+Pigeon also supports RPC's with a simple interface:
 ```php
 use Pigeon;
 
@@ -138,8 +138,8 @@ Pigeon::queue($responseQueue)
     ->consume($timeout = 5, $multiple = false);
 ```
 
-The RPC method return the response queue name, so you can consume it to receive the response message.
+The RPC method returns the response queue name, so you can consume it to receive the response message.
 
-?> You can consume the response queue when you need
+?> You can consume the response queue whenever you need.
 
-!> The response queue has a auto generated name and is auto-deleted.
+!> The response queue has an auto generated name and is auto-deleted.
