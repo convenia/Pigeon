@@ -9,7 +9,7 @@ Pigeon uses Laravel's coding style, so it can take advantages of the framework's
 You can fake a connection to the broker using `Pigeon::fake()` to speed up your tests.
  
 ## Asserting
- Pigeon has methods to test your code, asset certain behaviors and check if things are working.
+ Pigeon has methods to test your code, assert certain behaviors and check if things are working.
  
 ### Publishing
  You can easily check if a message was correctly published using the `assertPublished` method;
