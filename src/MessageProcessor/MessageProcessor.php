@@ -2,12 +2,12 @@
 
 namespace Convenia\Pigeon\MessageProcessor;
 
+use Closure;
 use Convenia\Pigeon\Drivers\DriverContract;
 use Convenia\Pigeon\Resolver\Resolver;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
-use Closure;
 
 class MessageProcessor implements MessageProcessorContract
 {
