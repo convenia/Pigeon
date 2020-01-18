@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added hability to test for timeout on consumers
 - Added hability to test for comsmer multiplicit
+### Fixed
+- Catch `Throwble` instead of `Exception` on default fallback
 
 
 ## [v1.4.0]
