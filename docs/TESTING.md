@@ -4,18 +4,17 @@
  2. [Asserts](#asserts)
  
 ## Getting Started
-Pigeon uses the Laravel code style, so it can take advantages of the framework features.
+Pigeon uses Laravel's coding style, so it can take advantages of the framework's features.
 
-The basic of testing with Pigeon is to fake it using `Pigeon::fake()` so it will not create a real connection to broker
-and will speed up the test.
+You can fake a connection to the broker using `Pigeon::fake()` to speed up your tests.
  
-## Asserts
- We added some methods to test your code and assert certain behaviours and check if things worked.
+## Asserting
+ Pigeon has methods to test your code, assert certain behaviors and check if things are working.
  
-### Publish
- You can easily check if a message was correct published using the `assertPublished` method;
+### Publishing
+ You can easily check if a message was correctly published using the `assertPublished` method;
  
- Lets assume you have a controller that publish some message:
+ Let's assume you have a controller that publishes a message:
  ```php
 Pigeon::routing('employe.deleted')
     ->publish([
@@ -23,7 +22,7 @@ Pigeon::routing('employe.deleted')
     ]);
 ```
 
-The above code can be tested using the `assertPublished`, which wi'll check if the message was published in the specified:
+The code above can be tested using the `assertPublished` method, which will check if the message was published in the specified route:
 ```php
 Pigeon::fake();
 
@@ -37,14 +36,14 @@ Pigeon::assertPublished(
 );
 ```
 
-### Consume
-Like asserting a message was published, you can easily assert a consumer has started in the correct queue using the `assertConsuming`.
+### Consuming
+Just like asserting a published message, you can easily assert that a consumer has been started in the correct queue using `assertConsuming`.
 
-The `timeout` and `multiple` params are optional, if you dont pass this params then timeout and multiplicity wont be checked. 
+The `timeout` and `multiple` parameters are optional, if you don't pass this parameters then timeout and multiplicity won't be checked. 
 ```php
 Pigeon::fake();
 
-// Call the consumer start
+// Start the consumer
 
 Pigeon::assertConsuming('the.queue.name', $timeout = 5, $multiple = true);
 ```
@@ -53,7 +52,7 @@ You can also call the callback configured in the consumer using the `dispatchCon
 ```php
 Pigeon::fake();
 
-// Call the consumer start
+// Start the consumer
 
 Pigeon::dispatchConsumer(
     'the.queue.name',

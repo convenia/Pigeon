@@ -5,7 +5,6 @@
  3. [Configuring Pigeon](#configuring)
  
 ## Requirements
-The Pigeon package has some system requirements.
  - PHP >= 7.1.3
  - JSON PHP extension
  - Sockets PHP Extension
@@ -18,11 +17,11 @@ composer require convenia/pigeon
 ```
 
 ## Configuring
-Pigeon utilize laravel auto-discovery feature, so you don't need to setup service provider and facade.
-After installing Pigeon you should configure it to connect to you broker.
+Pigeon utilizes laravel auto-discovery feature, so you don't need to setup any service provider or facade.
+After installing Pigeon configure it to connect to your broker.
 
 ### Application env file
-Typically, the pigeon environment configurations live in the `.env` file of your Laravel application.
+Typically, Pigeon's environment configurations can be found in the `.env` file of your Laravel application.
 
 ```dotenv
 PIGEON_ADDRESS=localhost # Your AMQP host
@@ -30,17 +29,17 @@ PIGEON_PORT=5672 # Your AMQP port
 PIGEON_USER=guest
 PIGEON_PASSWORD=guest
 PIGEON_VHOST=/
-PIGEON_EXCHANGE=application # OPTIONAL - Your applciaton default exchange
-PIGEON_EXCHANGE_TYPE=topic # OPTIONAL - Your applciaton default exchange type
-PIGEON_CONSUMER_TAG=application # OPTIONAL - Your applciaton name
-PIGEON_HEARTBEAT= # OPTIONAL -  The heart beat of connection
+PIGEON_EXCHANGE=application # OPTIONAL - The applicaton's default exchange
+PIGEON_EXCHANGE_TYPE=topic # OPTIONAL - The applicaton's default exchange type
+PIGEON_CONSUMER_TAG=application # OPTIONAL - The applicaton's name
+PIGEON_HEARTBEAT= # OPTIONAL -  The heartbeat of the connection
 ```
 
 ### Configuration File
-As any laravel library, you can publish the config to `config/pigeon.php` using bellow command
+As any laravel library, you can publish the config to `config/pigeon.php` using the command below.
 
 ```bash
 php artisan vendor:publish --tag=pigeon.config
 ```
 
-It'll publish a config file that contain all needle configuration you can change.
+It'll publish a config file that contains all the necessary configuration.

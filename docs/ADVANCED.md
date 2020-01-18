@@ -7,7 +7,7 @@
  Let's see some advanced uses of Pigeon
  
 ## Headers
- You can easily add `application_headers` to message when publishing one with `header` method
+ You can easily add `application_headers` when publishing a message with the `header` method.
  
  ```php
 use Pigeon;
@@ -16,7 +16,7 @@ Pigeon::routing($routing)
     ->header($key, $value);    
 ```  
 
-?> You can also pass **associative array** as value for header, it will be converted to dot notation
+?> You can also pass **associative array** as a value for the header, it will be converted to dot notation
 
 You can also capture all message headers with the resolver in your callback with `headers` method
  ```php
