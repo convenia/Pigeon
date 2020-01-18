@@ -5,6 +5,7 @@ namespace Convenia\Pigeon\Tests\Unit;
 use Convenia\Pigeon\MessageProcessor\MessageProcessor;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
+use Error;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Mockery;
@@ -109,10 +110,11 @@ class MessageProcessorTest extends TestCase
             throw $exception;
         };
 
+        $this->expectExceptionMessage('Callback failing and no fallback set');
         // act
         $processor = new MessageProcessor($this->driver, $callback);
 
-        Log::shouldReceive('error')->with(
+        Log::shouldReceive('error')->once()->with(
             $exception->getMessage(),
             [
                 'file'     => $exception->getFile(),
@@ -123,11 +125,37 @@ class MessageProcessorTest extends TestCase
             ]
         );
 
-        try {
-            $processor->process($message);
-        } catch (Exception $e) {
-            $this->assertSame($e, $exception);
-        }
+        $processor->process($message);
+    }
+
+    public function test_it_should_have_default_fallback_throw_errors_on_unexpected_config()
+    {
+        // setup
+        $data = ['foo' => 'bar'];
+        $message = new AMQPMessage(json_encode($data));
+        $this->app['config']['pigeon.consumer.on_failure'] = 'unexpected_config';
+
+        $exception = new Error('Testing errors');
+        $callback = function () use ($exception) {
+            throw $exception;
+        };
+
+        $this->expectExceptionMessage('Testing errors');
+        // act
+        $processor = new MessageProcessor($this->driver, $callback);
+
+        Log::shouldReceive('error')->once()->with(
+            $exception->getMessage(),
+            [
+                'file'     => $exception->getFile(),
+                'line'     => $exception->getLine(),
+                'tracing'  => $exception->getTraceAsString(),
+                'previous' => $exception->getPrevious(),
+                'message'  => json_decode($message->body, true),
+            ]
+        );
+
+        $processor->process($message);
     }
 
     public function test_it_should_have_default_fallback_ack_on_configured()
