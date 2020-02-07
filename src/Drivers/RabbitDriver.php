@@ -43,8 +43,6 @@ class RabbitDriver extends Driver
     {
         switch ($this->app['config']['pigeon.queue_declare_exists']) {
             case Constants::IGNORE_PRECONDITION:
-                Log::info('Handling declare precondition with: Constants::IGNORE_PRECONDITION');
-
                 return null;
             case Constants::REPLACE_ON_PRECONDITION:
                 Log::critical('Handling declare precondition with: Constants::REPLACE_ON_PRECONDITION');
