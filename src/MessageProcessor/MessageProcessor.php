@@ -5,9 +5,9 @@ namespace Convenia\Pigeon\MessageProcessor;
 use Closure;
 use Convenia\Pigeon\Drivers\DriverContract;
 use Convenia\Pigeon\Resolver\Resolver;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
+use Throwable;
 
 class MessageProcessor implements MessageProcessorContract
 {
@@ -26,8 +26,8 @@ class MessageProcessor implements MessageProcessorContract
     {
         try {
             $this->callUserCallback($message);
-        } catch (Exception $e) {
-            $this->callUserFallback($e, $message);
+        } catch (Throwable $t) {
+            $this->callUserFallback($t, $message);
         }
     }
 
@@ -38,22 +38,22 @@ class MessageProcessor implements MessageProcessorContract
         call_user_func($this->callback, $data, new Resolver($message));
     }
 
-    private function callUserFallback(Exception $e, $message)
+    private function callUserFallback(Throwable $t, $message)
     {
         $resolver = new Resolver($message);
         if (! $this->fallback) {
-            return $this->defaultFallback($e, $message, $resolver);
+            return $this->defaultFallback($t, $message, $resolver);
         }
-        call_user_func($this->fallback, $e, $message, $resolver);
+        call_user_func($this->fallback, $t, $message, $resolver);
     }
 
-    private function defaultFallback(Exception $e, $message, $resolver)
+    private function defaultFallback(Throwable $t, $message, $resolver)
     {
-        Log::error($e->getMessage(), [
-            'file'     => $e->getFile(),
-            'line'     => $e->getLine(),
-            'tracing'  => $e->getTraceAsString(),
-            'previous' => $e->getPrevious(),
+        Log::error($t->getMessage(), [
+            'file'     => $t->getFile(),
+            'line'     => $t->getLine(),
+            'tracing'  => $t->getTraceAsString(),
+            'previous' => $t->getPrevious(),
             'message'  => json_decode($message->body, true),
         ]);
 
@@ -65,7 +65,7 @@ class MessageProcessor implements MessageProcessorContract
                 $resolver->reject(false);
                 break;
             default:
-                throw $e;
+                throw $t;
         }
     }
 }
