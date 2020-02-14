@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added hability to test for comsmer multiplicit
 ### Changed
 - Catch `Throwble` instead of `Exception` on default fallback
+### Fixed
+- Fixed support for Laravel 6
 
 ## [v1.4.0]
 ### Added
