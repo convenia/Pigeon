@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed support for Laravel 6
 
+## [v1.4.1]
+### Removed
+-  Removed log info of IGNORE precondition
+
 ## [v1.4.0]
 ### Added
 - Added hability to send to default exchange when the exchange name is empty in `exchange()` method
