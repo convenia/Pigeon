@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.4.1]
 ### Removed
--  Removed log info of IGNORE precondition
+-  Removed log info from IGNORE precondition
 
 ## [v1.4.0]
 ### Added
