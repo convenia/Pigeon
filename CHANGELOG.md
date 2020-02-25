@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v1.5.0]
 ### Added
 - Added hability to test for timeout on consumers
 - Added hability to test for comsmer multiplicit
@@ -12,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Catch `Throwble` instead of `Exception` on default fallback
 ### Fixed
 - Fixed support for Laravel 6
+- Fixed facade `emmit` signature
 
 ## [v1.4.1]
 ### Removed
