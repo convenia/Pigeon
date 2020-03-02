@@ -200,7 +200,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         return $consumer;
     }
 
-    public function exchange(string $name, string $type): PublisherContract
+    public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
         return new Publisher($this->app, $this, $name);
     }
