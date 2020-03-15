@@ -23,10 +23,13 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     protected $events;
 
+    public $rpcConsumers;
+
     public function __construct($app)
     {
         parent::__construct($app);
         $this->consumers = new Collection();
+        $this->rpcConsumers = new Collection();
         $this->publishers = new Collection();
         $this->events = new Collection();
     }
@@ -89,6 +92,13 @@ class PigeonFake extends PigeonManager implements DriverContract
             $this->pushed($routing, $message),
             "No message published in [$routing] with body"
         );
+    }
+
+    public function assertRpc(string $routing, array $message, array $response): void
+    {
+        $this->assertPublished($routing, $message);
+
+        $this->dispatchConsumer($this->rpcConsumers->pop(), $response);
     }
 
     public function assertEmitted(string $category, array $data)
