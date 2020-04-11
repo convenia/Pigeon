@@ -263,10 +263,10 @@ class PigeonFake extends PigeonManager implements DriverContract
             ->map(function ($publisher) use ($exchange, $routing, $msg) {
                 if (! isset($publisher['message'])) {
                     $publisher['message'] = json_decode($msg->body, true);
-    
+
                     return $publisher;
                 }
-    
+
                 return $publisher;
             });
     }
