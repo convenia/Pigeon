@@ -59,8 +59,10 @@ class Publisher implements PublisherContract
             $this->routing
         );
 
-        //add an empty consumer
-        $this->driver->rpcConsumers->push($response_via);
+        //add an empty consumer for testing purposes
+        if (isset($this->driver->rpcConsumers)) {
+            $this->driver->rpcConsumers->push($response_via);
+        }
 
         return $response_via;
     }
