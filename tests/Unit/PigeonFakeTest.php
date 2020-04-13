@@ -238,11 +238,11 @@ class PigeonFakeTest extends TestCase
         $routing = 'my.awesome.application';
         $queue = 'blue-pen';
         $data = [
-            'scooby'
+            'scooby',
         ];
 
         $expectedResponse = [
-            'doo'
+            'doo',
         ];
 
         $this->app['config']->set('pigeon.exchange', $exchange);
@@ -259,7 +259,7 @@ class PigeonFakeTest extends TestCase
                 $callbackCalled = true;
                 $response = $expectedData;
             })->consume(5, false);
-        
+
         //assert
         $this->fake->assertRpc($routing, $data, $expectedResponse);
         $this->assertTrue($callbackCalled);
@@ -272,7 +272,7 @@ class PigeonFakeTest extends TestCase
         $queue = $this->fake->routing('routing.key')->rpc([]);
         $this->fake->queue($queue)->callback(function () {
         })->consume(5, false);
-        
+
         //assert
         $this->fake->assertRpc('routing.key', [], [], 5, false);
     }
