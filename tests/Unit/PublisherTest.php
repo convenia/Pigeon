@@ -138,7 +138,7 @@ class PublisherTest extends TestCase
 
         // act
         $reply_to = $publisher->routing($routing)->rpc($outgoing, $props);
-        
+
         // assert
         $this->assertEquals($response_via, $reply_to);
 
