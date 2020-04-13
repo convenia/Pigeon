@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added hability to test RPCs
+- Laravel 7 support
 
 ## [v1.5.0]
 ### Added
