@@ -94,11 +94,16 @@ class PigeonFake extends PigeonManager implements DriverContract
         );
     }
 
-    public function assertRpc(string $routing, array $message, array $response): void
+    public function assertRpc(string $routing, array $message, array $response, int $timeout = null, bool $multiple = null): void
     {
         $this->assertPublished($routing, $message);
 
-        $this->dispatchConsumer($this->rpcConsumers->shift(), $response);
+        $queue = $this->rpcConsumers->shift();
+        $this->assertConsuming($queue, $timeout, $multiple);
+        $this->dispatchConsumer(
+            $queue,
+            $response
+        );
     }
 
     public function assertEmitted(string $category, array $data)
