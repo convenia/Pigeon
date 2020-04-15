@@ -16,7 +16,7 @@
         "ext-json": "*",
         "ext-sockets": "*",
         "php-amqplib/php-amqplib": ">=2.9",
-        "laravel/framework": "^5.6|^6.0|^7.0",
+        "laravel/framework": "^5.8.38",
         "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
