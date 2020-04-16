@@ -106,7 +106,7 @@ $service = new App\Services\RpcService()
 $service->handle();
 
 //this method needs to be called after all
-//this can blow your mind but here you will define the $response passed to callback
+//this can blow your mind but here you define the response that will be passed to callback
 Pigeon::assertRpc('my.routing.key', ['scooby'], ['doo']);
 ```
 The snippet above will assert the routing key and the data sent by rpc, and define a response stub that will be send to que RPC consumer.
