@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Added hability to test RPCs
+- Added RPCs test
+- Added support PHPUnit 8
 - Laravel 7 support
 
 ## [v1.5.0]
