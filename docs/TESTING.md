@@ -61,7 +61,7 @@ Pigeon::dispatchConsumer(
 ``` 
 
 ### RPC
-You can use `assertRpc` method to test RPC, it is basically the consumer and the publisher assertions together with hability to define the RPC response stub.
+You can use `assertRpc` method to test RPC, it is basically the consumer and the publisher assertions together with ability to define the RPC response stub.
 
 !> When testing RPCs the env exchange will be always assumed, you can not override the exchange for now.
 
