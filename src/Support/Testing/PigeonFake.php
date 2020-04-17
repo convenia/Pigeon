@@ -23,10 +23,13 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     protected $events;
 
+    public $rpcConsumers;
+
     public function __construct($app)
     {
         parent::__construct($app);
         $this->consumers = new Collection();
+        $this->rpcConsumers = new Collection();
         $this->publishers = new Collection();
         $this->events = new Collection();
     }
@@ -88,6 +91,18 @@ class PigeonFake extends PigeonManager implements DriverContract
         PHPUnit::assertTrue(
             $this->pushed($routing, $message),
             "No message published in [$routing] with body"
+        );
+    }
+
+    public function assertRpc(string $routing, array $message, array $response, int $timeout = null, bool $multiple = null): void
+    {
+        $this->assertPublished($routing, $message);
+
+        $queue = $this->rpcConsumers->shift();
+        $this->assertConsuming($queue, $timeout, $multiple);
+        $this->dispatchConsumer(
+            $queue,
+            $response
         );
     }
 
@@ -249,20 +264,16 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function basic_publish(AMQPMessage $msg, $exchange, $routing)
     {
-        $callback = function ($publisher) use ($exchange, $routing, $msg) {
-            if ($publisher['routing'] === $routing
-                && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
-                && ! isset($publisher['message'])
-            ) {
-                $publisher['message'] = json_decode($msg->body, true);
+        $this->publishers = $this->publishers
+            ->map(function ($publisher) use ($exchange, $routing, $msg) {
+                if (! isset($publisher['message'])) {
+                    $publisher['message'] = json_decode($msg->body, true);
+
+                    return $publisher;
+                }
 
                 return $publisher;
-            }
-        };
-
-        $this->publishers = $this->publishers
-            ->where('routing', $routing)
-            ->map($callback);
+            });
     }
 
     public function queue_declare($queue = '')
@@ -293,6 +304,14 @@ class PigeonFake extends PigeonManager implements DriverContract
      * @codeCoverageIgnore
      */
     public function getChannel(int $id = null)
+    {
+        return $this;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function queue_bind(string $queue, string $exchange = '', string $routing = '')
     {
         return $this;
     }

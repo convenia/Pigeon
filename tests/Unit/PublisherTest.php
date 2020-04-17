@@ -4,6 +4,7 @@ namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Tests\TestCase;
+use Illuminate\Support\Collection;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -124,6 +125,9 @@ class PublisherTest extends TestCase
         ];
         $publisher = new Publisher($this->app, $this->driver, $exchange);
 
+        //this property will be present in fake driver
+        $this->driver->rpcConsumers = new Collection();
+
         // assert
         $this->channel->shouldReceive('queue_declare')->once()->andReturn([$response_via, null, null]);
         $this->channel->shouldReceive('basic_publish')->with(
@@ -137,6 +141,10 @@ class PublisherTest extends TestCase
 
         // assert
         $this->assertEquals($response_via, $reply_to);
+
+        //this will happen in tests in order to stup rpc tests
+        $this->assertCount(1, $this->driver->rpcConsumers);
+        $this->assertContains($response_via, $this->driver->rpcConsumers);
     }
 
     public function test_it_should_add_all_headers()

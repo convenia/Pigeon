@@ -230,6 +230,53 @@ class PigeonFakeTest extends TestCase
         $this->fake->assertPublished($routing, $data);
     }
 
+    public function test_it_should_assert_rpc_calls_and_response()
+    {
+        // setup
+        $exchange = 'my.awesome.exchange';
+        $type = 'direct';
+        $routing = 'my.awesome.application';
+        $queue = 'blue-pen';
+        $data = [
+            'scooby',
+        ];
+
+        $expectedResponse = [
+            'doo',
+        ];
+
+        $this->app['config']->set('pigeon.exchange', $exchange);
+        $this->app['config']->set('pigeon.exchange_type', $type);
+
+        //act
+        $callbackCalled = false;
+        $response = [];
+
+        $queue = $this->fake->routing($routing)->rpc($data);
+
+        $this->fake->queue($queue)
+            ->callback(function ($expectedData) use (&$callbackCalled, &$response) {
+                $callbackCalled = true;
+                $response = $expectedData;
+            })->consume(5, false);
+
+        //assert
+        $this->fake->assertRpc($routing, $data, $expectedResponse);
+        $this->assertTrue($callbackCalled);
+        $this->assertEquals($expectedResponse, $response);
+    }
+
+    public function test_it_can_assert_rpc__consumer_timeout_and_multiplicity()
+    {
+        // act
+        $queue = $this->fake->routing('routing.key')->rpc([]);
+        $this->fake->queue($queue)->callback(function () {
+        })->consume(5, false);
+
+        //assert
+        $this->fake->assertRpc('routing.key', [], [], 5, false);
+    }
+
     public function test_it_should_fail_assert_message_published_using_routing_wrong_body()
     {
         // setup
