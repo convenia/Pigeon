@@ -25,7 +25,7 @@ class PublisherTest extends TestCase
         $this->driver->shouldReceive('getChannel')->andReturn($this->channel);
     }
 
-    public function test_it_should_publish_message_without_routing_key_with_props()
+    public function test_it_should_publish_message_without_routing_key_and_merge_user_properties_with_default_properties()
     {
         // setup
         $exchange = 'my.awesome.exchange';
