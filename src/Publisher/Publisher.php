@@ -40,7 +40,7 @@ class Publisher implements PublisherContract
 
     public function publish(array $message, array $properties = [], int $channelId = null)
     {
-        $msg = $this->makeMessage($message);
+        $msg = $this->makeMessage($message, $properties);
         $this->driver->getChannel($channelId)->basic_publish(
             $msg,
             $this->exchange,
@@ -78,11 +78,11 @@ class Publisher implements PublisherContract
     private function getMessageProps(array $userProps): array
     {
         return array_merge([
-            'content_type'     => 'application/json',
+            'content_type' => 'application/json',
             'content_encoding' => 'utf8',
-            'correlation_id'   => Uuid::generate()->string,
-            'expiration'       => 60000000,
-            'app_id'           => $this->app['config']['app_name'],
+            'correlation_id' => Uuid::generate()->string,
+            'expiration' => 60000000,
+            'app_id' => $this->app['config']['app_name'],
             'application_headers' => new AMQPTable($this->getHeaders()),
         ], $userProps);
     }

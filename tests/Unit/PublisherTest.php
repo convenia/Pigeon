@@ -25,11 +25,10 @@ class PublisherTest extends TestCase
         $this->driver->shouldReceive('getChannel')->andReturn($this->channel);
     }
 
-    public function test_it_should_publish_message_without_routing_key_with_props()
+    public function test_it_should_publish_message_without_routing_key_and_merge_user_properties_with_default_properties()
     {
         // setup
         $exchange = 'my.awesome.exchange';
-        $routing = 'my.awesome.service';
         $data = [
             'foo' => 'fighters',
         ];
@@ -40,7 +39,13 @@ class PublisherTest extends TestCase
 
         // assert
         $this->channel->shouldReceive('basic_publish')->with(
-            Mockery::type(AMQPMessage::class),
+            Mockery::on(function ($message) {
+                $body = json_decode($message->getBody());
+
+                return 60000000 === $message->get('expiration')
+                    && 10 === $message->get('priority')
+                    && 'fighters' === $body->foo;
+            }),
             $exchange,
             null
         )->once();
