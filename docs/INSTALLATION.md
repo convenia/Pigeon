@@ -16,6 +16,12 @@ Pigeon utilizes [Composer](https://getcomposer.org/) to manage its dependencies.
 composer require convenia/pigeon
 ```
 
+?> For Laravel version less than 8 you need to install Pigeon version 1.*
+
+```bash
+composer require convenia/pigeon 1.*
+```
+
 ## Configuring
 Pigeon utilizes laravel auto-discovery feature, so you don't need to setup any service provider or facade.
 After installing Pigeon configure it to connect to your broker.
