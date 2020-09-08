@@ -265,7 +265,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     public function basic_publish(AMQPMessage $msg, $exchange, $routing)
     {
         $this->publishers = $this->publishers
-            ->map(function ($publisher) use ($exchange, $routing, $msg) {
+            ->map(function ($publisher) use ($msg) {
                 if (! isset($publisher['message'])) {
                     $publisher['message'] = json_decode($msg->body, true);
 
