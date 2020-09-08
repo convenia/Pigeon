@@ -14,13 +14,13 @@ class PigeonManager extends Manager
 {
     public function headers(array $headers)
     {
-        $old = $this->app['config']->get($key = 'pigeon.headers');
-        $this->app['config']->set($key, array_merge($old, $headers));
+        $old = $this->container['config']->get($key = 'pigeon.headers');
+        $this->container['config']->set($key, array_merge($old, $headers));
     }
 
     public function createRabbitDriver()
     {
-        return new RabbitDriver($this->app);
+        return new RabbitDriver($this->container);
     }
 
     public function createNullDriver()
@@ -35,7 +35,7 @@ class PigeonManager extends Manager
      */
     public function getDefaultDriver(): string
     {
-        return $this->app['config']['pigeon.default'] ?? 'null';
+        return $this->container['config']['pigeon.default'] ?? 'null';
     }
 
     /**
