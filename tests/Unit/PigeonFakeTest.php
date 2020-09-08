@@ -356,7 +356,7 @@ class PigeonFakeTest extends TestCase
         }
         try {
             $this->fake->queue($queue)
-                ->callback(function ($message, ResolverContract $resolver) use ($data) {
+                ->callback(function ($message, ResolverContract $resolver) {
                     $resolver->response([
                         'wrong' => 'response',
                     ]);
