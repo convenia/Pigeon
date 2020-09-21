@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Properties on publish method
+### Added
+- Laravel 8 support
 ## [v1.6.0]
 ### Added
 - Added RPCs test
