@@ -146,7 +146,7 @@ class PublisherTest extends TestCase
         $this->assertNull($received);
 
         // act
-        $this->pigeon->emmit($event_name, $event_data);
+        $this->pigeon->dispatch($event_name, $event_data);
 
         sleep(1);
         // assert
