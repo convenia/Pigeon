@@ -8,11 +8,10 @@ use Illuminate\Support\Manager;
 /**
  * Laravel 8 changed app variable doing a BC.
  * this class holds a reference with the old container name
- * in order to ensure compatibility with old Laravel versions
+ * in order to ensure compatibility with old Laravel versions.
  */
 abstract class BridgeManager extends Manager
 {
-
     /**
      * The container instance.
      *
