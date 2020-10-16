@@ -8,7 +8,12 @@
         {
             "name": "Kauan Sousa",
             "email": "kauanslr.ks@gmail.com",
-            "role": "Original Maintainer"
+            "role": "Maintainer"
+        },
+        {
+            "name": "Leonardo Lemos",
+            "email": "leonardo.lemos@convenia.com.br",
+            "role": "Maintainer"
         }
     ],
     "require": {
