@@ -60,7 +60,7 @@ abstract class Driver implements DriverContract
         return (new Publisher($this->app, $this, $exchange))->routing($name);
     }
 
-    public function emmit(string $eventName, array $event, array $meta = []): void
+    public function dispatch(string $eventName, array $event, array $meta = []): void
     {
         throw_if(empty($event), new EmptyEventException());
         $publisher = $this->exchange(self::EVENT_EXCHANGE, self::EVENT_EXCHANGE_TYPE)->routing($eventName);

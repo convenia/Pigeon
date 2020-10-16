@@ -39,7 +39,7 @@ class DriverTest extends TestCase
         $this->channel->queue_bind($this->queue, Driver::EVENT_EXCHANGE, $event_name);
 
         // act
-        $this->driver->emmit($event_name, $event_content);
+        $this->driver->dispatch($event_name, $event_content);
 
         sleep(1);
 
@@ -65,7 +65,7 @@ class DriverTest extends TestCase
         $this->channel->queue_bind($this->queue, Driver::EVENT_EXCHANGE, $event_name);
 
         // act
-        $this->driver->emmit($event_name, $event_content, $meta);
+        $this->driver->dispatch($event_name, $event_content, $meta);
 
         sleep(1);
 
