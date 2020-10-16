@@ -3,9 +3,9 @@
 namespace Convenia\Pigeon;
 
 use BadMethodCallException;
+use Convenia\Pigeon\BridgeManager as Manager;
 use Convenia\Pigeon\Drivers\RabbitDriver;
 use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
-use Convenia\Pigeon\BridgeManager as Manager;
 
 /**
  * Class PigeonManager.
