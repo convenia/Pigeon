@@ -3,9 +3,9 @@
 namespace Convenia\Pigeon;
 
 use BadMethodCallException;
+use Convenia\Pigeon\BridgeManager as Manager;
 use Convenia\Pigeon\Drivers\RabbitDriver;
 use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
-use Illuminate\Support\Manager;
 
 /**
  * Class PigeonManager.
@@ -14,13 +14,13 @@ class PigeonManager extends Manager
 {
     public function headers(array $headers)
     {
-        $old = $this->container['config']->get($key = 'pigeon.headers');
-        $this->container['config']->set($key, array_merge($old, $headers));
+        $old = $this->app['config']->get($key = 'pigeon.headers');
+        $this->app['config']->set($key, array_merge($old, $headers));
     }
 
     public function createRabbitDriver()
     {
-        return new RabbitDriver($this->container);
+        return new RabbitDriver($this->app);
     }
 
     public function createNullDriver()
@@ -35,7 +35,7 @@ class PigeonManager extends Manager
      */
     public function getDefaultDriver(): string
     {
-        return $this->container['config']['pigeon.default'] ?? 'null';
+        return $this->app['config']['pigeon.default'] ?? 'null';
     }
 
     /**

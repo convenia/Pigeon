@@ -8,18 +8,12 @@
  - PHP >= 7.1.3
  - JSON PHP extension
  - Sockets PHP Extension
- 
+
 ## Installing
 Pigeon utilizes [Composer](https://getcomposer.org/) to manage its dependencies. So, before using Laravel, make sure you have Composer installed on your machine.
 
 ```bash
 composer require convenia/pigeon
-```
-
-?> For Laravel version less than 8 you need to install Pigeon version 1.*
-
-```bash
-composer require convenia/pigeon 1.*
 ```
 
 ## Configuring
