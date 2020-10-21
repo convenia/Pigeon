@@ -25,9 +25,9 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public $rpcConsumers;
 
-    public function __construct($container)
+    public function __construct($app)
     {
-        parent::__construct($container);
+        parent::__construct($app);
         $this->consumers = new Collection();
         $this->rpcConsumers = new Collection();
         $this->publishers = new Collection();
@@ -118,7 +118,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     {
         $callback = $callback ?: function ($publisher) use ($routing, $message) {
             return $publisher['routing'] === $routing
-                && $publisher['exchange'] === $this->container['config']['pigeon.exchange']
+                && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
                 && isset($publisher['message'])
                 && $publisher['message'] === $message;
         };
@@ -143,7 +143,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         $callback = $callback ?: function ($publisher) use ($routing, $message) {
             return Str::contains($publisher['routing'], 'rpc.')
                 && $publisher['routing'] === $routing
-                && $publisher['exchange'] === $this->container['config']['pigeon.exchange']
+                && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
                 && isset($publisher['message'])
                 && $publisher['message'] === $message;
         };
@@ -190,8 +190,8 @@ class PigeonFake extends PigeonManager implements DriverContract
         $consumer = $this->consumers->get($queue);
 
         $message->delivery_info['delivery_tag'] = $delivery_tag;
-        $exchange = $this->container['config']['pigeon.exchange'];
-        $publisher = (new Publisher($this->container, $this, $exchange))->routing($reply_to);
+        $exchange = $this->app['config']['pigeon.exchange'];
+        $publisher = (new Publisher($this->app, $this, $exchange))->routing($reply_to);
 
         $this->publishers->push([
             'exchange' => $exchange,
@@ -209,7 +209,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function queue(string $name): ConsumerContract
     {
-        $consumer = new Consumer($this->container, $this, $name);
+        $consumer = new Consumer($this->app, $this, $name);
         $this->consumers->put($name, $consumer);
 
         return $consumer;
@@ -217,13 +217,13 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        return new Publisher($this->container, $this, $name);
+        return new Publisher($this->app, $this, $name);
     }
 
     public function routing(string $name): PublisherContract
     {
-        $exchange = $this->container['config']['pigeon.exchange'];
-        $publisher = (new Publisher($this->container, $this, $exchange))->routing($name);
+        $exchange = $this->app['config']['pigeon.exchange'];
+        $publisher = (new Publisher($this->app, $this, $exchange))->routing($name);
         $this->publishers->push([
             'exchange' => $exchange,
             'routing' => $name,
@@ -235,7 +235,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function events(string $event = '#'): ConsumerContract
     {
-        $consumer = new Consumer($this->container, $this, $event);
+        $consumer = new Consumer($this->app, $this, $event);
         $this->consumers->put($event, $consumer);
 
         return $consumer;
