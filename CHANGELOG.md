@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Properties on publish method
 ### Added
 - Laravel 8 support
-### Changed
-- Change `emmit` method name to `dispatch`
 ## [v1.6.0]
 ### Added
 - Added RPCs test
@@ -25,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Catch `Throwble` instead of `Exception` on default fallback
 ### Fixed
 - Fixed support for Laravel 6
-- Fixed facade `dispatch` signature
+- Fixed facade `emmit` signature
 
 ## [v1.4.1]
 ### Removed
@@ -66,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0-beta.1]
 ### Added
-- Add `application_headers` to `Pigeon::dispatch` as last parameter
+- Add `application_headers` to `Pigeon::emmit` as last parameter
 - Add configurable precondition catch on queue creation
 ### Fixed
 - Auto declare exchange with `routing`

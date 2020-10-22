@@ -241,7 +241,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         return $consumer;
     }
 
-    public function dispatch(string $eventName, array $event, array $meta = []): void
+    public function emmit(string $eventName, array $event, array $meta = []): void
     {
         $this->events->push([
             'event' => $eventName,

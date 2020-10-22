@@ -392,7 +392,7 @@ class PigeonFakeTest extends TestCase
         } catch (ExpectationFailedException $e) {
             $this->assertThat($e, new ExceptionMessage("No event [$category] emitted with body"));
         }
-        $this->fake->dispatch($category, $data);
+        $this->fake->emmit($category, $data);
 
         $this->fake->assertEmitted($category, $data);
     }

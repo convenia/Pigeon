@@ -13,7 +13,7 @@ interface DriverContract
 
     public function events(string $event = '*'): ConsumerContract;
 
-    public function dispatch(string $eventName, array $event, array $meta = []): void;
+    public function emmit(string $eventName, array $event, array $meta = []): void;
 
     public function routing(string $name): PublisherContract;
 

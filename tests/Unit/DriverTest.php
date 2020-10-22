@@ -125,7 +125,7 @@ class DriverTest extends TestCase
         )->once();
 
         // act
-        $this->driver->dispatch($event_name, $event_content);
+        $this->driver->emmit($event_name, $event_content);
     }
 
     public function test_it_should_publish_event_with_headers()
@@ -163,7 +163,7 @@ class DriverTest extends TestCase
         )->once();
 
         // act
-        $this->driver->dispatch($event_name, $event_content, $meta);
+        $this->driver->emmit($event_name, $event_content, $meta);
     }
 
     public function test_it_should_not_publish_empty_event()
@@ -173,10 +173,10 @@ class DriverTest extends TestCase
         $event_content = [];
 
         // assert
-        $this->expectExceptionMessage('Cannot dispatch empty event');
+        $this->expectExceptionMessage('Cannot emmit empty event');
 
         // act
-        $this->driver->dispatch($event_name, $event_content);
+        $this->driver->emmit($event_name, $event_content);
     }
 
     public function test_it_should_declare_bind_event_queue_and_return_consumer()

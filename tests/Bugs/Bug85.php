@@ -44,6 +44,6 @@ class Bug85 extends TestCase
             ->with(3)
             ->andReturn($this->channel);
 
-        $this->driver->dispatch('anything', ['foo' => 'bar']);
+        $this->driver->emmit('anything', ['foo' => 'bar']);
     }
 }
