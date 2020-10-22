@@ -4,3 +4,4 @@
 * [Advanced](ADVANCED.md)
 * [Testing](TESTING.md)
 * [Event Driven](EVENT_DRIVEN.md)
+* [UPGRADE GUIDE](UPGRADE.md)
