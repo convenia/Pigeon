@@ -10,7 +10,7 @@ use Illuminate\Support\Manager;
  * this class holds a reference with the old container name
  * in order to ensure compatibility with old Laravel versions.
  */
-abstract class BridgeManager extends Manager
+class BridgeManager extends Manager
 {
     /**
      * The container instance.
@@ -29,5 +29,14 @@ abstract class BridgeManager extends Manager
     {
         $this->app = $container;
         parent::__construct($container);
+    }
+
+    /**
+     * Get the default driver name.
+     *
+     * @return string
+     */
+    public function getDefaultDriver()
+    {
     }
 }
