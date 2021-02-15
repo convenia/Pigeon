@@ -81,7 +81,7 @@ class ConsumerTest extends TestCase
 
         $consumer->consume(5, true);
 
-        $this->assertTrue($times == 2, 'Called two times');
+        $this->assertTrue($times === 2, 'Called two times');
     }
 
     public function test_it_should_return_a_message_processor()
