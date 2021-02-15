@@ -518,7 +518,6 @@ class PigeonFakeTest extends TestCase
         $this->fake
         ->queue($queue)
         ->callback(function ($event, ResolverContract $resolver) use (&$run) {
-            $event;
             $resolver->ack();
             $run = true;
         })->consume();
