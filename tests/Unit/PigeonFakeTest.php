@@ -387,14 +387,14 @@ class PigeonFakeTest extends TestCase
 
         // act
         try {
-            $this->fake->assertEmitted($category, $data);
+            $this->fake->assertDispatched($category, $data);
             $this->fail();
         } catch (ExpectationFailedException $e) {
             $this->assertThat($e, new ExceptionMessage("No event [$category] emitted with body"));
         }
         $this->fake->dispatch($category, $data);
 
-        $this->fake->assertEmitted($category, $data);
+        $this->fake->assertDispatched($category, $data);
     }
 
     public function test_it_should_assert_consuming_event()
