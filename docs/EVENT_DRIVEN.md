@@ -3,10 +3,10 @@
 
 ## Dispatching Events
 
-Very similar to `publish` method, Pigeon has an `emmit` method.
+Very similar to `publish` method, Pigeon has an `dispatch` method.
 
 ```PHP
-Pigeon::emmit('payment.purchase.done', [
+Pigeon::dispatch('payment.purchase.done', [
     'uuid' => $user->uuid,
     'value' => 1000
     'status' => 'Done'
@@ -22,7 +22,7 @@ Now we are emitting the `payment.purchase.done` event, by convention we use dot 
 2. The second parameter is the body message, this must be the main content.
 3. The third param are the headers, it lives in `application_headers` property from message.
 
-By the book, when you use publish method, you know the consumer, you send directally to the consumer(only one consumer), emmit method is different, you don't know the consumer and actually it can have more than one consumer, it's a event/subiscriber architecture.
+By the book, when you use publish method, you know the consumer, you send directally to the consumer(only one consumer), dispatch method is different, you don't know the consumer and actually it can have more than one consumer, it's a event/subiscriber architecture.
 
 ### How it works behind the scenes?
 
@@ -32,7 +32,7 @@ If you are not acquainted with routing, see [rabbitmq docs](https://www.rabbitmq
 
 ## Listening For Events
 
-The previous section have introduced the `emmit` method, but this method will send the event to an exchange without a binded queue, the emitter is talking but no one is listening... our shipping service should listen for orders from payment service, lets do this.
+The previous section have introduced the `dispatch` method, but this method will send the event to an exchange without a binded queue, the emitter is talking but no one is listening... our shipping service should listen for orders from payment service, lets do this.
 
 ```PHP
 Pigeon::events('payment.purchase.done')
@@ -44,9 +44,9 @@ Pigeon::events('payment.purchase.done')
 
 Just put this code in an artisan command and we are ready to go...
 
-The method `events` will listen for events named with his param, the param should be identical to the event name used on emmit method.
+The method `events` will listen for events named with his param, the param should be identical to the event name used on dispatch method.
 
-The callback method defines a handler to the event, the first param is the message body sent by `emmit` method, the second param is the resolver.
+The callback method defines a handler to the event, the first param is the message body sent by `dispatch` method, the second param is the resolver.
 
 !> Its very important to call `$resolver->ack();` when all goes well, if you dont, the message will never get out of the queue and the listener will process the message for ever
 
