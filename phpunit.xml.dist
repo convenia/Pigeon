@@ -1,43 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         verbose="true"
->
-    <testsuites>
-        <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Integration">
-            <directory suffix="Test.php">./tests/Integration</directory>
-        </testsuite>
-        <testsuite name="Bugs">
-            <directory prefix="Bug" suffix=".php">./tests/Bugs</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="false">
-            <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
-
-    <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
-        <env name="PIGEON_DRIVER" value="rabbit"/>
-        <env name="PIGEON_ADDRESS" value="localhost"/>
-        <env name="PIGEON_PORT" value="5672"/>
-        <env name="PIGEON_USER" value="guest"/>
-        <env name="PIGEON_PASSWORD" value="guest"/>
-        <env name="PIGEON_VHOST" value="/"/>
-        <env name="PIGEON_KEEPALIVE" value="true"/>
-        <env name="PIGEON_HEARTBEAT" value="60"/>
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="vendor/autoload.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" verbose="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage includeUncoveredFiles="false">
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="Unit">
+      <directory suffix="Test.php">./tests/Unit</directory>
+    </testsuite>
+    <testsuite name="Integration">
+      <directory suffix="Test.php">./tests/Integration</directory>
+    </testsuite>
+    <testsuite name="Bugs">
+      <directory prefix="Bug" suffix=".php">./tests/Bugs</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+    <env name="PIGEON_DRIVER" value="rabbit"/>
+    <env name="PIGEON_ADDRESS" value="localhost"/>
+    <env name="PIGEON_PORT" value="5672"/>
+    <env name="PIGEON_USER" value="guest"/>
+    <env name="PIGEON_PASSWORD" value="guest"/>
+    <env name="PIGEON_VHOST" value="/"/>
+    <env name="PIGEON_KEEPALIVE" value="true"/>
+    <env name="PIGEON_HEARTBEAT" value="60"/>
+  </php>
 </phpunit>
