@@ -5,10 +5,6 @@ env:
   global:
     - SETUP=stable
 
-branches:
-  only:
-    - /.*/
-
 services: rabbitmq
 addons:
   apt:
