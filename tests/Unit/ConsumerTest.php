@@ -99,4 +99,9 @@ class ConsumerTest extends TestCase
 
         $this->assertInstanceOf(MessageProcessor::class, $processor);
     }
+
+    public function test_travis()
+    {
+        $this->assertTrue(true);
+    }
 }
