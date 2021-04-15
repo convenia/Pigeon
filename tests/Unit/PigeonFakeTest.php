@@ -7,6 +7,7 @@ use Convenia\Pigeon\Facade\Pigeon;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\ExpectationFailedException;
 
@@ -525,5 +526,33 @@ class PigeonFakeTest extends TestCase
         $this->fake->dispatchListener($queue, []);
 
         $this->assertTrue($run);
+    }
+
+    public function test_it_should_assert_event_not_dispatched() {
+        // setup
+        $category = 'some.event.category';
+
+        $data = [
+            'foo' => 'baz',
+        ];
+
+        // act
+        try {
+            $this->fake->dispatch($category, $data);
+            $this->fake->assertNotDispatched($category, $data);
+
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $expectedExceptionMessage = "Event [$category] emitted with body: " . json_encode($data);
+    
+            $this->assertStringContainsString($expectedExceptionMessage, $e->getMessage());
+            $this->assertThat($e, new ExceptionMessage($expectedExceptionMessage));
+        }
+
+        $data = [
+            'foo' => 'bar',
+        ];
+
+        $this->fake->assertNotDispatched($category, $data);
     }
 }
