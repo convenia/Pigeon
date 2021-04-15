@@ -8,6 +8,8 @@ jobs:
     services:
       rabbitmq:
         image: rabbitmq:3.8
+        ports:
+          - 5672:5672
 
     runs-on: ubuntu-18.04
     strategy:
