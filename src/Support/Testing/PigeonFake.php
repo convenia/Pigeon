@@ -118,7 +118,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     {
         PHPUnit::assertFalse(
             $this->emitted($category, $data),
-            "Event [$category] emitted with body: " . json_encode($data)
+            "Event [$category] emitted with body: ".json_encode($data)
         );
     }
 
