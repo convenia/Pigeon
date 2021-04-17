@@ -37,13 +37,13 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer update --prefer-dist --no-interaction --no-suggest
+      run: composer update --prefer-dist --no-interaction
       
     - name: Run phpunit
       run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --configuration=phpunit-ci.xml
 
     - name: Install lowest dependencies
-      run: composer update --prefer-dist --no-interaction --no-suggest --prefer-lowest
+      run: composer update --prefer-dist --no-interaction --prefer-lowest
       
     - name: Run phpunit with lowest dependencies
       run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --configuration=phpunit-ci.xml
