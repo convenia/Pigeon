@@ -114,6 +114,14 @@ class PigeonFake extends PigeonManager implements DriverContract
         );
     }
 
+    public function assertNotDispatched(string $category, array $data)
+    {
+        PHPUnit::assertFalse(
+            $this->emitted($category, $data),
+            "Event [$category] emitted with body: ".json_encode($data)
+        );
+    }
+
     public function pushed(string $routing, array $message, $callback = null)
     {
         $callback = $callback ?: function ($publisher) use ($routing, $message) {
@@ -134,8 +142,7 @@ class PigeonFake extends PigeonManager implements DriverContract
             return ($e['event'] == $event) && ($e['data'] == $data);
         };
 
-        return $this->events->filter($callback)
-            ->isNotEmpty();
+        return $this->events->filter($callback)->isNotEmpty();
     }
 
     public function rpcPushed(string $routing, array $message, $callback = null)
