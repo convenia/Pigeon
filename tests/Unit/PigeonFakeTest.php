@@ -526,4 +526,30 @@ class PigeonFakeTest extends TestCase
 
         $this->assertTrue($run);
     }
+
+    public function test_it_should_assert_event_not_dispatched()
+    {
+        // setup
+        $category = 'some.event.category';
+
+        $data = [
+            'foo' => 'baz',
+        ];
+
+        // act
+        try {
+            $this->fake->dispatch($category, $data);
+            $this->fake->assertNotDispatched($category, $data);
+
+            $this->fail();
+        } catch (ExpectationFailedException $e) {
+            $this->assertThat($e, new ExceptionMessage("Event [$category] emitted with body: ".json_encode($data)));
+        }
+
+        $data = [
+            'foo' => 'bar',
+        ];
+
+        $this->fake->assertNotDispatched($category, $data);
+    }
 }
