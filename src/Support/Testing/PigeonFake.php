@@ -106,7 +106,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         );
     }
 
-    public function assertEmitted(string $category, array $data)
+    public function assertDispatched(string $category, array $data)
     {
         PHPUnit::assertTrue(
             $this->emitted($category, $data),

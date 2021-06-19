@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Pigeon::assertNotDispatched()` method to Fake driver
 ### Changed
 - Change `emmit` method name to `dispatch`
+- Change `assertEmitted` method name to `assertDispatched`
 ## [v1.6.0]
 ### Added
 - Added RPCs test
