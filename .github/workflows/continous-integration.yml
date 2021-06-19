@@ -43,8 +43,10 @@ jobs:
       run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --configuration=phpunit-ci.xml
 
     - name: Install lowest dependencies
+      if: ${{ matrix.php-versions != '8.0' }}
       run: composer update --prefer-dist --no-interaction --prefer-lowest
       
     - name: Run phpunit with lowest dependencies
+      if: ${{ matrix.php-versions != '8.0' }}
       run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --configuration=phpunit-ci.xml
 
