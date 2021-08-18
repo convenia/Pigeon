@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Exception\AMQPHeartbeatMissedException;
 
 class RabbitDriver extends Driver
 {
@@ -16,11 +17,10 @@ class RabbitDriver extends Driver
         if (! $this->connection) {
             $this->connection = $this->makeConnection();
         }
-        if ($this->connection->isConnected()) {
-            return $this->connection;
-        }
 
-        $this->connection->reconnect();
+        if(!$this->connection->isConnected() || $this->missedHeartBeat()) {
+            $this->connection->reconnect();
+        }
 
         return $this->connection;
     }
@@ -83,5 +83,16 @@ class RabbitDriver extends Driver
     public function quit()
     {
         $this->quitHard();
+    }
+
+    public function missedHeartBeat(): bool
+    {
+        try {
+            $this->connection->checkHeartBeat();
+        } catch (AMQPHeartbeatMissedException $exception) {
+            return true;
+        }
+
+        return false;
     }
 }

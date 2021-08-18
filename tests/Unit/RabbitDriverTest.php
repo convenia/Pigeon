@@ -16,12 +16,8 @@ class RabbitDriverTest extends TestCase
     private $connection;
     private $channel;
 
-    private $queue = 'some.queue';
-
-    protected function setUp(): void
+    public function mocksSetUp(): void
     {
-        parent::setUp();
-
         $this->connection = Mockery::mock(AbstractConnection::class);
         $this->channel = Mockery::mock(AMQPChannel::class);
         $this->driver = Mockery::mock('Convenia\Pigeon\Drivers\RabbitDriver[makeConnection]', [$this->app]);
@@ -39,11 +35,19 @@ class RabbitDriverTest extends TestCase
 
     public function test_it_should_return_connection()
     {
+        $this->mocksSetUp();
         $this->assertEquals($this->connection, $this->driver->getConnection());
     }
 
     public function test_it_should_return_channel()
     {
+        $this->mocksSetUp();
         $this->assertEquals($this->channel, $this->driver->getchannel());
+    }
+
+    public function test_it_should_return_not_missed_heart_beat()
+    {
+        $this->app['pigeon']->driver('rabbit')->getConnection();
+        $this->assertFalse($this->app['pigeon']->driver('rabbit')->missedHeartBeat());
     }
 }

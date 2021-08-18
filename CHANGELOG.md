@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Properties on publish method
+- Reconnect when missed heart beat
 ### Added
 - Laravel 8 support
 - Added `Pigeon::assertNotDispatched()` method to Fake driver
