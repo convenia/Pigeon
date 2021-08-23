@@ -18,7 +18,7 @@ class RabbitDriver extends Driver
             $this->connection = $this->makeConnection();
         }
 
-        if(!$this->connection->isConnected() || $this->missedHeartBeat()) {
+        if (! $this->connection->isConnected() || $this->missedHeartBeat()) {
             $this->connection->reconnect();
         }
 
