@@ -33,19 +33,3 @@ $callback = function ($data, $resolver) {
 
 !> In the opposite of publishing message, when consuming headers will not return only the **application_headers**
 but all AMQPMessage internal headers
-
-## Pigeon on queue jobs
-
-AMPQ connections should reused in the same process, the connection roud trip needs 7 packages to be done, the message needs only one to be send, if you close connection on every publish you will be compromising performance and trafic.
-
-If you are using `php artisan queue:work` you have multiple tasks performing as a single process, if the process takes too long to "talk" with rabbit instance the connection will be closed, causing a `AMQPConnectionClosedException`
-
-In this case you should call `Pigeon::getConnection()->close();` at the end of all AMQP related jobs.
-
-```PHP
-Pigeon::exchange('queue')->publish([
-    'work'
-]);
-
-Pigeon::getConnection()->close();
-```

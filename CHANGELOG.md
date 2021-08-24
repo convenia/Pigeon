@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Change `emmit` method name to `dispatch`
 - Change `assertEmitted` method name to `assertDispatched`
+### Removed
+- Methods `Pigeon::rpc`, `Convenia\Pigeon\Resolver::response`, `Pigeon::assertRpc`, `Pigeon::rpcPushed`, `Pigeon::assertCallbackReturn`
 ## [v1.6.0]
 ### Added
 - Added RPCs test
