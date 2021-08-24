@@ -48,25 +48,6 @@ class Publisher implements PublisherContract
         );
     }
 
-    public function rpc(array $message): string
-    {
-        [$response_via,] = $this->driver->getChannel()->queue_declare();
-        $properties = ['reply_to' => $response_via];
-        $msg = $this->makeMessage($message, $properties);
-        $this->driver->getChannel()->basic_publish(
-            $msg,
-            $this->exchange,
-            $this->routing
-        );
-
-        //add an empty consumer for testing purposes
-        if (isset($this->driver->rpcConsumers)) {
-            $this->driver->rpcConsumers->push($response_via);
-        }
-
-        return $response_via;
-    }
-
     private function makeMessage(array $data, array $properties = [])
     {
         return new AMQPMessage(

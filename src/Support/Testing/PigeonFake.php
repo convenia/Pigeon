@@ -23,13 +23,10 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     protected $events;
 
-    public $rpcConsumers;
-
     public function __construct($app)
     {
         parent::__construct($app);
         $this->consumers = new Collection();
-        $this->rpcConsumers = new Collection();
         $this->publishers = new Collection();
         $this->events = new Collection();
     }
@@ -94,18 +91,6 @@ class PigeonFake extends PigeonManager implements DriverContract
         );
     }
 
-    public function assertRpc(string $routing, array $message, array $response, int $timeout = null, bool $multiple = null): void
-    {
-        $this->assertPublished($routing, $message);
-
-        $queue = $this->rpcConsumers->shift();
-        $this->assertConsuming($queue, $timeout, $multiple);
-        $this->dispatchConsumer(
-            $queue,
-            $response
-        );
-    }
-
     public function assertDispatched(string $category, array $data)
     {
         PHPUnit::assertTrue(
@@ -145,19 +130,6 @@ class PigeonFake extends PigeonManager implements DriverContract
         return $this->events->filter($callback)->isNotEmpty();
     }
 
-    public function rpcPushed(string $routing, array $message, $callback = null)
-    {
-        $callback = $callback ?: function ($publisher) use ($routing, $message) {
-            return Str::contains($publisher['routing'], 'rpc.')
-                && $publisher['routing'] === $routing
-                && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
-                && isset($publisher['message'])
-                && $publisher['message'] === $message;
-        };
-
-        return $this->pushed($routing, $message, $callback);
-    }
-
     public function dispatchConsumer(string $queue, array $message, array $props = [])
     {
         // avoid tries to start a consumer on null queue
@@ -183,35 +155,6 @@ class PigeonFake extends PigeonManager implements DriverContract
         $message->delivery_info['delivery_tag'] = Str::random(3);
         $consumer = $this->consumers->get($event);
         $consumer->getCallback()->process($message);
-    }
-
-    public function assertCallbackReturn(string $queue, array $message, array $response)
-    {
-        // avoid tries to start a consumer on null queue
-        $this->assertConsuming($queue);
-
-        $reply_to = 'rpc.'.Str::random(5);
-        $delivery_tag = Str::random(2);
-        $message = new AMQPMessage(json_encode($message), ['reply_to' => $reply_to]);
-        $message->delivery_info['channel'] = $this;
-        $consumer = $this->consumers->get($queue);
-
-        $message->delivery_info['delivery_tag'] = $delivery_tag;
-        $exchange = $this->app['config']['pigeon.exchange'];
-        $publisher = (new Publisher($this->app, $this, $exchange))->routing($reply_to);
-
-        $this->publishers->push([
-            'exchange' => $exchange,
-            'routing' => $reply_to,
-            'publisher' => $publisher,
-        ]);
-
-        $consumer->getCallback()->process($message);
-
-        PHPUnit::assertTrue(
-            $this->rpcPushed($reply_to, $response),
-            'No RPC reply with defined body'
-        );
     }
 
     public function queue(string $name): ConsumerContract
