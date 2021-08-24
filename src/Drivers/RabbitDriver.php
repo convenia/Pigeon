@@ -85,7 +85,7 @@ class RabbitDriver extends Driver
         $this->quitHard();
     }
 
-    public function missedHeartBeat(): bool
+    protected function missedHeartBeat(): bool
     {
         try {
             $this->connection->checkHeartBeat();
