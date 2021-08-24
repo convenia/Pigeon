@@ -8,7 +8,7 @@
 If you are considering use Pigeon Version 2.x you does need laravel 8.
 
 ### Change emmit method
-Method name `emmit` has changed to `dispatch`, upade all `Pigeon::emmit()` to `Pigeon::dispatch()`
+Method name `emmit` has changed to `dispatch`, update all `Pigeon::emmit()` to `Pigeon::dispatch()`
  
 
  ### Removed methods
