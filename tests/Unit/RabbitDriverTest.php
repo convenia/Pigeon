@@ -24,8 +24,7 @@ class RabbitDriverTest extends TestCase
         $this->connection = Mockery::mock(AbstractConnection::class);
         $this->channel = Mockery::mock(AMQPChannel::class);
         $this->driver = Mockery::mock(
-            'Convenia\Pigeon\Drivers\RabbitDriver[makeConnection]'
-            , [$this->app]
+            'Convenia\Pigeon\Drivers\RabbitDriver[makeConnection]', [$this->app]
         );
 
         $this->driver->shouldReceive('makeConnection')
