@@ -18,7 +18,6 @@ Pigeon 2.0 will not support PHP versions lower than 7.3. If you are using versio
 ### Change emmit method
 Method name `emmit` has changed to `dispatch`, update all `Pigeon::emmit()` to `Pigeon::dispatch()`
  
-
  ### Removed methods
 All RPC methods and test tools were removed. The RPC was just a wrapper for some Pigeon calls and you still can do RPC with this version but you will need to do this by yourself
 
