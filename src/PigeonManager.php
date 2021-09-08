@@ -41,8 +41,8 @@ class PigeonManager extends Manager
     /**
      * Dynamically pass calls to the default connection.
      *
-     * @param string $method
-     * @param array  $parameters
+     * @param  string  $method
+     * @param  array  $parameters
      *
      * @return mixed
      */
