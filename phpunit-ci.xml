@@ -16,11 +16,6 @@
       <directory prefix="Bug" suffix=".php">./tests/Bugs</directory>
     </testsuite>
   </testsuites>
-  <filter>
-      <whitelist addUncoveredFilesFromWhitelist="false">
-          <directory suffix=".php">src/</directory>
-      </whitelist>
-  </filter>
   <php>
     <env name="APP_ENV" value="testing"/>
     <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
