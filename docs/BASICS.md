@@ -3,7 +3,6 @@
  1. [Introducing](#introducing)
  2. [Publish](#publish)
  3. [Consume](#consume)
- 3. [RPC](#remote-procedure-call)
  
 ## Introducing
  Pigeon was made to be a simple messaging interface with fast ways of publishing and consuming messages
@@ -123,23 +122,3 @@ After setting up a consumer you need to start listening for the queue using the 
 You can pass a timeout in seconds to `consume`, so it'll start to consume the queue and if it reaches the time without receiving any data
 a timeout exception is thrown.
 It can receive a second argument which is a boolean that specifies if you want to consume multiple messages or not.
-
-## Remote Procedure Call
-Pigeon also supports RPC's with a simple interface:
-```php
-use Pigeon;
-
-$responseQueue = Pigeon::routing('rpc.')
-    ->rpc($message);
-    
-Pigeon::queue($responseQueue)
-    ->callback($callback)
-    ->fallback($fallback)
-    ->consume($timeout = 5, $multiple = false);
-```
-
-The RPC method returns the response queue name, so you can consume it to receive the response message.
-
-?> You can consume the response queue whenever you need.
-
-!> The response queue has an auto generated name and is auto-deleted.

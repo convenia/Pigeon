@@ -81,29 +81,6 @@ class ResolverTest extends TestCase
         $resolver->reject($requeue);
     }
 
-    public function test_it_should_respond_a_message()
-    {
-        // setup
-        $reply_to = 'some.reply.queue';
-        $delivery_tag = Str::random(5);
-        $message = new AMQPMessage([], ['reply_to' => $reply_to]);
-
-        $message->delivery_info['delivery_tag'] = $delivery_tag;
-        $message->delivery_info['channel'] = $this->channel;
-        $resolver = new Resolver($message);
-
-        //assert
-        $this->channel->shouldReceive('basic_publish')
-            ->with(Mockery::type(AMQPMessage::class), '', $reply_to)
-            ->once();
-        $this->channel->shouldReceive('basic_ack')
-            ->with($delivery_tag)
-            ->once();
-
-        // act
-        $resolver->response(['foo' => 'fighters']);
-    }
-
     public function test_it_should_return_message_headers()
     {
         // setup

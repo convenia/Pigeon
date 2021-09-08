@@ -4,7 +4,6 @@ namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Tests\TestCase;
-use Illuminate\Support\Collection;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -111,45 +110,6 @@ class PublisherTest extends TestCase
         // act
         $first_publisher->publish($data, $props);
         $second_publisher->publish($data, $props);
-    }
-
-    public function test_it_should_publish_a_message_with_reply_queue()
-    {
-        // setup
-        $exchange = 'my.awesome.exchange';
-        $routing = 'my.awesome.service';
-        $response_via = 'amq.asodhoafdsfds89sd87612h1781831_123asd';
-        $outgoing = [
-            'foo' => 'fighters',
-        ];
-        $incoming = [
-            'my' => 'response',
-        ];
-        $props = [
-            'priority' => 10,
-        ];
-        $publisher = new Publisher($this->app, $this->driver, $exchange);
-
-        //this property will be present in fake driver
-        $this->driver->rpcConsumers = new Collection();
-
-        // assert
-        $this->channel->shouldReceive('queue_declare')->once()->andReturn([$response_via, null, null]);
-        $this->channel->shouldReceive('basic_publish')->with(
-            Mockery::type(AMQPMessage::class),
-            $exchange,
-            $routing
-        )->once();
-
-        // act
-        $reply_to = $publisher->routing($routing)->rpc($outgoing, $props);
-
-        // assert
-        $this->assertEquals($response_via, $reply_to);
-
-        //this will happen in tests in order to stup rpc tests
-        $this->assertCount(1, $this->driver->rpcConsumers);
-        $this->assertContains($response_via, $this->driver->rpcConsumers);
     }
 
     public function test_it_should_add_all_headers()

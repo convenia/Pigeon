@@ -61,42 +61,6 @@ class ResolverTest extends TestCase
         $this->channel->wait(null, null, $timeout);
     }
 
-    public function test_it_should_publish_a_message_reponse()
-    {
-        // setup
-        $msg_data = ['foo' => 'fighters'];
-        $response_data = ['bar' => 'baz'];
-        [$reply_to, ] = $this->channel->queue_declare();
-        $msg = new AMQPMessage(json_encode($msg_data), ['reply_to' => $reply_to]);
-        $this->channel->queue_declare($this->queue, $passive = false, $durable = true, $exclusive = false, $auto_delete = false);
-        $this->channel->basic_publish($msg, '', $this->queue);
-
-        // act
-        $this->channel->basic_qos(null, 1, null);
-        $this->channel->basic_consume(
-            $this->queue,
-            'pigeon.integration.test',
-            false,
-            false,
-            true,
-            false,
-            function ($request_message) use ($response_data) {
-                $resolver = new Resolver($request_message);
-                $resolver->response($response_data);
-            }
-        );
-
-        $this->channel->wait(null, false, 2);
-        sleep(2);
-
-        // assert
-        $response_msg = $this->channel->basic_get($reply_to);
-        $this->assertNotNull($response_msg);
-        $this->assertEquals($response_data, json_decode($response_msg->body, true));
-
-        $this->channel->queue_delete($reply_to);
-    }
-
     public function test_it_should_get_message_headers()
     {
         // setup
