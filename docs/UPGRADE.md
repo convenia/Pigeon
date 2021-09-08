@@ -1,14 +1,10 @@
 # Upgrade Guide
 ## From 1.x to 2.x{docsify-ignore}
- 1. [Laravel 8](#laravel-8)
- 2. [Old Laravel Versions](#old-laravel-versions)
- 3. [Old PHP Versions](#old-php-versions)
- 4. [Change emmit method](#change-emmit-method)
- 5. [Removed methods](#removed-methods)
+ 1. [Drop Old Laravel Versions](#old-laravel-versions)
+ 2. [Drop Old PHP Versions](#old-php-versions)
+ 3. [Change emmit method](#change-emmit-method)
+ 4. [Removed methods](#removed-methods)
  
-### Laravel 8
-If you are considering use Pigeon Version 2.x you does need laravel 8.
-
 ### Old Laravel Versions
 Pigeon 2.0 will not support Laravel version 5.6, if you are using 5.6 consider upgrade your application or use Pigeon 1.x version. Pigeon 2.x can talk with 1.x then if you have more than one services talking through Pigeon you can upgrade each one separately
 
