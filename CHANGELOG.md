@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [v2.0.0]
 ### Fixed
 - Properties on publish method
 - Reconnect when missed heart beat
@@ -14,8 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Change `emmit` method name to `dispatch`
 - Change `assertEmitted` method name to `assertDispatched`
+- Property `Convenia\Pigeon\Resolver\Resolver::message` is public now
+- Method `Convenia\Pigeon\Publisher\PublisherContract::publish()` now have the second param as a properties array
 ### Removed
 - Methods `Pigeon::rpc`, `Convenia\Pigeon\Resolver::response`, `Pigeon::assertRpc`, `Pigeon::rpcPushed`, `Pigeon::assertCallbackReturn`
+- Drop PHP 7.2 support
+- Drop Laravel 5.6 support
 ## [v1.6.0]
 ### Added
 - Added RPCs test
