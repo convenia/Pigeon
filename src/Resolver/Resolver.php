@@ -6,7 +6,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class Resolver implements ResolverContract
 {
-    protected $message;
+    public $message;
 
     public function __construct(AMQPMessage $message)
     {
