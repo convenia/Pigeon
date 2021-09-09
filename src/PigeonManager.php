@@ -43,7 +43,6 @@ class PigeonManager extends Manager
      *
      * @param  string  $method
      * @param  array  $parameters
-     *
      * @return mixed
      */
     public function __call($method, $parameters)
