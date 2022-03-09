@@ -4,7 +4,6 @@ namespace Convenia\Pigeon\Drivers;
 
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Drivers\DriverContract as DriverContract;
 use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Publisher\PublisherContract;
