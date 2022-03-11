@@ -44,7 +44,7 @@ jobs:
 
     - name: Install lowest dependencies
       with:
-        php-version: '<8.1'
+        php-version: ['8.0', '8.1']
       run: composer update --prefer-dist --no-interaction --prefer-lowest
       
     - name: Run phpunit with lowest dependencies
