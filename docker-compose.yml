@@ -3,9 +3,9 @@ services:
   pigeon:
     container_name: pigeon
     build: .
-    working_dir: /var/www/Pigeon
+    working_dir: /var/www/package
     volumes:
-      - .:/var/www/Pigeon
+      - .:/var/www/package
     networks:
       pigeon-network:
         ipv4_address: 172.40.10.30
