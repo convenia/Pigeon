@@ -107,6 +107,27 @@ class PigeonFake extends PigeonManager implements DriverContract
         );
     }
 
+    /**
+     * Checks if none message was dispatched.
+     *
+     * @return void
+     */
+    public function assertNothingDispatched()
+    {
+        $this->assertDispatchCount(0);
+    }
+
+    /**
+     * Checks if the expected quantity of messages was dispatched.
+     *
+     * @param  int  $count
+     * @return void
+     */
+    public function assertDispatchCount(int $count)
+    {
+        PHPUnit::assertCount($count, $this->events);
+    }
+
     public function pushed(string $routing, array $message, $callback = null)
     {
         $callback = $callback ?: function ($publisher) use ($routing, $message) {
