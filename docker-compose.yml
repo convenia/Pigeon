@@ -14,7 +14,7 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq
+    image: rabbitmq:3.8
     hostname: rabbitmq
     networks:
       pigeon-network:
