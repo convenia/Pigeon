@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+  pigeon:
+    container_name: pigeon
+    build: .
+    working_dir: /var/www/package
+    volumes:
+      - .:/var/www/package
+    networks:
+      pigeon-network:
+        ipv4_address: 172.40.10.30
+        aliases:
+          - rabbitmq
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.8
+    hostname: rabbitmq
+    networks:
+      pigeon-network:
+        ipv4_address: 172.40.10.20
+        aliases:
+          - rabbitmq
+
+networks:
+  pigeon-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.40.10.0/24
