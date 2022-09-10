@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Resolver;
 
+use Convenia\Pigeon\Contracts\Resolver as ResolverContract;
 use PhpAmqpLib\Message\AMQPMessage;
 
 class Resolver implements ResolverContract

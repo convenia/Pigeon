@@ -2,8 +2,8 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
+use Convenia\Pigeon\Contracts\Resolver;
 use Convenia\Pigeon\Drivers\Driver;
-use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -124,7 +124,7 @@ class DriverTest extends TestCase
 
         // act
         $this->driver->events($event_name)
-            ->callback(function ($event, ResolverContract $resolver) use ($event_content, $meta) {
+            ->callback(function ($event, Resolver $resolver) use ($event_content, $meta) {
                 // assert
                 $this->assertInstanceOf(AMQPTable::class, $resolver->headers('application_headers'));
                 $this->assertEquals($meta, $resolver->headers('application_headers')->getNativeData());

@@ -4,7 +4,7 @@ namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Drivers\RabbitDriver;
-use Convenia\Pigeon\MessageProcessor\MessageProcessor;
+use Convenia\Pigeon\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -97,6 +97,6 @@ class ConsumerTest extends TestCase
         // act
         $processor = $consumer->getCallback();
 
-        $this->assertInstanceOf(MessageProcessor::class, $processor);
+        $this->assertInstanceOf(Processor::class, $processor);
     }
 }

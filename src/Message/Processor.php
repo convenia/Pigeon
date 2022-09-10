@@ -1,15 +1,16 @@
 <?php
 
-namespace Convenia\Pigeon\MessageProcessor;
+namespace Convenia\Pigeon\Message;
 
 use Closure;
-use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Contracts\Message\Processor as ProcessorContract;
+use Convenia\Pigeon\Contracts\Driver as DriverContract;
 use Convenia\Pigeon\Resolver\Resolver;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
 
-class MessageProcessor implements MessageProcessorContract
+class Processor implements ProcessorContract
 {
     protected $callback;
     protected $fallback;

@@ -2,7 +2,8 @@
 
 namespace Convenia\Pigeon\Publisher;
 
-use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Contracts\Driver;
+use Convenia\Pigeon\Contracts\Publisher as PublisherContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -17,7 +18,7 @@ class Publisher implements PublisherContract
     protected $routing;
     protected $headers = [];
 
-    public function __construct(Application $app, DriverContract $driver, string $exchange)
+    public function __construct(Application $app, Driver $driver, string $exchange)
     {
         $this->app = $app;
         $this->driver = $driver;

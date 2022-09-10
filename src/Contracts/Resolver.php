@@ -1,8 +1,8 @@
 <?php
 
-namespace Convenia\Pigeon\Resolver;
+namespace Convenia\Pigeon\Contracts;
 
-interface ResolverContract
+interface Resolver
 {
     public function ack();
 

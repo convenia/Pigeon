@@ -50,6 +50,6 @@ class PigeonServiceProvider extends ServiceProvider
 
     private function configPath()
     {
-        return __DIR__.'/../config/pigeon.php';
+        return __DIR__ . '/../config/pigeon.php';
     }
 }

@@ -3,9 +3,9 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\Consumer\Consumer;
+use Convenia\Pigeon\Contracts\Resolver;
 use Convenia\Pigeon\Facade\Pigeon;
 use Convenia\Pigeon\Publisher\Publisher;
-use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -17,6 +17,7 @@ class PigeonFakeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->fake = Pigeon::fake();
     }
 
@@ -384,7 +385,7 @@ class PigeonFakeTest extends TestCase
 
         $this->fake
         ->events($queue)
-        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+        ->callback(function ($event, Resolver $resolver) use (&$run) {
             $resolver->ack();
             $run = true;
         })->consume();
@@ -403,7 +404,7 @@ class PigeonFakeTest extends TestCase
 
         $this->fake
         ->queue($queue)
-        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+        ->callback(function ($event, Resolver $resolver) use (&$run) {
             $resolver->ack();
             $run = true;
         })->consume();

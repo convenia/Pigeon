@@ -1,9 +1,9 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\Message;
 
-use Convenia\Pigeon\MessageProcessor\MessageProcessor;
-use Convenia\Pigeon\Resolver\ResolverContract;
+use Convenia\Pigeon\Contracts\Resolver;
+use Convenia\Pigeon\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Error;
 use Exception;
@@ -12,7 +12,7 @@ use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class MessageProcessorTest extends TestCase
+class ProcessorTest extends TestCase
 {
     protected $driver;
 
@@ -37,7 +37,7 @@ class MessageProcessorTest extends TestCase
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
         $processor->process($message);
     }
 
@@ -48,13 +48,13 @@ class MessageProcessorTest extends TestCase
         $reply_to = 'some.queue';
         $message = new AMQPMessage(json_encode($data));
 
-        $callback = function ($received, ResolverContract $resolver) use ($data) {
+        $callback = function ($received, Resolver $resolver) use ($data) {
             // assert
             $this->assertEquals($data, $received);
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
         $processor->process($message);
     }
 
@@ -72,7 +72,7 @@ class MessageProcessorTest extends TestCase
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback, $fallback);
+        $processor = new Processor($this->driver, $callback, $fallback);
         $processor->process($message);
     }
 
@@ -89,11 +89,11 @@ class MessageProcessorTest extends TestCase
             $ran = true;
             $this->assertEquals($e->getMessage(), $exception);
             $this->assertEquals($received, $message);
-            $this->assertInstanceOf(ResolverContract::class, $resolver);
+            $this->assertInstanceOf(Resolver::class, $resolver);
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback, $fallback);
+        $processor = new Processor($this->driver, $callback, $fallback);
         $processor->process($message);
         $this->assertTrue($ran, 'Test did not run');
     }
@@ -112,7 +112,7 @@ class MessageProcessorTest extends TestCase
 
         $this->expectExceptionMessage('Callback failing and no fallback set');
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
 
         Log::shouldReceive('error')->once()->with(
             $exception->getMessage(),
@@ -142,7 +142,7 @@ class MessageProcessorTest extends TestCase
 
         $this->expectExceptionMessage('Testing errors');
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
 
         Log::shouldReceive('error')->once()->with(
             $exception->getMessage(),
@@ -176,7 +176,7 @@ class MessageProcessorTest extends TestCase
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
 
         Log::shouldReceive('error')->with(
             $exception->getMessage(),
@@ -220,7 +220,7 @@ class MessageProcessorTest extends TestCase
         );
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
 
         $processor->process($message);
     }

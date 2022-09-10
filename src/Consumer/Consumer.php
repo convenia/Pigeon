@@ -3,8 +3,9 @@
 namespace Convenia\Pigeon\Consumer;
 
 use Closure;
-use Convenia\Pigeon\Drivers\DriverContract;
-use Convenia\Pigeon\MessageProcessor\MessageProcessor;
+use Convenia\Pigeon\Contracts\Consumer as ConsumerContract;
+use Convenia\Pigeon\Contracts\Driver;
+use Convenia\Pigeon\Message\Processor;
 use Illuminate\Foundation\Application;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -20,7 +21,7 @@ class Consumer implements ConsumerContract
     protected $driver;
     protected $channel;
 
-    public function __construct(Application $app, DriverContract $driver, string $queue)
+    public function __construct(Application $app, Driver $driver, string $queue)
     {
         $this->app = $app;
         $this->queue = $queue;
@@ -66,7 +67,7 @@ class Consumer implements ConsumerContract
 
     public function getCallback()
     {
-        return new MessageProcessor($this->driver, $this->callback, $this->fallback);
+        return new Processor($this->driver, $this->callback, $this->fallback);
     }
 
     private function wait(int $timeout, bool $multiple)

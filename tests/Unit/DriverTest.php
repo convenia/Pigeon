@@ -2,9 +2,9 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Convenia\Pigeon\Consumer\ConsumerContract;
+use Convenia\Pigeon\Contracts\Consumer;
+use Convenia\Pigeon\Contracts\Publisher;
 use Convenia\Pigeon\Drivers\Driver;
-use Convenia\Pigeon\Publisher\PublisherContract;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Support\Str;
 use Mockery;
@@ -43,7 +43,7 @@ class DriverTest extends TestCase
         $consumer = $this->driver->queue($this->queue, ['some' => 'prop']);
 
         // assert
-        $this->assertInstanceOf(ConsumerContract::class, $consumer);
+        $this->assertInstanceOf(Consumer::class, $consumer);
     }
 
     public function test_it_should_declare_exchange()
@@ -59,7 +59,7 @@ class DriverTest extends TestCase
         $publisher = $this->driver->exchange($exchange, $type);
 
         // assert
-        $this->assertInstanceOf(PublisherContract::class, $publisher);
+        $this->assertInstanceOf(Publisher::class, $publisher);
     }
 
     public function test_it_should_use_default_exchange_if_name_not_provided_to_exchange_method()
@@ -73,7 +73,7 @@ class DriverTest extends TestCase
         $publisher = $this->driver->exchange('', $type);
 
         // assert
-        $this->assertInstanceOf(PublisherContract::class, $publisher);
+        $this->assertInstanceOf(Publisher::class, $publisher);
     }
 
     public function test_it_should_declare_exchange_bind_key()
@@ -96,7 +96,7 @@ class DriverTest extends TestCase
             ->bind($queue);
 
         // assert
-        $this->assertInstanceOf(PublisherContract::class, $publisher);
+        $this->assertInstanceOf(Publisher::class, $publisher);
     }
 
     public function test_it_should_publish_event()
@@ -211,7 +211,7 @@ class DriverTest extends TestCase
             ->events($event_name);
 
         // assert
-        $this->assertInstanceOf(ConsumerContract::class, $consumer);
+        $this->assertInstanceOf(Consumer::class, $consumer);
     }
 
     public function test_it_should_return_props_without_user_defined()

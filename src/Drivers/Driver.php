@@ -3,10 +3,11 @@
 namespace Convenia\Pigeon\Drivers;
 
 use Convenia\Pigeon\Consumer\Consumer;
-use Convenia\Pigeon\Consumer\ConsumerContract;
+use Convenia\Pigeon\Contracts\Consumer as ConsumerContract;
+use Convenia\Pigeon\Contracts\Driver as DriverContract;
+use Convenia\Pigeon\Contracts\Publisher as PublisherContract;
 use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 use Convenia\Pigeon\Publisher\Publisher;
-use Convenia\Pigeon\Publisher\PublisherContract;
 use Illuminate\Foundation\Application;
 use PhpAmqpLib\Wire\AMQPTable;
 
