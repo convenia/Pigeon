@@ -250,7 +250,7 @@ class PigeonFake extends PigeonManager implements Driver
     /**
      * @codeCoverageIgnore
      */
-    public function getConnection()
+    public function connection()
     {
         //
     }
@@ -269,5 +269,30 @@ class PigeonFake extends PigeonManager implements Driver
     public function queue_bind(string $queue, string $exchange = '', string $routing = '')
     {
         return $this;
+    }
+
+    /**
+     * Closes the connection disgracefully.
+     *
+     * @return void
+     */
+    public function quitHard(): void
+    {
+        //
+    }
+
+    /**
+     * Closes the connection gracefully.
+     *
+     * @return void
+     */
+    public function quit(): void
+    {
+        //
+    }
+
+    public function queueDeclare(string $name, array $properties)
+    {
+        //
     }
 }

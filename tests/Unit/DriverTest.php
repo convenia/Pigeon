@@ -5,6 +5,7 @@ namespace Convenia\Pigeon\Tests\Unit;
 use Convenia\Pigeon\Contracts\Consumer;
 use Convenia\Pigeon\Contracts\Publisher;
 use Convenia\Pigeon\Drivers\Driver;
+use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Support\Str;
 use Mockery;
@@ -14,6 +15,8 @@ use PhpAmqpLib\Wire\AMQPTable;
 
 class DriverTest extends TestCase
 {
+    use ConnectsToRabbitMQ;
+
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject | Driver
      */
@@ -26,8 +29,11 @@ class DriverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = $this->getMockForAbstractClass(Driver::class, [$this->app]);
+
+        $this->driver = $this->getMockForAbstractClass(Driver::class, [$this->app, $this->makeConnection()]);
+
         $this->driver->method('getChannel')->willReturn($this->channel);
     }
 

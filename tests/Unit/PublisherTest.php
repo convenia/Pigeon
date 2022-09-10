@@ -19,7 +19,7 @@ class PublisherTest extends TestCase
     {
         parent::setUp();
         $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = Mockery::mock('Convenia\Pigeon\Drivers\RabbitDriver');
+        $this->driver = Mockery::mock('Convenia\Pigeon\Drivers\RabbitMQDriver');
 
         $this->driver->shouldReceive('getChannel')->andReturn($this->channel);
     }

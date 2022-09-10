@@ -7,17 +7,18 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Channel\AMQPChannel;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPHeartbeatMissedException;
 
-class RabbitDriver extends Driver
+class RabbitMQDriver extends Driver
 {
-    public function getConnection()
+    /**
+     * Gets the connection object of the class.
+     * Tries to reconnect if the connectin it's lost.
+     *
+     * @return \PhpAmqpLib\Connection\AMQPStreamConnection
+     */
+    public function connection()
     {
-        if (! $this->connection) {
-            $this->connection = $this->makeConnection();
-        }
-
         if (! $this->connection->isConnected() || $this->missedHeartBeat()) {
             $this->connection->reconnect();
         }
@@ -27,7 +28,7 @@ class RabbitDriver extends Driver
 
     public function getChannel(int $id = null): AMQPChannel
     {
-        return $this->getConnection()->channel($id);
+        return $this->connection()->channel($id);
     }
 
     public function queueDeclare(string $name, array $properties)
@@ -55,32 +56,22 @@ class RabbitDriver extends Driver
         throw $e;
     }
 
-    public function makeConnection()
+    /**
+     * Closes the connection disgracefully.
+     *
+     * @return void
+     */
+    public function quitHard(): void
     {
-        return new AMQPStreamConnection(
-            $host = $this->app['config']['pigeon.connection.host.address'],
-            $port = $this->app['config']['pigeon.connection.host.port'],
-            $user = $this->app['config']['pigeon.connection.credentials.user'],
-            $password = $this->app['config']['pigeon.connection.credentials.password'],
-            $vhost = $this->app['config']['pigeon.connection.host.vhost'],
-            $insist = false,
-            $login_method = 'AMQPLAIN',
-            $login_response = null,
-            $locale = 'en_US',
-            $connection_timeout = 3.0,
-            $read_write_timeout = (int) $this->app['config']['pigeon.connection.read_timeout'],
-            $context = null,
-            $keepalive = (bool) $this->app['config']['pigeon.connection.keepalive'],
-            $heartbeat = (int) $this->app['config']['pigeon.connection.heartbeat']
-        );
+        $this->connection()->close();
     }
 
-    public function quitHard()
-    {
-        $this->getConnection()->close();
-    }
-
-    public function quit()
+    /**
+     * Closes the connection gracefully.
+     *
+     * @return void
+     */
+    public function quit(): void
     {
         $this->quitHard();
     }

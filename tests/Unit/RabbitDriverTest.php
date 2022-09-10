@@ -2,68 +2,61 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
+use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Convenia\Pigeon\Tests\TestCase;
-use Mockery;
+use Mockery\MockInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
-use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPHeartbeatMissedException;
 
-class RabbitDriverTest extends TestCase
+class RabbitMQDriverTest extends TestCase
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject | \Convenia\Pigeon\Drivers\Driver
-     */
-    private $driver;
-    private $connection;
-    private $channel;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->connection = Mockery::mock(AbstractConnection::class);
-        $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = Mockery::mock(
-            'Convenia\Pigeon\Drivers\RabbitDriver[makeConnection]', [$this->app]
-        );
-
-        $this->driver->shouldReceive('makeConnection')
-            ->once()
-            ->andReturn($this->connection);
-    }
+    use ConnectsToRabbitMQ;
 
     public function test_it_should_return_connection_if_it_is_connected()
     {
-        $this->connection->shouldReceive('isConnected')->once()->andReturn(true);
-        $this->connection->shouldReceive('checkHeartBeat')->once()->andReturn(true);
+        $pigeon = $this->app->make('pigeon');
 
-        $this->assertEquals($this->connection, $this->driver->getConnection());
+        $this->assertInstanceOf(AMQPStreamConnection::class, $pigeon->driver()->connection());
     }
 
     public function test_it_should_reconnect_and_return_connection_if_heartbeat_is_missed()
     {
-        $this->connection->shouldReceive('isConnected')->once()->andReturn(true);
-        $this->connection->shouldReceive('reconnect')->once();
-        $this->connection->shouldReceive('checkHeartBeat')
-            ->andThrow(new AMQPHeartbeatMissedException());
+        $this->partialMock(AMQPStreamConnection::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isConnected')->once()->andReturn(true);
+            $mock->shouldReceive('checkHeartBeat')->andThrow(new AMQPHeartbeatMissedException());
+            $mock->shouldReceive('reconnect')->once();
+        });
 
-        $this->assertEquals($this->connection, $this->driver->getConnection());
+        $pigeon = $this->app->make('pigeon');
+
+        $this->assertInstanceOf(AMQPStreamConnection::class, $pigeon->driver()->connection());
     }
 
     public function test_it_should_reconnect_and_return_connection_if_not_connected()
     {
-        $this->connection->shouldReceive('isConnected')->once()->andReturn(false);
-        $this->connection->shouldReceive('reconnect')->once();
+        $this->partialMock(AMQPStreamConnection::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isConnected')->once()->andReturn(false);
+            $mock->shouldReceive('reconnect')->once();
+        });
 
-        $this->assertEquals($this->connection, $this->driver->getConnection());
+        $pigeon = $this->app->make('pigeon');
+
+        $this->assertInstanceOf(AMQPStreamConnection::class, $pigeon->driver()->connection());
     }
 
     public function test_it_should_return_channel()
     {
-        $this->connection->shouldReceive('isConnected')->once()->andReturn(true);
-        $this->connection->shouldReceive('checkHeartBeat')->once();
-        $this->connection->shouldReceive('channel')->once()->andReturn($this->channel);
+        $mockChannel = $this->partialMock(AMQPChannel::class);
 
-        $this->assertEquals($this->channel, $this->driver->getchannel());
+        $this->partialMock(AMQPStreamConnection::class, function (MockInterface $mock) use ($mockChannel) {
+            $mock->shouldReceive('isConnected')->once()->andReturn(true);
+            $mock->shouldReceive('checkHeartBeat')->once();
+            $mock->shouldReceive('channel')->once()->andReturn($mockChannel);
+        });
+
+        $pigeon = $this->app->make('pigeon');
+
+        $this->assertEquals($mockChannel, $pigeon->driver()->getchannel());
     }
 }

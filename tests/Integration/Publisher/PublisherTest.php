@@ -17,7 +17,8 @@ class PublisherTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pigeon = $this->app['pigeon']->driver('rabbit');
+
+        $this->pigeon = $this->app['pigeon']->driver();
     }
 
     public function test_it_should_publish_a_message_using_exchange()

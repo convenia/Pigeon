@@ -3,7 +3,7 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\Consumer\Consumer;
-use Convenia\Pigeon\Drivers\RabbitDriver;
+use Convenia\Pigeon\Drivers\RabbitMQDriver;
 use Convenia\Pigeon\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
@@ -26,7 +26,7 @@ class ConsumerTest extends TestCase
         parent::setUp();
 
         $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = Mockery::mock(RabbitDriver::class);
+        $this->driver = Mockery::mock(RabbitMQDriver::class);
 
         $this->driver->shouldReceive('getChannel')
             ->once()

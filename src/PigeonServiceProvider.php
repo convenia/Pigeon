@@ -3,6 +3,7 @@
 namespace Convenia\Pigeon;
 
 use Illuminate\Support\ServiceProvider;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 /**
  * Class PigeonServiceProvider.
@@ -30,6 +31,27 @@ class PigeonServiceProvider extends ServiceProvider
     {
         $this->app->singleton('pigeon', static function ($app) {
             return new PigeonManager($app);
+        });
+
+        $this->app->singleton(AMQPStreamConnection::class, function ($app) {
+            $configs = $app['config']['pigeon.connection'];
+
+            return new AMQPStreamConnection(
+                data_get($configs, 'host.address'),
+                data_get($configs, 'host.port'),
+                data_get($configs, 'credentials.user'),
+                data_get($configs, 'credentials.password'),
+                data_get($configs, 'host.vhost'),
+                false,
+                'AMQPLAIN',
+                null,
+                'en_US',
+                3.0,
+                data_get($configs, 'read_timeout'),
+                null,
+                data_get($configs, 'keepalive'),
+                data_get($configs, 'heartbeat')
+            );
         });
 
         $this->mergeConfigFrom(

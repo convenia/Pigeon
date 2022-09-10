@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Drivers;
 
+use Closure;
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Contracts\Consumer as ConsumerContract;
 use Convenia\Pigeon\Contracts\Driver as DriverContract;
@@ -9,6 +10,7 @@ use Convenia\Pigeon\Contracts\Publisher as PublisherContract;
 use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 use Convenia\Pigeon\Publisher\Publisher;
 use Illuminate\Foundation\Application;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Wire\AMQPTable;
 
 abstract class Driver implements DriverContract
@@ -17,23 +19,36 @@ abstract class Driver implements DriverContract
 
     public const EVENT_EXCHANGE_TYPE = 'topic';
 
+    /**
+     * Laravel's application.
+     *
+     * @var  \Illuminate\Foundation\Application  $app
+     */
     public $app;
 
-    protected $connection;
+    /**
+     * The connection to RabbitMQ Service.
+     *
+     * @var  \PhpAmqpLib\Connection\AMQPStreamConnection  $connection
+     */
+    protected AMQPStreamConnection $connection;
 
-    public function __construct(Application $app)
+    /**
+     * Class contructor.
+     *
+     * @return self
+     */
+    public function __construct(Application $app, AMQPStreamConnection $connection)
     {
         $this->app = $app;
-        $this->setup();
-    }
 
-    public function setup()
-    {
+        $this->connection = $connection;
+
         if (extension_loaded('pcntl')) {
             $this->listenSignals();
         }
 
-        $this->app->terminating(\Closure::fromCallable([$this, 'quitHard']));
+        $this->app->terminating(Closure::fromCallable([$this, 'quitHard']));
     }
 
     public function queue(string $name, array $properties = []): ConsumerContract
@@ -128,12 +143,4 @@ abstract class Driver implements DriverContract
                 break;
         }
     }
-
-    abstract public function quitHard();
-
-    abstract public function quit();
-
-    abstract public function getConnection();
-
-    abstract public function queueDeclare(string $name, array $properties);
 }

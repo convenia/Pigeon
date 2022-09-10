@@ -2,14 +2,18 @@
 
 namespace Convenia\Pigeon\Tests\Bugs;
 
-use Convenia\Pigeon\Drivers\RabbitDriver;
+use Convenia\Pigeon\Drivers\RabbitMQDriver;
+use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
+use Mockery\MockInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class Bug85 extends TestCase
 {
+    use ConnectsToRabbitMQ;
+
     protected $connection;
 
     protected $channel;
@@ -19,12 +23,19 @@ class Bug85 extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->connection = Mockery::mock(AMQPStreamConnection::class);
-        $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = Mockery::mock(RabbitDriver::class)->makePartial();
 
-        $this->driver->shouldReceive('getConnection')
+        $this->connection = Mockery::mock(AMQPStreamConnection::class);
+
+        $this->channel = Mockery::mock(AMQPChannel::class);
+
+        $this->driver = Mockery::mock(
+            RabbitMQDriver::class,
+            [$this->app, $this->makeConnection()]
+        )->makePartial();
+
+        $this->driver->shouldReceive('connection')
             ->andReturn($this->connection);
+
         $this->driver->app = $this->app;
     }
 

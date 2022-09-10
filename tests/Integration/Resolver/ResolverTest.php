@@ -17,7 +17,8 @@ class ResolverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pigeon = $this->app['pigeon']->driver('rabbit');
+
+        $this->pigeon = $this->app['pigeon']->driver();
     }
 
     public function test_it_should_ack_message()
@@ -112,7 +113,7 @@ class ResolverTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->pigeon->getConnection()->close();
+        $this->pigeon->connection()->close();
         parent::tearDown();
     }
 }

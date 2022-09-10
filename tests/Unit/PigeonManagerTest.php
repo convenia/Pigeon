@@ -2,7 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
-use Convenia\Pigeon\Drivers\RabbitDriver;
+use Convenia\Pigeon\Drivers\RabbitMQDriver;
 use Convenia\Pigeon\PigeonManager;
 use Convenia\Pigeon\Tests\TestCase;
 use Error;
@@ -87,7 +87,7 @@ class PigeonManagerTest extends TestCase
     {
         Config::set('pigeon.default', 'mock');
 
-        $driver = $this->mock(RabbitDriver::class, function (MockInterface $mock) {
+        $driver = $this->mock(RabbitMQDriver::class, function (MockInterface $mock) {
             $mock->shouldReceive('getChannel')
                 ->once()
                 ->with(28);
@@ -106,7 +106,7 @@ class PigeonManagerTest extends TestCase
     public function test_it_should_throw_exception_delegating_unimplemented_method()
     {
         $this->expectException(Error::class);
-        $this->expectExceptionMessage('Call to undefined method Convenia\Pigeon\Drivers\RabbitDriver::someNonExistingMethod()');
+        $this->expectExceptionMessage('Call to undefined method Convenia\Pigeon\Drivers\RabbitMQDriver::someNonExistingMethod()');
 
         $manager = new PigeonManager($this->app);
         $manager->someNonExistingMethod();
