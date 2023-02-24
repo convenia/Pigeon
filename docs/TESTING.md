@@ -59,3 +59,39 @@ Pigeon::dispatchConsumer(
     ['mocked' => 'message'] // mocked incoming message
 );
 ``` 
+
+There is a way to only verify the expected quatity of messages sent.
+
+If you want to assert the exact number of messages, use `assertDispatchCount`.
+```php
+<?php
+
+use Convenia\Pigeon\Facade\Pigeon;
+
+Pigeon::fake();
+
+Pigeon::emmit('my-queue', [
+    'some-data' => 123,
+]);
+
+Pigeon::emmit('another-great-queue', [
+    'some-data' => 123,
+]);
+
+Pigeon::assertDispatchCount(2); // Returns true
+```
+
+If you want to only check if nothing was sent, use `assertNothingDispatched`.
+```php
+<?php
+
+use Convenia\Pigeon\Facade\Pigeon;
+
+Pigeon::fake();
+
+Pigeon::emmit('my-queue', [
+    'some-data' => 123,
+]);
+
+Pigeon::assertNothingDispatched(); // Returns false
+```
