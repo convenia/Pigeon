@@ -70,11 +70,11 @@ use Convenia\Pigeon\Facade\Pigeon;
 
 Pigeon::fake();
 
-Pigeon::emmit('my-queue', [
+Pigeon::dispatch('my-queue', [
     'some-data' => 123,
 ]);
 
-Pigeon::emmit('another-great-queue', [
+Pigeon::dispatch('another-great-queue', [
     'some-data' => 123,
 ]);
 
@@ -89,7 +89,7 @@ use Convenia\Pigeon\Facade\Pigeon;
 
 Pigeon::fake();
 
-Pigeon::emmit('my-queue', [
+Pigeon::dispatch('my-queue', [
     'some-data' => 123,
 ]);
 
