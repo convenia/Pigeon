@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [v2.2.1]
+### Removed
+- Remove webpatser/uuid dependency.
+### Changed
+- Change correlation_id uuid to be generated with Str::uuid helper
+
 ## [v2.2.0]
 ### Added
 - Support Laravel 10.
