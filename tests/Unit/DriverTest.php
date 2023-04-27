@@ -145,7 +145,7 @@ class DriverTest extends TestCase
                 $app_headers = $message->get('application_headers');
 
                 return ($app_headers instanceof AMQPTable)
-                    && (array_key_exists($key, $app_headers->getNativeData()))
+                    && array_key_exists($key, $app_headers->getNativeData())
                     && ($app_headers->getNativeData()[$key] === $value)
                     && ($event === $event_name)
                     && ($exchange === Driver::EVENT_EXCHANGE);
@@ -253,7 +253,6 @@ class DriverTest extends TestCase
 
     public function test_it_should_return_props_without_dead_letter()
     {
-
         // Setup
         $this->app['config']->set('pigeon.dead', null);
 
