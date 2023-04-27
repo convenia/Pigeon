@@ -5,9 +5,9 @@ namespace Convenia\Pigeon\Publisher;
 use Convenia\Pigeon\Drivers\DriverContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
-use Illuminate\Support\Str;
 
 class Publisher implements PublisherContract
 {
