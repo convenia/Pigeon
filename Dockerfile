@@ -8,6 +8,6 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 && docker-php-ext-install -j$(nproc) gd fileinfo dom xml simplexml pcntl
 
-RUN install-php-extensions sockets
+RUN install-php-extensions sockets xdebug
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
