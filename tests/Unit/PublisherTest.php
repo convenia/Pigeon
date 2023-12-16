@@ -2,8 +2,11 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
+use Convenia\Pigeon\Events\MessagePublished;
+use Convenia\Pigeon\Events\PublishingMessage;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Tests\TestCase;
+use Illuminate\Support\Facades\Event;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -35,6 +38,7 @@ class PublisherTest extends TestCase
             'priority' => 10,
         ];
         $publisher = new Publisher($this->app, $this->driver, $exchange);
+        $publisher->disableEvents = true;
 
         // assert
         $this->channel->shouldReceive('basic_publish')->with(
@@ -75,6 +79,47 @@ class PublisherTest extends TestCase
 
         // act
         $publisher->routing($routing)->publish($data, $props);
+    }
+
+    public function test_it_should_dispatch_lifecycle_events_when_publishing_events()
+    {
+        // setup
+        Event::fake();
+
+        $exchange = 'my.axe-is-powerful.exchange';
+        $routing = 'my.axe-is-powerful.service';
+        $data = ['Golden' => 'Axe'];
+        $props = ['Ax' => 'Battler'];
+
+        $publisher = new Publisher($this->app, $this->driver, $exchange);
+        
+        $publisher->header('Ax', $props['Ax']);
+
+        // assert
+        $this->channel->shouldReceive('basic_publish')->with(
+            Mockery::type(AMQPMessage::class),
+            $exchange,
+            $routing
+        )->once();
+
+        // act
+        $publisher->routing($routing)->publish($data, $props);
+
+        Event::assertDispatched(function (PublishingMessage $event)
+            use ($routing, $data, $props) {
+            return $event->publisher->getHeaders()['Ax'] === $props['Ax'] &&
+                $event->publisher->getRoute() === $routing &&
+                $event->userData === $data &&
+                $event->userMetaData === $props;
+        });
+
+        Event::assertDispatched(function (MessagePublished $event)
+            use ($routing, $data, $props) {
+            return $event->publisher->getHeaders()['Ax'] === $props['Ax'] &&
+                $event->publisher->getRoute() === $routing &&
+                $event->userData === $data &&
+                $event->userMetaData === $props;
+        });
     }
 
     public function test_it_should_create_new_publisher_on_new_routing()
@@ -132,6 +177,7 @@ class PublisherTest extends TestCase
         ]);
 
         $publisher = new Publisher($this->app, $this->driver, $exchange);
+        $publisher->disableEvents = true;
 
         // assert
         $this->channel->shouldReceive('basic_publish')->with(

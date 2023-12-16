@@ -5,6 +5,8 @@ namespace Convenia\Pigeon\Support\Testing;
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Events\DispatchingEvent;
+use Convenia\Pigeon\Events\EventDispatched;
 use Convenia\Pigeon\PigeonManager;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Publisher\PublisherContract;
@@ -214,10 +216,31 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function dispatch(string $eventName, array $event, array $meta = []): void
     {
+        $publisher = new FakePublisher($this->app, $this, $eventName);
+
+        $publisher->header('category', $eventName);
+        foreach ($meta as $key => $value) {
+            $publisher->header($key, $value);
+        }
+
+        DispatchingEvent::dispatch(
+            $publisher,
+            $eventName,
+            $event,
+            $meta
+        );
+
         $this->events->push([
             'event' => $eventName,
             'data' => $event,
         ]);
+
+        EventDispatched::dispatch(
+            $publisher,
+            $eventName,
+            $event,
+            $meta
+        );
     }
 
     public function driver($driver = null)

@@ -4,6 +4,8 @@ namespace Convenia\Pigeon\Drivers;
 
 use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Consumer\ConsumerContract;
+use Convenia\Pigeon\Events\DispatchingEvent;
+use Convenia\Pigeon\Events\EventDispatched;
 use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Publisher\PublisherContract;
@@ -69,7 +71,22 @@ abstract class Driver implements DriverContract
             $publisher->header($key, $value);
         }
 
+        DispatchingEvent::dispatch(
+            $publisher,
+            $eventName,
+            $event,
+            $meta
+        );
+
+        $publisher->disableEvents = true;
         $publisher->publish($event, [], 3);
+
+        EventDispatched::dispatch(
+            $publisher,
+            $eventName,
+            $event,
+            $meta
+        );
     }
 
     public function events(string $event = '#'): ConsumerContract

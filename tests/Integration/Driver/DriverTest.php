@@ -3,8 +3,13 @@
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
 use Convenia\Pigeon\Drivers\Driver;
+use Convenia\Pigeon\Events\DispatchingEvent;
+use Convenia\Pigeon\Events\EventDispatched;
+use Convenia\Pigeon\Events\MessagePublished;
+use Convenia\Pigeon\Events\PublishingMessage;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -77,6 +82,52 @@ class DriverTest extends TestCase
         /* @var $event_meta AMQPTable */
         $event_meta = $event->get('application_headers');
         $this->assertEquals(array_merge($meta, ['category' => $event_name]), $event_meta->getNativeData());
+    }
+
+    public function test_it_should_dispatch_laravel_events_when_publishing_messages()
+    {
+        // setup
+        Event::fake();
+
+        $event_name = Str::random(7);
+        $event_content = [
+            'Golden' => 'Axe',
+        ];
+        $event_meta = [
+            'Ax' => 'Battler',
+        ];
+        $this->channel->exchange_declare(Driver::EVENT_EXCHANGE, Driver::EVENT_EXCHANGE_TYPE, false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
+        $this->channel->queue_bind($this->queue, Driver::EVENT_EXCHANGE, $event_name);
+
+        // act
+        $this->driver->dispatch($event_name, $event_content, $event_meta);
+
+        sleep(1);
+
+        // assert
+        $event = $this->channel->basic_get($this->queue);
+        $this->channel->exchange_delete(Driver::EVENT_EXCHANGE);
+
+        Event::assertDispatched(function (DispatchingEvent $event)
+            use ($event_name, $event_content, $event_meta) {
+            return $event->publisher->getHeaders()['Ax'] === 'Battler' &&
+                $event->eventName === $event_name &&
+                $event->userData === $event_content &&
+                $event->userMetaData === $event_meta;
+        });
+
+        Event::assertDispatched(function (EventDispatched $event)
+            use ($event_name, $event_content, $event_meta) {
+            return $event->publisher->getHeaders()['Ax'] === 'Battler' &&
+                $event->eventName === $event_name &&
+                $event->userData === $event_content &&
+                $event->userMetaData === $event_meta;
+        });
+
+        Event::assertNotDispatched(PublishingMessage::class);
+        Event::assertNotDispatched(MessagePublished::class);
     }
 
     public function test_it_should_consume_event()

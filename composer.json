@@ -40,6 +40,11 @@
             "Convenia\\Pigeon\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "coverage": [
+            "XDEBUG_MODE=coverage ./vendor/bin/phpunit"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [

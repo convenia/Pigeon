@@ -3,11 +3,14 @@
 namespace Convenia\Pigeon\Tests\Unit;
 
 use Convenia\Pigeon\Consumer\Consumer;
+use Convenia\Pigeon\Events\DispatchingEvent;
+use Convenia\Pigeon\Events\EventDispatched;
 use Convenia\Pigeon\Facade\Pigeon;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\ExpectationFailedException;
 
@@ -285,6 +288,38 @@ class PigeonFakeTest extends TestCase
         $this->fake->dispatch($category, $data);
 
         $this->fake->assertDispatched($category, $data);
+    }
+
+    public function test_it_should_assert_lifecycle_events()
+    {
+        Event::fake();
+
+        // setup
+        $category = 'some.event.category';
+        $data = ['Golden' => 'Axe'];
+        $meta = ['Ax' => 'Battler'];
+
+        // act
+        $this->fake->dispatch($category, $data, $meta);
+
+        // assert
+        $this->fake->assertDispatched($category, $data, $meta);
+
+        Event::assertDispatched(function (DispatchingEvent $event)
+            use ($category, $data, $meta) {
+                return $event->publisher->getHeaders()['Ax'] === 'Battler' &&
+                    $event->eventName === $category &&
+                    $event->userData === $data &&
+                    $event->userMetaData === $meta;
+            });
+
+        Event::assertDispatched(function (EventDispatched $event)
+            use ($category, $data, $meta) {
+                return $event->publisher->getHeaders()['Ax'] === 'Battler' &&
+                    $event->eventName === $category &&
+                    $event->userData === $data &&
+                    $event->userMetaData === $meta;
+            });
     }
 
     public function test_it_should_assert_consuming_event()
