@@ -101,7 +101,10 @@ class ConsumerTest extends TestCase
         $consumer->callback($callback)->consume(30, true);
         $this->assertTrue(true, 'It should not throw error.');
 
-        Event::assertDispatched(Terminating::class);
+        Event::assertDispatched(function (Terminating $event) {
+            return $event->connection === $this->pigeon->getConnection();
+        });
+
         Event::assertDispatched(Terminated::class);
     }
 
