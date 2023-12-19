@@ -2,8 +2,11 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Consumer;
 
+use Convenia\Pigeon\Events\Terminated;
+use Convenia\Pigeon\Events\Terminating;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use Illuminate\Support\Facades\Event;
 use PhpAmqpLib\Exception\AMQPTimeoutException;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -68,24 +71,38 @@ class ConsumerTest extends TestCase
         $consumer->callback($callback)->consume(1);
     }
 
-    /**
-     * @requires extension pcntl
-     *
-     * @
-     */
-    public function test_it_should_handle_sigterm_signal()
+    function getSignals() : array
     {
+        return [
+            [SIGTERM],
+            [SIGQUIT],
+            [SIGINT]
+        ];    
+    }
+
+    /**
+     * @dataProvider getSignals
+     * 
+     * @requires extension pcntl
+     */
+    public function test_it_should_handle_signals($signal)
+    {
+        Event::fake();
+
         // should create queue
         $consumer = $this->pigeon->queue($this->queue);
         $msg = new AMQPMessage(json_encode(['some' => 'data']));
         $this->channel->basic_publish($msg, '', $this->queue);
 
-        $callback = function () {
-            posix_kill(posix_getpid(), SIGTERM);
+        $callback = function () use ($signal) {
+            posix_kill(posix_getpid(), $signal);
         };
 
         $consumer->callback($callback)->consume(30, true);
         $this->assertTrue(true, 'It should not throw error.');
+
+        Event::assertDispatched(Terminating::class);
+        Event::assertDispatched(Terminated::class);
     }
 
     protected function tearDown(): void

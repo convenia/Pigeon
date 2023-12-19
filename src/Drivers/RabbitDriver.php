@@ -3,6 +3,8 @@
 namespace Convenia\Pigeon\Drivers;
 
 use Convenia\Pigeon\Events\Connected;
+use Convenia\Pigeon\Events\Terminated;
+use Convenia\Pigeon\Events\Terminating;
 use Convenia\Pigeon\Support\Constants;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -82,7 +84,13 @@ class RabbitDriver extends Driver
 
     public function quitHard()
     {
-        $this->getConnection()->close();
+        $connection = $this->getConnection();
+
+        Terminating::dispatch($connection);
+
+        $connection->close();
+
+        Terminated::dispatch();
     }
 
     public function quit()
