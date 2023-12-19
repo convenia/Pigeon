@@ -5,7 +5,7 @@ namespace Convenia\Pigeon\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Convenia\Pigeon\Publisher\PublisherContract;
 
-abstract class BaseEvent
+abstract class BaseMessageEvent
 {
     use Dispatchable;
 

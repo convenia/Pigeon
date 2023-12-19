@@ -2,7 +2,9 @@
 
 namespace Convenia\Pigeon\Tests\Unit;
 
+use Convenia\Pigeon\Events\Connected;
 use Convenia\Pigeon\Tests\TestCase;
+use Illuminate\Support\Facades\Event;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
@@ -65,5 +67,17 @@ class RabbitDriverTest extends TestCase
         $this->connection->shouldReceive('channel')->once()->andReturn($this->channel);
 
         $this->assertEquals($this->channel, $this->driver->getchannel());
+    }
+
+    public function test_it_should_dispatch_event_after_connected()
+    {
+        Event::fake();
+        $this->connection->shouldReceive('isConnected')->once()->andReturn(true);
+        $this->connection->shouldReceive('checkHeartBeat')->once()->andReturn(true);
+
+        $connection = $this->driver->getConnection();
+        Event::assertDispatched(function (Connected $event) use ($connection) {
+            return $event->connection === $connection;
+        });
     }
 }

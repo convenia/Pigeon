@@ -4,7 +4,7 @@ namespace Convenia\Pigeon\Events;
 
 use Convenia\Pigeon\Publisher\PublisherContract;
 
-class EventDispatched extends BaseEvent
+class EventDispatched extends BaseMessageEvent
 {
     public string $eventName;
 

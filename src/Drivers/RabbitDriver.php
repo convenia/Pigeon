@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon\Drivers;
 
+use Convenia\Pigeon\Events\Connected;
 use Convenia\Pigeon\Support\Constants;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -16,10 +17,14 @@ class RabbitDriver extends Driver
     {
         if (! $this->connection) {
             $this->connection = $this->makeConnection();
+
+            Connected::dispatch($this->connection);
         }
 
         if (! $this->connection->isConnected() || $this->missedHeartBeat()) {
             $this->connection->reconnect();
+
+            Connected::dispatch($this->connection);
         }
 
         return $this->connection;

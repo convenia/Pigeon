@@ -2,6 +2,6 @@
 
 namespace Convenia\Pigeon\Events;
 
-class MessagePublished extends BaseEvent
+class MessagePublished extends BaseMessageEvent
 {
 }
