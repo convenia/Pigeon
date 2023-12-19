@@ -3,6 +3,7 @@
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
 use Convenia\Pigeon\Events\Connected;
+use Convenia\Pigeon\Events\Connecting;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Illuminate\Support\Facades\Event;
 
@@ -34,6 +35,7 @@ class RabbitDriverTest extends TestCase
         // assert
         $this->assertTrue($con->isConnected());
         
+        Event::assertDispatched(Connecting::class, 1);
         Event::assertDispatched(Connected::class, 2);
     }
 }

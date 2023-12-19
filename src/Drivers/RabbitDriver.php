@@ -3,6 +3,7 @@
 namespace Convenia\Pigeon\Drivers;
 
 use Convenia\Pigeon\Events\Connected;
+use Convenia\Pigeon\Events\Connecting;
 use Convenia\Pigeon\Events\Terminated;
 use Convenia\Pigeon\Events\Terminating;
 use Convenia\Pigeon\Support\Constants;
@@ -64,6 +65,8 @@ class RabbitDriver extends Driver
 
     public function makeConnection()
     {
+        Connecting::dispatch();
+
         return new AMQPStreamConnection(
             $host = $this->app['config']['pigeon.connection.host.address'],
             $port = $this->app['config']['pigeon.connection.host.port'],
