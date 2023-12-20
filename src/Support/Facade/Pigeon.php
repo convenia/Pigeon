@@ -1,6 +1,6 @@
 <?php
 
-namespace Convenia\Pigeon\Facade;
+namespace Convenia\Pigeon\Support\Facade;
 
 use Convenia\Pigeon\Support\Testing\PigeonFake;
 use Illuminate\Support\Facades\Facade;

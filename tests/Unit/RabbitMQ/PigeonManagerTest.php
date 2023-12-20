@@ -1,6 +1,6 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
 use Convenia\Pigeon\Drivers\RabbitMQDriver;
 use Convenia\Pigeon\PigeonManager;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit\Message;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ\Message;
 
 use Convenia\Pigeon\Contracts\Resolver;
-use Convenia\Pigeon\Message\Processor;
+use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Error;
 use Exception;

@@ -2,12 +2,12 @@
 
 namespace Convenia\Pigeon\Support\Testing;
 
-use Convenia\Pigeon\Consumer\Consumer;
+use Convenia\Pigeon\RabbitMQ\Consumer;
 use Convenia\Pigeon\Contracts\Consumer as ConsumerContract;
 use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Contracts\Publisher as PublisherContract;
 use Convenia\Pigeon\PigeonManager;
-use Convenia\Pigeon\Publisher\Publisher;
+use Convenia\Pigeon\RabbitMQ\Publisher;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;

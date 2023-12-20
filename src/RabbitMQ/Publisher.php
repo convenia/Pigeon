@@ -1,6 +1,6 @@
 <?php
 
-namespace Convenia\Pigeon\Publisher;
+namespace Convenia\Pigeon\RabbitMQ;
 
 use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Contracts\Publisher as PublisherContract;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Publisher\Publisher;
+use Convenia\Pigeon\RabbitMQ\Publisher;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Resolver\Resolver;
+use Convenia\Pigeon\RabbitMQ\Resolver;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Support\Str;
 use Mockery;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Consumer\Consumer;
+use Convenia\Pigeon\RabbitMQ\Consumer;
 use Convenia\Pigeon\Drivers\RabbitMQDriver;
-use Convenia\Pigeon\Message\Processor;
+use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;

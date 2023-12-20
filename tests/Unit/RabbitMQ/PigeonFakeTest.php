@@ -1,11 +1,11 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Consumer\Consumer;
 use Convenia\Pigeon\Contracts\Resolver;
-use Convenia\Pigeon\Facade\Pigeon;
-use Convenia\Pigeon\Publisher\Publisher;
+use Convenia\Pigeon\RabbitMQ\Consumer;
+use Convenia\Pigeon\RabbitMQ\Publisher;
+use Convenia\Pigeon\Support\Facade\Pigeon;
 use Convenia\Pigeon\Tests\TestCase;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\ExpectationFailedException;

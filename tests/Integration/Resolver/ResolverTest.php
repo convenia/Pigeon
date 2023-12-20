@@ -2,9 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Resolver;
 
-//define('AMQP_DEBUG', true);
-
-use Convenia\Pigeon\Resolver\Resolver;
+use Convenia\Pigeon\RabbitMQ\Resolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Convenia\Pigeon\Consumer;
+namespace Convenia\Pigeon\RabbitMQ;
 
 use Closure;
 use Convenia\Pigeon\Contracts\Consumer as ConsumerContract;
 use Convenia\Pigeon\Contracts\Driver;
-use Convenia\Pigeon\Message\Processor;
+use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Illuminate\Foundation\Application;
 use PhpAmqpLib\Message\AMQPMessage;
 

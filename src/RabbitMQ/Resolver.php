@@ -1,6 +1,6 @@
 <?php
 
-namespace Convenia\Pigeon\Resolver;
+namespace Convenia\Pigeon\RabbitMQ;
 
 use Convenia\Pigeon\Contracts\Resolver as ResolverContract;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -45,9 +45,9 @@ class Resolver implements ResolverContract
      *
      * @param  ?string  $key
      *
-     * @return mixed|array
+     * @return mixed
      */
-    public function headers(string $key = null): mixed|array
+    public function headers(string $key = null): mixed
     {
         return is_null($key)
             ? $this->message->get_properties()
