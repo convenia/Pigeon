@@ -6,9 +6,9 @@ use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Contracts\Publisher as PublisherContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
-use Webpatser\Uuid\Uuid;
 
 class Publisher implements PublisherContract
 {
@@ -62,7 +62,7 @@ class Publisher implements PublisherContract
         return array_merge([
             'content_type' => 'application/json',
             'content_encoding' => 'utf8',
-            'correlation_id' => Uuid::generate()->string,
+            'correlation_id' => Str::uuid(),
             'expiration' => 60000000,
             'app_id' => $this->app['config']['app_name'],
             'application_headers' => new AMQPTable($this->getHeaders()),

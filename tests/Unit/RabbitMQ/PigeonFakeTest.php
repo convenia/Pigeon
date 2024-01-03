@@ -384,11 +384,11 @@ class PigeonFakeTest extends TestCase
         $run = false;
 
         $this->fake
-        ->events($queue)
-        ->callback(function ($event, Resolver $resolver) use (&$run) {
-            $resolver->ack();
-            $run = true;
-        })->consume();
+            ->events($queue)
+            ->callback(function ($event, Resolver $resolver) use (&$run) {
+                $resolver->ack();
+                $run = true;
+            })->consume();
 
         $this->fake->dispatchConsumer($queue, []);
 

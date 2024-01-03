@@ -2,7 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
-use Convenia\Pigeon\Drivers\Driver;
+use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
@@ -10,7 +10,7 @@ use PhpAmqpLib\Wire\AMQPTable;
 class PublisherTest extends TestCase
 {
     /**
-     * @var \Convenia\Pigeon\Drivers\Driver
+     * @var Driver
      */
     protected $pigeon;
 

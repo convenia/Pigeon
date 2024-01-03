@@ -4,38 +4,66 @@ namespace Convenia\Pigeon\Contracts;
 
 use Convenia\Pigeon\Contracts\Consumer;
 use Convenia\Pigeon\Contracts\Publisher;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 interface Driver
 {
-    public function queue(string $name): Consumer;
-
-    public function exchange(string $name, string $type): Publisher;
+    /**
+     * Creates a consumer with a queue.
+     *
+     * @param  string  $name
+     * @param  array  $properties
+     *
+     * @return Consumer
+     */
+    public function queue(string $name, array $properties = []): Consumer;
 
     /**
-     * Creates a "consumer" which will listen the desired queue.
+     * Created a new publisher defining a exchange.
+     *
+     * @param  string  $name
+     * @param  string  $type
+     *
+     * @return Publisher
+     *
+     * @deprecated Use routing() function instead.
+     */
+    public function exchange(string $name, string $type = 'direct'): Publisher;
+
+    /**
+     * Creates a consumer which will listen to the given queue.
      *
      * @param  string  $event
-     * @return \Convenia\Pigeon\Contracts\Consumer
+     *
+     * @return Consumer
      */
-    public function events(string $event = '*'): Consumer;
+    public function events(string $event = '#'): Consumer;
 
     /**
-     * Send message to the AMQP Service in the default exchange.
+     * Sends a message to the AMQP service.
      *
      * @param  string  $eventName
      * @param  array  $event
      * @param  array  $meta
+     *
      * @return void
      */
     public function dispatch(string $eventName, array $event, array $meta = []): void;
 
-    public function routing(string $name): Publisher;
+    /**
+     * Creates a publisher for a routing key and using the app's configured exchange.
+     *
+     * @param  string  $name
+     *
+     * @return Publisher
+     */
+    public function routing(string $name = null): Publisher;
 
     /**
      * Gets the connection object of the class.
      * Tries to reconnect if the connectin it's lost.
      *
-     * @return \PhpAmqpLib\Connection\AMQPStreamConnection
+     * @return AMQPStreamConnection
      */
     public function connection();
 

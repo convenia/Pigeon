@@ -2,17 +2,19 @@
 
 namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\RabbitMQ\Consumer;
+use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Drivers\RabbitMQDriver;
+use Convenia\Pigeon\RabbitMQ\Consumer;
 use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class ConsumerTest extends TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject | \Convenia\Pigeon\Drivers\Driver
+     * @var MockObject|Driver
      */
     private $driver;
 

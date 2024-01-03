@@ -3,8 +3,8 @@
 namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
 use Convenia\Pigeon\Contracts\Consumer;
+use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Contracts\Publisher;
-use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Support\Str;
@@ -12,13 +12,14 @@ use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class DriverTest extends TestCase
 {
     use ConnectsToRabbitMQ;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject | Driver
+     * @var MockObject|Driver
      */
     private $driver;
 

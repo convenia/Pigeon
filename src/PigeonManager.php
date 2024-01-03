@@ -8,7 +8,14 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class PigeonManager extends Manager
 {
-    public function headers(array $headers)
+    /**
+     * Redefines the default headers from the app configuration files.
+     *
+     * @param  array  $headers
+     *
+     * @return void
+     */
+    public function headers(array $headers): void
     {
         $old = $this->config->get($key = 'pigeon.headers');
 

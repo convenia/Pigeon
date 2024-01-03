@@ -157,7 +157,15 @@ class PigeonFake extends PigeonManager implements Driver
         $consumer->getCallback()->process($message);
     }
 
-    public function queue(string $name): ConsumerContract
+    /**
+     * Creates a consumer with a queue.
+     *
+     * @param  string  $name
+     * @param  array  $properties
+     *
+     * @return ConsumerContract
+     */
+    public function queue(string $name, array $properties = []): ConsumerContract
     {
         $consumer = new Consumer($this->container, $this, $name);
         $this->consumers->put($name, $consumer);
@@ -165,12 +173,29 @@ class PigeonFake extends PigeonManager implements Driver
         return $consumer;
     }
 
+    /**
+     * Created a new publisher defining a exchange.
+     *
+     * @param  string  $name
+     * @param  string  $type
+     *
+     * @return PublisherContract
+     *
+     * @deprecated Use routing() function instead.
+     */
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
         return new Publisher($this->container, $this, $name);
     }
 
-    public function routing(string $name): PublisherContract
+    /**
+     * Creates a publisher for a routing key and using the app's configured exchange.
+     *
+     * @param  string  $name
+     *
+     * @return PublisherContract
+     */
+    public function routing(string $name = null): PublisherContract
     {
         $exchange = $this->config['pigeon.exchange'];
         $publisher = (new Publisher($this->container, $this, $exchange))->routing($name);

@@ -7,6 +7,8 @@ use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Error;
 use Exception;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -14,6 +16,8 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class ProcessorTest extends TestCase
 {
+    use WithFaker;
+
     protected $driver;
 
     protected $channel;
@@ -160,22 +164,26 @@ class ProcessorTest extends TestCase
 
     public function test_it_should_have_default_fallback_ack_on_configured()
     {
-        // setup
-        $data = ['foo' => 'bar'];
-        $message = new AMQPMessage(json_encode($data));
-        $channel = Mockery::mock(AMQPChannel::class);
-        $message->delivery_info['channel'] = $channel;
-        $message->delivery_info['delivery_tag'] = $tag = random_int(1, 12445);
-        $this->app['config']['pigeon.consumer.on_failure'] = 'ack';
-        $channel->shouldReceive('basic_ack')
-            ->with($tag)->once();
+        // Setting up scenario...
+        Config::set('pigeon.consumer.on_failure', 'ack');
+
+        $tag = $this->faker->numberBetween(1, 12445);
+        $body = ['foo' => 'bar'];
+
+        $channel = $this->partialMock(AMQPChannel::class, function ($mock) use ($tag) {
+            $mock->shouldReceive('basic_ack')->once()->with($tag);
+        });
+
+        $message = new AMQPMessage(json_encode($body));
+        $message->setChannel($channel);
+        $message->setDeliveryTag($tag);
 
         $exception = new Exception('Callback failing and no fallback set');
         $callback = function () use ($exception) {
             throw $exception;
         };
 
-        // act
+        // Executing scenario...
         $processor = new Processor($this->driver, $callback);
 
         Log::shouldReceive('error')->with(
@@ -193,21 +201,25 @@ class ProcessorTest extends TestCase
 
     public function test_it_should_have_default_fallback_reject_on_configured()
     {
-        // setup
+        // Setting up scenario...
+        $tag = $this->faker->numberBetween(1, 12445);
         $data = ['foo' => 'bar'];
+
+        $channel = $this->partialMock(AMQPChannel::class, function ($mock) use ($tag) {
+            $mock->shouldReceive('basic_nack')->once()->with($tag, false, false);
+        });
+
         $message = new AMQPMessage(json_encode($data));
-        $channel = Mockery::mock(AMQPChannel::class);
-        $message->delivery_info['channel'] = $channel;
-        $message->delivery_info['delivery_tag'] = $tag = random_int(1, 12445);
-        $this->app['config']['pigeon.consumer.on_failure'] = 'reject';
-        $channel->shouldReceive('basic_nack')
-            ->with($tag, false, false)
-            ->once();
+        $message->setChannel($channel);
+        $message->setDeliveryTag($tag);
+
+        Config::set('pigeon.consumer.on_failure', 'reject');
 
         $exception = new Exception('Callback failing and no fallback set');
         $callback = function () use ($exception) {
             throw $exception;
         };
+
         Log::shouldReceive('error')->with(
             $exception->getMessage(),
             [
@@ -219,7 +231,7 @@ class ProcessorTest extends TestCase
             ]
         );
 
-        // act
+        // Executing scenario...
         $processor = new Processor($this->driver, $callback);
 
         $processor->process($message);

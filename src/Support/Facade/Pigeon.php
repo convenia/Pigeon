@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Convenia\Pigeon\Contracts\Publisher dispatch(string $eventName, array $event, array $meta = [])
  * @method static \Convenia\Pigeon\Contracts\Publisher exchange(string $name, string $type = 'direct')
  * @method static \Convenia\Pigeon\Contracts\Publisher routing(string $name = null)
- * @method static \Convenia\Pigeon\Drivers\Driver driver(string $driver)
  * @method static void assertConsuming(string $queue, int $timeout = null, bool $multiple = null)
  * @method static void assertConsumingEvent(string $event, int $timeout = null, bool $multiple = null)
  * @method static void assertDispatched(string $category, array $data)

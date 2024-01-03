@@ -12,6 +12,13 @@ class Resolver implements ResolverContract
      */
     public $message;
 
+    /**
+     * Class constructor.
+     *
+     * @param  AMQPMessage  $message
+     *
+     * @return self
+     */
     public function __construct(AMQPMessage $message)
     {
         $this->message = $message;
@@ -24,7 +31,7 @@ class Resolver implements ResolverContract
      */
     public function ack(): void
     {
-        $this->message->get('channel')
+        $this->message->getChannel()
             ->basic_ack($this->message->get('delivery_tag'));
     }
 
@@ -36,7 +43,7 @@ class Resolver implements ResolverContract
      */
     public function reject(bool $requeue = true)
     {
-        $this->message->get('channel')
+        $this->message->getChannel()
             ->basic_nack($this->message->get('delivery_tag'), false, $requeue);
     }
 

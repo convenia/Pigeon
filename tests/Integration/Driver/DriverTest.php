@@ -2,21 +2,22 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
+use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Contracts\Resolver;
-use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class DriverTest extends TestCase
 {
     use ConnectsToRabbitMQ;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Convenia\Pigeon\Drivers\Driver
+     * @var MockObject|Driver
      */
     protected $driver;
 
