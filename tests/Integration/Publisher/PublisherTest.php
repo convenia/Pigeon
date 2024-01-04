@@ -4,6 +4,7 @@ namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
 use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -173,5 +174,38 @@ class PublisherTest extends TestCase
         $msg_headers = $message->get('application_headers');
         $this->assertInstanceOf(AMQPTable::class, $msg_headers);
         $this->assertEquals($headers, $msg_headers->getNativeData());
+    }
+
+    public function test_it_should_send_default_headers()
+    {
+        // setup
+        $this->channel->exchange_declare($this->exchange, 'fanout', false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange' => 'dead.letter',
+        ]));
+        $this->channel->queue_declare($this->queue);
+        $this->channel->queue_bind($this->queue, $this->exchange);
+        $this->app['config']['app_name'] = 'Pigeon Test Suit';
+
+        // act
+        $pub = $this->pigeon->exchange($this->exchange, 'fanout');
+
+        // act
+        $pub->publish(['Scooby' => 'Dooo']);
+
+        // wait message go to broker
+        sleep(1);
+
+        // assert
+        $message = $this->channel->basic_get($this->queue);
+
+        /* @var $applicationHeaders AMQPTable */
+        $applicationHeaders = $message->get('application_headers');
+        $this->assertInstanceOf(AMQPTable::class, $applicationHeaders);
+        $this->assertEmpty($applicationHeaders->getNativeData());
+        $this->assertSame('application/json', $message->get('content_type'));
+        $this->assertSame('utf8', $message->get('content_encoding'));
+        $this->assertTrue(Str::isUuid($message->get('correlation_id')));
+        $this->assertEquals(60000000, $message->get('expiration'));
+        $this->assertSame('Pigeon Test Suit', $message->get('app_id'));
     }
 }

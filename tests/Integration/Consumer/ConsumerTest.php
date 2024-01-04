@@ -72,6 +72,7 @@ class ConsumerTest extends TestCase
 
     /**
      * @requires extension pcntl
+     *
      * @
      */
     public function test_it_should_handle_sigterm_signal()
