@@ -7,11 +7,15 @@ use Convenia\Pigeon\Facade\Pigeon;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\ExpectationFailedException;
 
 class PigeonFakeTest extends TestCase
 {
+    use WithFaker;
+
+    /** @var \Convenia\Pigeon\Support\Testing\PigeonFake */
     protected $fake;
 
     protected function setUp(): void
@@ -437,5 +441,36 @@ class PigeonFakeTest extends TestCase
         ];
 
         $this->fake->assertNotDispatched($category, $data);
+    }
+
+    public function test_it_asserts_nothing_dispatched()
+    {
+        $this->fake->assertNothingDispatched();
+
+        $this->fake->dispatch('some.dummy.queue', ['dummy-field' => 123]);
+
+        $this->expectException(ExpectationFailedException::class);
+        $this->expectExceptionMessage('Failed asserting that actual size 1 matches expected size 0.');
+
+        $this->fake->assertNothingDispatched();
+    }
+
+    public function test_if_asserts_the_count_of_messages()
+    {
+        $howMany = 22;
+
+        for ($i = $howMany; $i > 0; $i--) {
+            $this->fake->dispatch(
+                implode('.', $this->faker->words()),
+                ['some-dummy-field' => $this->faker->sentence()]
+            );
+        }
+
+        $this->fake->assertDispatchCount($howMany);
+
+        $this->expectException(ExpectationFailedException::class);
+        $this->expectExceptionMessage('Failed asserting that actual size 22 matches expected size 10.');
+
+        $this->fake->assertDispatchCount(10);
     }
 }
