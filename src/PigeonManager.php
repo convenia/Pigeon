@@ -2,59 +2,46 @@
 
 namespace Convenia\Pigeon;
 
-use BadMethodCallException;
-use Convenia\Pigeon\BridgeManager as Manager;
-use Convenia\Pigeon\Drivers\RabbitDriver;
-use Convenia\Pigeon\Exceptions\Driver\NullDriverException;
+use Convenia\Pigeon\Drivers\RabbitMQDriver;
+use Illuminate\Support\Manager;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 
-/**
- * Class PigeonManager.
- */
 class PigeonManager extends Manager
 {
-    public function headers(array $headers)
+    /**
+     * Redefines the default headers from the app configuration files.
+     *
+     * @param  array  $headers
+     *
+     * @return void
+     */
+    public function headers(array $headers): void
     {
-        $old = $this->app['config']->get($key = 'pigeon.headers');
-        $this->app['config']->set($key, array_merge($old, $headers));
+        $old = $this->config->get($key = 'pigeon.headers');
+
+        $this->config->set($key, array_merge($old, $headers));
     }
 
-    public function createRabbitDriver()
+    /**
+     * Creates the driver for RabbitMQ.
+     *
+     * @return \Convenia\Pigeon\Drivers\RabbitMQDriver
+     */
+    public function createRabbitmqDriver(): RabbitMQDriver
     {
-        return new RabbitDriver($this->app);
-    }
-
-    public function createNullDriver()
-    {
-        throw new NullDriverException();
+        return new RabbitMQDriver(
+            $this->container,
+            $this->container->make(AMQPStreamConnection::class)
+        );
     }
 
     /**
      * Get the default driver name.
      *
-     * @return string
+     * @return string|null
      */
-    public function getDefaultDriver(): string
+    public function getDefaultDriver(): ?string
     {
-        return $this->app['config']['pigeon.default'] ?? 'null';
-    }
-
-    /**
-     * Dynamically pass calls to the default connection.
-     *
-     * @param  string  $method
-     * @param  array  $parameters
-     * @return mixed
-     */
-    public function __call($method, $parameters)
-    {
-        if (method_exists($this->driver(), $method)) {
-            return $this->driver()->$method(...$parameters);
-        }
-
-        throw new BadMethodCallException(sprintf(
-            'Call to undefined method %s::%s()',
-            static::class,
-            $method
-        ));
+        return $this->config['pigeon.default'];
     }
 }

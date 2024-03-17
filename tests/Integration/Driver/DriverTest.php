@@ -2,27 +2,38 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
-use Convenia\Pigeon\Drivers\Driver;
-use Convenia\Pigeon\Resolver\ResolverContract;
+use Convenia\Pigeon\Contracts\Driver;
+use Convenia\Pigeon\MessageResolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
+use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class DriverTest extends TestCase
 {
+    use ConnectsToRabbitMQ;
+
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Convenia\Pigeon\Drivers\Driver
+     * @var MockObject|Driver
      */
     protected $driver;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->driver = $this->getMockForAbstractClass(Driver::class, [$this->app]);
-        $this->driver->method('getConnection')->willReturn($this->connection);
+
+        $this->driver = $this->getMockForAbstractClass(
+            Driver::class,
+            [$this->app, $this->makeConnection()]
+        );
+
+        $this->driver->method('connection')->willReturn($this->connection);
+
         $this->driver->method('getChannel')->willReturn($this->channel);
+
         $this->channel->queue_declare($this->queue, false, true, false, false);
     }
 
@@ -124,7 +135,7 @@ class DriverTest extends TestCase
 
         // act
         $this->driver->events($event_name)
-            ->callback(function ($event, ResolverContract $resolver) use ($event_content, $meta) {
+            ->callback(function ($event, MessageResolver $resolver) use ($event_content, $meta) {
                 // assert
                 $this->assertInstanceOf(AMQPTable::class, $resolver->headers('application_headers'));
                 $this->assertEquals($meta, $resolver->headers('application_headers')->getNativeData());

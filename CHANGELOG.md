@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Script `test` in composer.
+### Changed
+- All interfaces moved to a separated folder.
+- `PigeonManager::getDefaultDriver()` now can return `null` value.
+- `PigeonManager::$app` removed and replaced by `PigeonManager::$container` from parent class.
+- RabbitMQ container updated to 3.9 with management.
+### Removed
+- `BridgeManager` class.
+- `PigeonManager::__call()`.
+- `PigeonManager::__construct()`.
+
 ## [v2.3.0]
 ### Added
 - Support PHP 8.3

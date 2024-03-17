@@ -1,14 +1,14 @@
 <?php
 
-namespace Convenia\Pigeon\Consumer;
+namespace Convenia\Pigeon\Contracts;
 
 use Closure;
-use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Contracts\Driver;
 use Illuminate\Foundation\Application;
 
-interface ConsumerContract
+interface Consumer
 {
-    public function __construct(Application $app, DriverContract $driver, string $queue);
+    public function __construct(Application $app, Driver $driver, string $queue);
 
     public function consume(int $timeout = 5, bool $multiple = true);
 

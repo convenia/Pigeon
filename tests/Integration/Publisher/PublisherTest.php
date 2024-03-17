@@ -2,7 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Publisher;
 
-use Convenia\Pigeon\Drivers\Driver;
+use Convenia\Pigeon\Contracts\Driver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -11,14 +11,15 @@ use PhpAmqpLib\Wire\AMQPTable;
 class PublisherTest extends TestCase
 {
     /**
-     * @var \Convenia\Pigeon\Drivers\Driver
+     * @var Driver
      */
     protected $pigeon;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pigeon = $this->app['pigeon']->driver('rabbit');
+
+        $this->pigeon = $this->app['pigeon']->driver();
     }
 
     public function test_it_should_publish_a_message_using_exchange()

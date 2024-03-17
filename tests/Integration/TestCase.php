@@ -2,12 +2,14 @@
 
 namespace Convenia\Pigeon\Tests\Integration;
 
+use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Convenia\Pigeon\Tests\TestCase as BaseTestCase;
 use Exception;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class TestCase extends BaseTestCase
 {
+    use ConnectsToRabbitMQ;
+
     protected $connection;
 
     protected $channel;
@@ -25,22 +27,9 @@ class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->connection = new AMQPStreamConnection(
-            $host = env('PIGEON_ADDRESS'),
-            $port = env('PIGEON_PORT'),
-            $user = env('PIGEON_USER'),
-            $password = env('PIGEON_PASSWORD'),
-            $vhost = env('PIGEON_VHOST'),
-            $insist = false,
-            $login_method = 'AMQPLAIN',
-            $login_response = null,
-            $locale = 'en_US',
-            $connection_timeout = 3.0,
-            $read_write_timeout = env('PIGEON_READ_TIMEOUT', 130),
-            $context = null,
-            $keepalive = env('PIGEON_KEEPALIVE', true),
-            $heartbeat = env('PIGEON_HEARTBEAT', 10)
-        );
+
+        $this->connection = $this->makeConnection();
+
         $this->channel = $this->connection->channel(1);
     }
 

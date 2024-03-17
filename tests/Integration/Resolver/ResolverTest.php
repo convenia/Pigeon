@@ -2,9 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Resolver;
 
-//define('AMQP_DEBUG', true);
-
-use Convenia\Pigeon\Resolver\Resolver;
+use Convenia\Pigeon\RabbitMQ\Resolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -17,7 +15,8 @@ class ResolverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pigeon = $this->app['pigeon']->driver('rabbit');
+
+        $this->pigeon = $this->app['pigeon']->driver();
     }
 
     public function test_it_should_ack_message()
@@ -112,7 +111,7 @@ class ResolverTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->pigeon->getConnection()->close();
+        $this->pigeon->connection()->close();
         parent::tearDown();
     }
 }

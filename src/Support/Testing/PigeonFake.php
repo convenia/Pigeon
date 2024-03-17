@@ -2,18 +2,18 @@
 
 namespace Convenia\Pigeon\Support\Testing;
 
-use Convenia\Pigeon\Consumer\Consumer;
-use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\RabbitMQ\Consumer;
+use Convenia\Pigeon\Contracts\Consumer as ConsumerContract;
+use Convenia\Pigeon\Contracts\Driver;
+use Convenia\Pigeon\Contracts\Publisher as PublisherContract;
 use Convenia\Pigeon\PigeonManager;
-use Convenia\Pigeon\Publisher\Publisher;
-use Convenia\Pigeon\Publisher\PublisherContract;
+use Convenia\Pigeon\RabbitMQ\Publisher;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Message\AMQPMessage;
 use PHPUnit\Framework\Assert as PHPUnit;
 
-class PigeonFake extends PigeonManager implements DriverContract
+class PigeonFake extends PigeonManager implements Driver
 {
     public $callbacks = [];
 
@@ -132,7 +132,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     {
         $callback = $callback ?: function ($publisher) use ($routing, $message) {
             return $publisher['routing'] === $routing
-                && $publisher['exchange'] === $this->app['config']['pigeon.exchange']
+                && $publisher['exchange'] === $this->config['pigeon.exchange']
                 && isset($publisher['message'])
                 && $publisher['message'] === $message;
         };
@@ -178,23 +178,48 @@ class PigeonFake extends PigeonManager implements DriverContract
         $consumer->getCallback()->process($message);
     }
 
-    public function queue(string $name): ConsumerContract
+    /**
+     * Creates a consumer with a queue.
+     *
+     * @param  string  $name
+     * @param  array  $properties
+     *
+     * @return ConsumerContract
+     */
+    public function queue(string $name, array $properties = []): ConsumerContract
     {
-        $consumer = new Consumer($this->app, $this, $name);
+        $consumer = new Consumer($this->container, $this, $name);
         $this->consumers->put($name, $consumer);
 
         return $consumer;
     }
 
+    /**
+     * Created a new publisher defining a exchange.
+     *
+     * @param  string  $name
+     * @param  string  $type
+     *
+     * @return PublisherContract
+     *
+     * @deprecated Use routing() function instead.
+     */
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        return new Publisher($this->app, $this, $name);
+        return new Publisher($this->container, $this, $name);
     }
 
-    public function routing(string $name): PublisherContract
+    /**
+     * Creates a publisher for a routing key and using the app's configured exchange.
+     *
+     * @param  string  $name
+     *
+     * @return PublisherContract
+     */
+    public function routing(string $name = null): PublisherContract
     {
-        $exchange = $this->app['config']['pigeon.exchange'];
-        $publisher = (new Publisher($this->app, $this, $exchange))->routing($name);
+        $exchange = $this->config['pigeon.exchange'];
+        $publisher = (new Publisher($this->container, $this, $exchange))->routing($name);
         $this->publishers->push([
             'exchange' => $exchange,
             'routing' => $name,
@@ -206,7 +231,7 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function events(string $event = '#'): ConsumerContract
     {
-        $consumer = new Consumer($this->app, $this, $event);
+        $consumer = new Consumer($this->container, $this, $event);
         $this->consumers->put($event, $consumer);
 
         return $consumer;
@@ -227,10 +252,12 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function basic_qos()
     {
+        //
     }
 
     public function basic_consume()
     {
+        //
     }
 
     public function basic_publish(AMQPMessage $msg, $exchange, $routing)
@@ -258,17 +285,20 @@ class PigeonFake extends PigeonManager implements DriverContract
 
     public function basic_ack()
     {
+        //
     }
 
     public function wait()
     {
+        //
     }
 
     /**
      * @codeCoverageIgnore
      */
-    public function getConnection()
+    public function connection()
     {
+        //
     }
 
     /**
@@ -285,5 +315,30 @@ class PigeonFake extends PigeonManager implements DriverContract
     public function queue_bind(string $queue, string $exchange = '', string $routing = '')
     {
         return $this;
+    }
+
+    /**
+     * Closes the connection disgracefully.
+     *
+     * @return void
+     */
+    public function quitHard(): void
+    {
+        //
+    }
+
+    /**
+     * Closes the connection gracefully.
+     *
+     * @return void
+     */
+    public function quit(): void
+    {
+        //
+    }
+
+    public function queueDeclare(string $name, array $properties)
+    {
+        //
     }
 }

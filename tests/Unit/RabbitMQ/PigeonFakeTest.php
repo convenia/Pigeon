@@ -1,11 +1,11 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Consumer\Consumer;
-use Convenia\Pigeon\Facade\Pigeon;
-use Convenia\Pigeon\Publisher\Publisher;
-use Convenia\Pigeon\Resolver\ResolverContract;
+use Convenia\Pigeon\MessageResolver;
+use Convenia\Pigeon\RabbitMQ\Consumer;
+use Convenia\Pigeon\RabbitMQ\Publisher;
+use Convenia\Pigeon\Support\Facade\Pigeon;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
@@ -21,6 +21,7 @@ class PigeonFakeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->fake = Pigeon::fake();
     }
 
@@ -387,11 +388,11 @@ class PigeonFakeTest extends TestCase
         $run = false;
 
         $this->fake
-        ->events($queue)
-        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
-            $resolver->ack();
-            $run = true;
-        })->consume();
+            ->events($queue)
+            ->callback(function ($event, MessageResolver $resolver) use (&$run) {
+                $resolver->ack();
+                $run = true;
+            })->consume();
 
         $this->fake->dispatchConsumer($queue, []);
 
@@ -407,7 +408,7 @@ class PigeonFakeTest extends TestCase
 
         $this->fake
         ->queue($queue)
-        ->callback(function ($event, ResolverContract $resolver) use (&$run) {
+        ->callback(function ($event, MessageResolver $resolver) use (&$run) {
             $resolver->ack();
             $run = true;
         })->consume();

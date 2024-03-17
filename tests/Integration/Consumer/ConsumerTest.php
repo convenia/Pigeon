@@ -2,7 +2,8 @@
 
 namespace Convenia\Pigeon\Tests\Integration\Consumer;
 
-use Convenia\Pigeon\Resolver\ResolverContract;
+use Convenia\Pigeon\Contracts\Driver;
+use Convenia\Pigeon\MessageResolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use PhpAmqpLib\Exception\AMQPTimeoutException;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -10,14 +11,15 @@ use PhpAmqpLib\Message\AMQPMessage;
 class ConsumerTest extends TestCase
 {
     /**
-     * @var \Convenia\Pigeon\Drivers\Driver
+     * @var Driver
      */
     protected $pigeon;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pigeon = $this->app['pigeon']->driver('rabbit');
+
+        $this->pigeon = $this->app['pigeon']->driver();
     }
 
     public function test_it_should_consume_a_queue()
@@ -46,7 +48,7 @@ class ConsumerTest extends TestCase
         $this->expectException(AMQPTimeoutException::class);
 
         // assert
-        $callback = function ($data, ResolverContract $resolver) {
+        $callback = function ($data, MessageResolver $resolver) {
         };
 
         // act
@@ -61,7 +63,7 @@ class ConsumerTest extends TestCase
         $this->expectException(AMQPTimeoutException::class);
 
         // assert
-        $callback = function ($data, ResolverContract $resolver) {
+        $callback = function ($data, MessageResolver $resolver) {
         };
 
         // act

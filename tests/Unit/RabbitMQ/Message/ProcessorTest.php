@@ -1,19 +1,23 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ\Message;
 
-use Convenia\Pigeon\MessageProcessor\MessageProcessor;
-use Convenia\Pigeon\Resolver\ResolverContract;
+use Convenia\Pigeon\MessageResolver;
+use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Error;
 use Exception;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class MessageProcessorTest extends TestCase
+class ProcessorTest extends TestCase
 {
+    use WithFaker;
+
     protected $driver;
 
     protected $channel;
@@ -22,7 +26,7 @@ class MessageProcessorTest extends TestCase
     {
         parent::setUp();
         $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = Mockery::mock('Convenia\Pigeon\Drivers\RabbitDriver');
+        $this->driver = Mockery::mock('Convenia\Pigeon\Drivers\RabbitMQDriver');
         $this->driver->shouldReceive('getChannel')->andReturn($this->channel);
     }
 
@@ -37,7 +41,7 @@ class MessageProcessorTest extends TestCase
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
         $processor->process($message);
     }
 
@@ -48,13 +52,13 @@ class MessageProcessorTest extends TestCase
         $reply_to = 'some.queue';
         $message = new AMQPMessage(json_encode($data));
 
-        $callback = function ($received, ResolverContract $resolver) use ($data) {
+        $callback = function ($received, MessageResolver $resolver) use ($data) {
             // assert
             $this->assertEquals($data, $received);
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
         $processor->process($message);
     }
 
@@ -72,7 +76,7 @@ class MessageProcessorTest extends TestCase
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback, $fallback);
+        $processor = new Processor($this->driver, $callback, $fallback);
         $processor->process($message);
     }
 
@@ -89,11 +93,11 @@ class MessageProcessorTest extends TestCase
             $ran = true;
             $this->assertEquals($e->getMessage(), $exception);
             $this->assertEquals($received, $message);
-            $this->assertInstanceOf(ResolverContract::class, $resolver);
+            $this->assertInstanceOf(MessageResolver::class, $resolver);
         };
 
         // act
-        $processor = new MessageProcessor($this->driver, $callback, $fallback);
+        $processor = new Processor($this->driver, $callback, $fallback);
         $processor->process($message);
         $this->assertTrue($ran, 'Test did not run');
     }
@@ -112,7 +116,7 @@ class MessageProcessorTest extends TestCase
 
         $this->expectExceptionMessage('Callback failing and no fallback set');
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
 
         Log::shouldReceive('error')->once()->with(
             $exception->getMessage(),
@@ -142,7 +146,7 @@ class MessageProcessorTest extends TestCase
 
         $this->expectExceptionMessage('Testing errors');
         // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        $processor = new Processor($this->driver, $callback);
 
         Log::shouldReceive('error')->once()->with(
             $exception->getMessage(),
@@ -160,23 +164,27 @@ class MessageProcessorTest extends TestCase
 
     public function test_it_should_have_default_fallback_ack_on_configured()
     {
-        // setup
-        $data = ['foo' => 'bar'];
-        $message = new AMQPMessage(json_encode($data));
-        $channel = Mockery::mock(AMQPChannel::class);
-        $message->delivery_info['channel'] = $channel;
-        $message->delivery_info['delivery_tag'] = $tag = random_int(1, 12445);
-        $this->app['config']['pigeon.consumer.on_failure'] = 'ack';
-        $channel->shouldReceive('basic_ack')
-            ->with($tag)->once();
+        // Setting up scenario...
+        Config::set('pigeon.consumer.on_failure', 'ack');
+
+        $tag = $this->faker->numberBetween(1, 12445);
+        $body = ['foo' => 'bar'];
+
+        $channel = $this->partialMock(AMQPChannel::class, function ($mock) use ($tag) {
+            $mock->shouldReceive('basic_ack')->once()->with($tag);
+        });
+
+        $message = new AMQPMessage(json_encode($body));
+        $message->setChannel($channel);
+        $message->setDeliveryTag($tag);
 
         $exception = new Exception('Callback failing and no fallback set');
         $callback = function () use ($exception) {
             throw $exception;
         };
 
-        // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        // Executing scenario...
+        $processor = new Processor($this->driver, $callback);
 
         Log::shouldReceive('error')->with(
             $exception->getMessage(),
@@ -193,21 +201,25 @@ class MessageProcessorTest extends TestCase
 
     public function test_it_should_have_default_fallback_reject_on_configured()
     {
-        // setup
+        // Setting up scenario...
+        $tag = $this->faker->numberBetween(1, 12445);
         $data = ['foo' => 'bar'];
+
+        $channel = $this->partialMock(AMQPChannel::class, function ($mock) use ($tag) {
+            $mock->shouldReceive('basic_nack')->once()->with($tag, false, false);
+        });
+
         $message = new AMQPMessage(json_encode($data));
-        $channel = Mockery::mock(AMQPChannel::class);
-        $message->delivery_info['channel'] = $channel;
-        $message->delivery_info['delivery_tag'] = $tag = random_int(1, 12445);
-        $this->app['config']['pigeon.consumer.on_failure'] = 'reject';
-        $channel->shouldReceive('basic_nack')
-            ->with($tag, false, false)
-            ->once();
+        $message->setChannel($channel);
+        $message->setDeliveryTag($tag);
+
+        Config::set('pigeon.consumer.on_failure', 'reject');
 
         $exception = new Exception('Callback failing and no fallback set');
         $callback = function () use ($exception) {
             throw $exception;
         };
+
         Log::shouldReceive('error')->with(
             $exception->getMessage(),
             [
@@ -219,8 +231,8 @@ class MessageProcessorTest extends TestCase
             ]
         );
 
-        // act
-        $processor = new MessageProcessor($this->driver, $callback);
+        // Executing scenario...
+        $processor = new Processor($this->driver, $callback);
 
         $processor->process($message);
     }

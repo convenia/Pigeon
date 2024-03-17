@@ -1,13 +1,13 @@
 <?php
 
-namespace Convenia\Pigeon\Publisher;
+namespace Convenia\Pigeon\Contracts;
 
-use Convenia\Pigeon\Drivers\DriverContract;
+use Convenia\Pigeon\Contracts\Driver;
 use Illuminate\Foundation\Application;
 
-interface PublisherContract
+interface Publisher
 {
-    public function __construct(Application $app, DriverContract $driver, string $exchange);
+    public function __construct(Application $app, Driver $driver, string $exchange);
 
     public function routing(string $key): self;
 

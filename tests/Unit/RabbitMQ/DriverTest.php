@@ -1,21 +1,26 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Consumer\ConsumerContract;
-use Convenia\Pigeon\Drivers\Driver;
-use Convenia\Pigeon\Publisher\PublisherContract;
+use Convenia\Pigeon\Contracts\Consumer;
+use Convenia\Pigeon\Contracts\Publisher;
+use Convenia\Pigeon\Drivers\RabbitMQDriver;
+use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Support\Str;
 use Mockery;
+use Mockery\MockInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class DriverTest extends TestCase
 {
+    use ConnectsToRabbitMQ;
+
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject | Driver
+     * @var MockObject|RabbitMQDriver
      */
     private $driver;
 
@@ -26,9 +31,20 @@ class DriverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = $this->getMockForAbstractClass(Driver::class, [$this->app]);
-        $this->driver->method('getChannel')->willReturn($this->channel);
+
+        $this->channel = $this->mock(AMQPChannel::class);
+
+        $this->driver = $this->partialMock(
+            RabbitMQDriver::class,
+            function (MockInterface $mock) {
+                $mock->app = $this->app;
+                $mock->connection = $this->makeConnection();
+
+                $mock->shouldReceive('getChannel')->andReturn($this->channel);
+            }
+        );
+
+        dd($this->driver);
     }
 
     public function test_it_should_declare_a_queue()
@@ -43,7 +59,7 @@ class DriverTest extends TestCase
         $consumer = $this->driver->queue($this->queue, ['some' => 'prop']);
 
         // assert
-        $this->assertInstanceOf(ConsumerContract::class, $consumer);
+        $this->assertInstanceOf(Consumer::class, $consumer);
     }
 
     public function test_it_should_declare_exchange()
@@ -59,7 +75,7 @@ class DriverTest extends TestCase
         $publisher = $this->driver->exchange($exchange, $type);
 
         // assert
-        $this->assertInstanceOf(PublisherContract::class, $publisher);
+        $this->assertInstanceOf(Publisher::class, $publisher);
     }
 
     public function test_it_should_use_default_exchange_if_name_not_provided_to_exchange_method()
@@ -73,7 +89,7 @@ class DriverTest extends TestCase
         $publisher = $this->driver->exchange('', $type);
 
         // assert
-        $this->assertInstanceOf(PublisherContract::class, $publisher);
+        $this->assertInstanceOf(Publisher::class, $publisher);
     }
 
     public function test_it_should_declare_exchange_bind_key()
@@ -96,7 +112,7 @@ class DriverTest extends TestCase
             ->bind($queue);
 
         // assert
-        $this->assertInstanceOf(PublisherContract::class, $publisher);
+        $this->assertInstanceOf(Publisher::class, $publisher);
     }
 
     public function test_it_should_publish_event()
@@ -110,12 +126,12 @@ class DriverTest extends TestCase
         // assert
         $this->channel->shouldReceive('basic_publish')->with(
             Mockery::type(AMQPMessage::class),
-            Driver::EVENT_EXCHANGE,
+            RabbitMQDriver::EVENT_EXCHANGE,
             $event_name
         )->once();
         $this->channel->shouldReceive('exchange_declare')->with(
-            Driver::EVENT_EXCHANGE,
-            Driver::EVENT_EXCHANGE_TYPE,
+            RabbitMQDriver::EVENT_EXCHANGE,
+            RabbitMQDriver::EVENT_EXCHANGE_TYPE,
             false,
             true,
             false,
@@ -148,12 +164,12 @@ class DriverTest extends TestCase
                     && array_key_exists($key, $app_headers->getNativeData())
                     && ($app_headers->getNativeData()[$key] === $value)
                     && ($event === $event_name)
-                    && ($exchange === Driver::EVENT_EXCHANGE);
+                    && ($exchange === RabbitMQDriver::EVENT_EXCHANGE);
             }
         )->once();
         $this->channel->shouldReceive('exchange_declare')->with(
-            Driver::EVENT_EXCHANGE,
-            Driver::EVENT_EXCHANGE_TYPE,
+            RabbitMQDriver::EVENT_EXCHANGE,
+            RabbitMQDriver::EVENT_EXCHANGE_TYPE,
             false,
             true,
             false,
@@ -193,8 +209,8 @@ class DriverTest extends TestCase
         $this->channel->shouldReceive('exchange_declare')
             ->once()
             ->with(
-                Driver::EVENT_EXCHANGE,
-                Driver::EVENT_EXCHANGE_TYPE,
+                RabbitMQDriver::EVENT_EXCHANGE,
+                RabbitMQDriver::EVENT_EXCHANGE_TYPE,
                 false,
                 true,
                 false,
@@ -204,14 +220,14 @@ class DriverTest extends TestCase
             );
         $this->channel->shouldReceive('queue_bind')
             ->once()
-            ->with("{$event_name}.{$app_name}", Driver::EVENT_EXCHANGE, $event_name);
+            ->with("{$event_name}.{$app_name}", RabbitMQDriver::EVENT_EXCHANGE, $event_name);
 
         // act
         $consumer = $this->driver
             ->events($event_name);
 
         // assert
-        $this->assertInstanceOf(ConsumerContract::class, $consumer);
+        $this->assertInstanceOf(Consumer::class, $consumer);
     }
 
     public function test_it_should_return_props_without_user_defined()

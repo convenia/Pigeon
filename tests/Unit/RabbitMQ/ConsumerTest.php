@@ -1,18 +1,20 @@
 <?php
 
-namespace Convenia\Pigeon\Tests\Unit;
+namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Consumer\Consumer;
-use Convenia\Pigeon\Drivers\RabbitDriver;
-use Convenia\Pigeon\MessageProcessor\MessageProcessor;
+use Convenia\Pigeon\Contracts\Driver;
+use Convenia\Pigeon\Drivers\RabbitMQDriver;
+use Convenia\Pigeon\RabbitMQ\Consumer;
+use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class ConsumerTest extends TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject | \Convenia\Pigeon\Drivers\Driver
+     * @var MockObject|Driver
      */
     private $driver;
 
@@ -26,7 +28,7 @@ class ConsumerTest extends TestCase
         parent::setUp();
 
         $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = Mockery::mock(RabbitDriver::class);
+        $this->driver = Mockery::mock(RabbitMQDriver::class);
 
         $this->driver->shouldReceive('getChannel')
             ->once()
@@ -97,6 +99,6 @@ class ConsumerTest extends TestCase
         // act
         $processor = $consumer->getCallback();
 
-        $this->assertInstanceOf(MessageProcessor::class, $processor);
+        $this->assertInstanceOf(Processor::class, $processor);
     }
 }
