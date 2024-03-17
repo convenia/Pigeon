@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   pigeon:
-    container_name: pigeon
+    container_name: Pigeon
     build: .
     working_dir: /var/www/package
     volumes:
