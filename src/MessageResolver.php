@@ -1,11 +1,10 @@
 <?php
 
-namespace Convenia\Pigeon\RabbitMQ;
+namespace Convenia\Pigeon;
 
-use Convenia\Pigeon\Contracts\Resolver as ResolverContract;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class Resolver implements ResolverContract
+class MessageResolver
 {
     /**
      * @var AMQPMessage
