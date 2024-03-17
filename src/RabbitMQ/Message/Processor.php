@@ -5,7 +5,7 @@ namespace Convenia\Pigeon\RabbitMQ\Message;
 use Closure;
 use Convenia\Pigeon\Contracts\Driver as DriverContract;
 use Convenia\Pigeon\Contracts\Message\Processor as ProcessorContract;
-use Convenia\Pigeon\RabbitMQ\Resolver;
+use Convenia\Pigeon\MessageResolver;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
@@ -36,12 +36,12 @@ class Processor implements ProcessorContract
     {
         $data = json_decode($message->body, true);
 
-        call_user_func($this->callback, $data, new Resolver($message));
+        call_user_func($this->callback, $data, new MessageResolver($message));
     }
 
     private function callUserFallback(Throwable $t, $message)
     {
-        $resolver = new Resolver($message);
+        $resolver = new MessageResolver($message);
         if (! $this->fallback) {
             return $this->defaultFallback($t, $message, $resolver);
         }

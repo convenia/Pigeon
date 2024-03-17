@@ -3,7 +3,7 @@
 namespace Convenia\Pigeon\Tests\Integration\Consumer;
 
 use Convenia\Pigeon\Contracts\Driver;
-use Convenia\Pigeon\Contracts\Resolver;
+use Convenia\Pigeon\MessageResolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use PhpAmqpLib\Exception\AMQPTimeoutException;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -48,7 +48,7 @@ class ConsumerTest extends TestCase
         $this->expectException(AMQPTimeoutException::class);
 
         // assert
-        $callback = function ($data, Resolver $resolver) {
+        $callback = function ($data, MessageResolver $resolver) {
         };
 
         // act
@@ -63,7 +63,7 @@ class ConsumerTest extends TestCase
         $this->expectException(AMQPTimeoutException::class);
 
         // assert
-        $callback = function ($data, Resolver $resolver) {
+        $callback = function ($data, MessageResolver $resolver) {
         };
 
         // act

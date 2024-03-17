@@ -2,7 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Unit\RabbitMQ\Message;
 
-use Convenia\Pigeon\Contracts\Resolver;
+use Convenia\Pigeon\MessageResolver;
 use Convenia\Pigeon\RabbitMQ\Message\Processor;
 use Convenia\Pigeon\Tests\TestCase;
 use Error;
@@ -52,7 +52,7 @@ class ProcessorTest extends TestCase
         $reply_to = 'some.queue';
         $message = new AMQPMessage(json_encode($data));
 
-        $callback = function ($received, Resolver $resolver) use ($data) {
+        $callback = function ($received, MessageResolver $resolver) use ($data) {
             // assert
             $this->assertEquals($data, $received);
         };
@@ -93,7 +93,7 @@ class ProcessorTest extends TestCase
             $ran = true;
             $this->assertEquals($e->getMessage(), $exception);
             $this->assertEquals($received, $message);
-            $this->assertInstanceOf(Resolver::class, $resolver);
+            $this->assertInstanceOf(MessageResolver::class, $resolver);
         };
 
         // act

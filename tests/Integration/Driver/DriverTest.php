@@ -3,7 +3,7 @@
 namespace Convenia\Pigeon\Tests\Integration\Driver;
 
 use Convenia\Pigeon\Contracts\Driver;
-use Convenia\Pigeon\Contracts\Resolver;
+use Convenia\Pigeon\MessageResolver;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Convenia\Pigeon\Tests\Support\ConnectsToRabbitMQ;
 use Illuminate\Support\Str;
@@ -135,7 +135,7 @@ class DriverTest extends TestCase
 
         // act
         $this->driver->events($event_name)
-            ->callback(function ($event, Resolver $resolver) use ($event_content, $meta) {
+            ->callback(function ($event, MessageResolver $resolver) use ($event_content, $meta) {
                 // assert
                 $this->assertInstanceOf(AMQPTable::class, $resolver->headers('application_headers'));
                 $this->assertEquals($meta, $resolver->headers('application_headers')->getNativeData());

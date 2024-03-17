@@ -2,7 +2,7 @@
 
 namespace Convenia\Pigeon\Tests\Unit\RabbitMQ;
 
-use Convenia\Pigeon\Contracts\Resolver;
+use Convenia\Pigeon\MessageResolver;
 use Convenia\Pigeon\RabbitMQ\Consumer;
 use Convenia\Pigeon\RabbitMQ\Publisher;
 use Convenia\Pigeon\Support\Facade\Pigeon;
@@ -389,7 +389,7 @@ class PigeonFakeTest extends TestCase
 
         $this->fake
             ->events($queue)
-            ->callback(function ($event, Resolver $resolver) use (&$run) {
+            ->callback(function ($event, MessageResolver $resolver) use (&$run) {
                 $resolver->ack();
                 $run = true;
             })->consume();
@@ -408,7 +408,7 @@ class PigeonFakeTest extends TestCase
 
         $this->fake
         ->queue($queue)
-        ->callback(function ($event, Resolver $resolver) use (&$run) {
+        ->callback(function ($event, MessageResolver $resolver) use (&$run) {
             $resolver->ack();
             $run = true;
         })->consume();

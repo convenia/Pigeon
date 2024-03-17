@@ -30,7 +30,7 @@ class RabbitMQDriver implements Driver
      *
      * @var Application $app
      */
-    public $app;
+    public Application $app;
 
     /**
      * The connection to RabbitMQ Service.
