@@ -1,5 +1,7 @@
 .idea
 .phpunit.result.cache
+.phpunit.cache
+test.results
 vendor/
 coverage/
 .coverage/
