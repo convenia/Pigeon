@@ -8,7 +8,7 @@ use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use PHPUnit\Framework\Constraint\ExceptionMessage;
+use PHPUnit\Framework\Constraint\StringContains;
 use PHPUnit\Framework\ExpectationFailedException;
 
 class PigeonFakeTest extends TestCase
@@ -56,7 +56,10 @@ class PigeonFakeTest extends TestCase
 
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The queue [$queue] has no consumer"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The queue [$queue] has no consumer")
+            );
         }
 
         // act
@@ -87,7 +90,10 @@ class PigeonFakeTest extends TestCase
 
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The queue [$queue] has no consumer"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The queue [$queue] has no consumer")
+            );
         }
 
         // act
@@ -150,7 +156,10 @@ class PigeonFakeTest extends TestCase
 
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The queue [$queue] has no consumer"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The queue [$queue] has no consumer")
+            );
         }
 
         // act
@@ -180,7 +189,10 @@ class PigeonFakeTest extends TestCase
 
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The queue [$queue] does not match consumer timeout"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The queue [$queue] does not match consumer timeout")
+            );
         }
 
         $this->fake->assertConsuming($queue, 5);
@@ -202,7 +214,10 @@ class PigeonFakeTest extends TestCase
 
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The queue [$queue] does not match consumer multiplicity"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The queue [$queue] does not match consumer multiplicity")
+            );
         }
 
         $this->fake->assertConsuming($queue, 5, false);
@@ -226,7 +241,10 @@ class PigeonFakeTest extends TestCase
             $this->fake->assertPublished($routing, $data);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("No message published in [$routing] with body"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("No message published in [$routing] with body")
+            );
         }
         $this->fake->routing($routing)
             ->publish($data);
@@ -252,7 +270,10 @@ class PigeonFakeTest extends TestCase
             $this->fake->assertPublished($routing, $data);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("No message published in [$routing] with body"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("No message published in [$routing] with body")
+            );
         }
         $this->fake->routing($routing)
             ->publish([
@@ -263,7 +284,10 @@ class PigeonFakeTest extends TestCase
             $this->fake->assertPublished($routing, $data);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("No message published in [$routing] with body"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("No message published in [$routing] with body")
+            );
         }
     }
 
@@ -280,7 +304,10 @@ class PigeonFakeTest extends TestCase
             $this->fake->assertDispatched($category, $data);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("No event [$category] emitted with body"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("No event [$category] emitted with body")
+            );
         }
         $this->fake->dispatch($category, $data);
 
@@ -297,7 +324,10 @@ class PigeonFakeTest extends TestCase
             $this->fake->assertConsumingEvent($category);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("No event consumer for [$category] event"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("No event consumer for [$category] event")
+            );
         }
         $this->fake->events($category)
             ->callback(function () {
@@ -321,7 +351,10 @@ class PigeonFakeTest extends TestCase
             $this->fake->assertConsumingEvent($category, 3);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The event [$category] does not match consumer timeout"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The event [$category] does not match consumer timeout")
+            );
         }
 
         $this->fake->assertConsumingEvent($category, 5);
@@ -341,7 +374,10 @@ class PigeonFakeTest extends TestCase
             $this->fake->assertConsumingEvent($category, 5, true);
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The event [$category] does not match consumer multiplicity"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The event [$category] does not match consumer multiplicity")
+            );
         }
 
         $this->fake->assertConsumingEvent($category, 5, false);
@@ -361,7 +397,10 @@ class PigeonFakeTest extends TestCase
 
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("The event [$event] has no listeners"));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("The event [$event] has no listeners")
+            );
         }
 
         // act
@@ -433,7 +472,10 @@ class PigeonFakeTest extends TestCase
 
             $this->fail();
         } catch (ExpectationFailedException $e) {
-            $this->assertThat($e, new ExceptionMessage("Event [$category] emitted with body: ".json_encode($data)));
+            $this->assertThat(
+                $e->getMessage(),
+                new StringContains("Event [$category] emitted with body: ".json_encode($data))
+            );
         }
 
         $data = [
