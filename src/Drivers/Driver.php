@@ -49,7 +49,7 @@ abstract class Driver implements DriverContract
         return new Publisher($this->app, $this, $name);
     }
 
-    public function routing(string $name = null): PublisherContract
+    public function routing(?string $name = null): PublisherContract
     {
         $exchange = $this->app['config']['pigeon.exchange'];
         $type = $this->app['config']['pigeon.exchange_type'];
