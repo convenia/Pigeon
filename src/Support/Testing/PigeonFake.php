@@ -31,7 +31,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         $this->events = new Collection();
     }
 
-    public function assertConsuming(string $queue, int $timeout = null, bool $multiple = null)
+    public function assertConsuming(string $queue, ?int $timeout = null, ?bool $multiple = null)
     {
         $comsumer = $this->consumers->get($queue);
 
@@ -57,7 +57,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         }
     }
 
-    public function assertConsumingEvent(string $event, int $timeout = null, bool $multiple = null)
+    public function assertConsumingEvent(string $event, ?int $timeout = null, ?bool $multiple = null)
     {
         $comsumer = $this->consumers->get($event);
 
@@ -191,7 +191,7 @@ class PigeonFake extends PigeonManager implements DriverContract
         return new Publisher($this->app, $this, $name);
     }
 
-    public function routing(string $name): PublisherContract
+    public function routing(?string $name = null): PublisherContract
     {
         $exchange = $this->app['config']['pigeon.exchange'];
         $publisher = (new Publisher($this->app, $this, $exchange))->routing($name);
@@ -274,7 +274,7 @@ class PigeonFake extends PigeonManager implements DriverContract
     /**
      * @codeCoverageIgnore
      */
-    public function getChannel(int $id = null)
+    public function getChannel(?int $id = null)
     {
         return $this;
     }

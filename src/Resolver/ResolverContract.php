@@ -8,5 +8,5 @@ interface ResolverContract
 
     public function reject(bool $requeue = true);
 
-    public function headers(string $key = null);
+    public function headers(?string $key = null);
 }
