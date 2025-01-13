@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN apk --no-cache --update add libmemcached-dev zlib-dev libpng-dev libjpeg-turbo-dev freetype-dev libxml2-dev

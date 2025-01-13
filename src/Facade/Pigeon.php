@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Facade;
  * Class Pigeon.
  *
  * @method static \Convenia\Pigeon\Drivers\Driver driver(string $driver)
- * @method static \Convenia\Pigeon\Publisher\PublisherContract routing(string $name = null)
+ * @method static \Convenia\Pigeon\Publisher\PublisherContract routing(?string $name = null)
  * @method static \Convenia\Pigeon\Publisher\PublisherContract exchange(string $name, string $type = 'direct')
  * @method static \Convenia\Pigeon\Publisher\PublisherContract dispatch(string $eventName, array $event, array $meta = [])
  * @method static \Convenia\Pigeon\Consumer\ConsumerContract queue(string $name, array $properties = [])

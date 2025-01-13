@@ -38,7 +38,7 @@ class Publisher implements PublisherContract
         return $this;
     }
 
-    public function publish(array $message, array $properties = [], int $channelId = null)
+    public function publish(array $message, array $properties = [], ?int $channelId = null)
     {
         $msg = $this->makeMessage($message, $properties);
         $this->driver->getChannel($channelId)->basic_publish(
