@@ -68,11 +68,7 @@ class ConsumerTest extends TestCase
         $consumer->callback($callback)->consume(1);
     }
 
-    /**
-     * @requires extension pcntl
-     *
-     * @
-     */
+    #[RequiresPhpExtension('pcntl')]
     public function test_it_should_handle_sigterm_signal()
     {
         // should create queue

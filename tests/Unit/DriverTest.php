@@ -27,7 +27,11 @@ class DriverTest extends TestCase
     {
         parent::setUp();
         $this->channel = Mockery::mock(AMQPChannel::class);
-        $this->driver = $this->getMockForAbstractClass(Driver::class, [$this->app]);
+        $this->driver = $this->getMockBuilder(Driver::class)
+            ->setConstructorArgs([$this->app])
+            ->onlyMethods(['quitHard', 'quit', 'getConnection', 'queueDeclare', 'getChannel'])
+            ->getMock();
+
         $this->driver->method('getChannel')->willReturn($this->channel);
     }
 
