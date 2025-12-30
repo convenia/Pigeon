@@ -5,9 +5,15 @@
  3. [Configuring Pigeon](#configuring)
  
 ## Requirements
- - PHP >= 7.1.3
  - JSON PHP extension
  - Sockets PHP Extension
+
+## Compatibility
+| Package Version | PHP Compatibility | Laravel Compatibility |
+|-----------------|-------------------|------------------------|
+| Version 1       | >= 7.1.3          | 5.6, 6.x, 7.x, 8.x     |
+| Version 2       | >= 7.3            | 6.20.12+, 7.30.4+, 8.22.1+, 9.x, 10.x, 11.x, 12.x |
+| Version 3       | >= 8.1            | 8.22.1+, 9.x, 10.x, 11.x, 12.x |
 
 ## Installing
 Pigeon utilizes [Composer](https://getcomposer.org/) to manage its dependencies. So, before using Laravel, make sure you have Composer installed on your machine.
