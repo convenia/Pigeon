@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support PHP 8.5
 
+### Removed
+- Support PHP 7.3, 7.4, 8.0
+- Support Laravel ~6.0, ~7.0
+
 ## [v2.7.0]
 ### Added
 - Support for RabbitMQ 4.x.x

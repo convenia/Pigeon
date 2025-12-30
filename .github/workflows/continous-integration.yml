@@ -14,51 +14,6 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php-versions: ['7.3', '7.4', '8.0']
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
-        extensions: sockets, xdebug
-        coverage: xdebug        
-        tools: phpunit:latest
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v4
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
-    - name: Install dependencies
-      run: composer update --prefer-dist --no-interaction
-      
-    - name: Run phpunit
-      run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --configuration=phpunit-ci-old-versions.xml
-
-    - name: Install lowest dependencies
-      run: composer update --prefer-dist --no-interaction --prefer-lowest
-      
-    - name: Run phpunit with lowest dependencies
-      run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --configuration=phpunit-ci-old-versions.xml
-
-  build-new-php-version:
-
-    services:
-      rabbitmq:
-        image: rabbitmq:4.1
-        ports:
-          - 5672:5672
-
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
         php-versions: ['8.1', '8.2', '8.3', '8.4', '8.5']
 
     steps:
@@ -86,3 +41,9 @@ jobs:
       
     - name: Run phpunit
       run: XDEBUG_MODE=coverage vendor/bin/phpunit --color="always" --coverage-text --configuration=phpunit-ci.xml
+
+    - name: Install lowest dependencies
+      run: composer update --prefer-dist --no-interaction --prefer-lowest
+      
+    - name: Run phpunit with lowest dependencies
+      run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --configuration=phpunit-ci.xml
