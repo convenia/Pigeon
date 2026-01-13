@@ -2,6 +2,7 @@
 
 namespace Convenia\Pigeon;
 
+use Convenia\Pigeon\Support\Testing\PigeonFake;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -30,6 +31,10 @@ class PigeonServiceProvider extends ServiceProvider
     {
         $this->app->singleton('pigeon', static function ($app) {
             return new PigeonManager($app);
+        });
+
+        $this->app->singleton('pigeon-fake', static function ($app) {
+            return new PigeonFake($app);
         });
 
         $this->mergeConfigFrom(
