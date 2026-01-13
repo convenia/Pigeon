@@ -19,7 +19,7 @@ class Pigeon extends Facade
 {
     public static function fake(): PigeonFake
     {
-        static::swap(new PigeonFake(static::$app));
+        static::swap(app('pigeon-fake'));
 
         return self::getFacadeRoot();
     }
