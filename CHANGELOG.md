@@ -5,6 +5,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [v3.0.0]
+### Added
+- Support PHP 8.5
+
+### Removed
+- Support PHP 7.3, 7.4, 8.0
+- Support Laravel ~6.0, ~7.0
+
+## [v2.7.0]
+### Added
+- Support for RabbitMQ 4.x.x
+
+## [v2.6.0]
+### Added
+- Support for Laravel 12
+
+## [v2.5.0]
+### Added
+- Support PHP 8.4
+
+## [v2.4.0]
+### Added
+- Support for Laravel 11
+
+## [v2.3.0]
+### Added
+- Support PHP 8.3
+
 ## [v2.2.1]
 ### Removed
 - Remove webpatser/uuid dependency.

@@ -1,4 +1,3 @@
-version: '3.3'
 services:
   pigeon:
     container_name: pigeon
@@ -14,7 +13,7 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3.8
+    image: rabbitmq:4
     hostname: rabbitmq
     networks:
       pigeon-network:

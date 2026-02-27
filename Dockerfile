@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.5-fpm-alpine
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN apk --no-cache --update add libmemcached-dev zlib-dev libpng-dev libjpeg-turbo-dev freetype-dev libxml2-dev
@@ -6,8 +6,8 @@ RUN apk --no-cache --update add libmemcached-dev zlib-dev libpng-dev libjpeg-tur
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-&& docker-php-ext-install -j$(nproc) gd fileinfo dom xml simplexml pcntl
+&& docker-php-ext-install -j$(nproc) gd fileinfo xml simplexml pcntl
 
-RUN install-php-extensions sockets
+RUN install-php-extensions sockets xdebug
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"

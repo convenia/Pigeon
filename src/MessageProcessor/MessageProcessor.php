@@ -15,7 +15,7 @@ class MessageProcessor implements MessageProcessorContract
     protected $fallback;
     protected $driver;
 
-    public function __construct(DriverContract $driver, Closure $callback, Closure $fallback = null)
+    public function __construct(DriverContract $driver, Closure $callback, ?Closure $fallback = null)
     {
         $this->driver = $driver;
         $this->callback = $callback;

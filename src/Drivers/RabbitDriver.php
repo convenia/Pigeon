@@ -25,7 +25,7 @@ class RabbitDriver extends Driver
         return $this->connection;
     }
 
-    public function getChannel(int $id = null): AMQPChannel
+    public function getChannel(?int $id = null): AMQPChannel
     {
         return $this->getConnection()->channel($id);
     }

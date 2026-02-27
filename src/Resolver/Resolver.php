@@ -25,7 +25,7 @@ class Resolver implements ResolverContract
             ->basic_nack($this->message->delivery_info['delivery_tag'], false, $requeue);
     }
 
-    public function headers(string $key = null)
+    public function headers(?string $key = null)
     {
         return is_null($key)
             ? $this->message->get_properties()

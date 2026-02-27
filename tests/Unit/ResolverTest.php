@@ -37,7 +37,8 @@ class ResolverTest extends TestCase
 
         //assert
         $this->channel->shouldReceive('basic_ack')
-            ->with($delivery_tag);
+            ->with($delivery_tag)
+            ->once();
 
         // act
         $resolver->ack();
@@ -56,7 +57,8 @@ class ResolverTest extends TestCase
 
         //assert
         $this->channel->shouldReceive('basic_nack')
-            ->with($delivery_tag, false, $requeue);
+            ->with($delivery_tag, false, $requeue)
+            ->once();
 
         // act
         $resolver->reject($requeue);
@@ -75,7 +77,8 @@ class ResolverTest extends TestCase
 
         //assert
         $this->channel->shouldReceive('basic_nack')
-            ->with($delivery_tag, false, $requeue);
+            ->with($delivery_tag, false, $requeue)
+            ->once();
 
         // act
         $resolver->reject($requeue);

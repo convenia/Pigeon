@@ -15,9 +15,9 @@ interface DriverContract
 
     public function dispatch(string $eventName, array $event, array $meta = []): void;
 
-    public function routing(string $name): PublisherContract;
+    public function routing(?string $name): PublisherContract;
 
     public function getConnection();
 
-    public function getChannel(int $id = null);
+    public function getChannel(?int $id = null);
 }
