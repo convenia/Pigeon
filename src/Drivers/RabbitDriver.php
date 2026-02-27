@@ -90,7 +90,7 @@ class RabbitDriver extends Driver
     {
         try {
             $this->connection->checkHeartBeat();
-        } catch (AMQPHeartbeatMissedException|AMQPConnectionClosedException $exception) {
+        } catch (AMQPConnectionClosedException $exception) {
             return true;
         }
 
