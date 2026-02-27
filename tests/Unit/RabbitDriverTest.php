@@ -6,6 +6,7 @@ use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Exception\AMQPHeartbeatMissedException;
 
 class RabbitDriverTest extends TestCase
@@ -46,6 +47,16 @@ class RabbitDriverTest extends TestCase
         $this->connection->shouldReceive('reconnect')->once();
         $this->connection->shouldReceive('checkHeartBeat')
             ->andThrow(new AMQPHeartbeatMissedException());
+
+        $this->assertEquals($this->connection, $this->driver->getConnection());
+    }
+
+    public function test_it_should_reconnect_and_return_connection_if_connection_is_closed()
+    {
+        $this->connection->shouldReceive('isConnected')->once()->andReturn(true);
+        $this->connection->shouldReceive('reconnect')->once();
+        $this->connection->shouldReceive('checkHeartBeat')
+            ->andThrow(new AMQPConnectionClosedException());
 
         $this->assertEquals($this->connection, $this->driver->getConnection());
     }
