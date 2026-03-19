@@ -8,7 +8,6 @@ use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Exception\AMQPHeartbeatMissedException;
-use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 class RabbitDriverTest extends TestCase
 {
