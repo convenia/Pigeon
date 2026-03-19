@@ -8,6 +8,7 @@ use Convenia\Pigeon\MessageProcessor\MessageProcessor;
 use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 class ConsumerTest extends TestCase
 {
@@ -98,5 +99,84 @@ class ConsumerTest extends TestCase
         $processor = $consumer->getCallback();
 
         $this->assertInstanceOf(MessageProcessor::class, $processor);
+    }
+
+    public function test_it_should_reconnect_when_connection_is_lost()
+    {
+        // Satisfy setUp's getChannel()->once() expectation
+        new Consumer($this->app, $this->driver, 'setup.queue');
+
+        $this->app['config']->set('pigeon.consumer.reconnect_attempts', 1);
+
+        $queue = 'some.queue';
+        $oldChannel = Mockery::mock(AMQPChannel::class);
+        $newChannel = Mockery::mock(AMQPChannel::class);
+        $driver = Mockery::mock(RabbitDriver::class);
+
+        $driver->shouldReceive('getChannel')
+            ->twice()
+            ->andReturn($oldChannel, $newChannel);
+
+        // Old channel: setup + wait throws connection closed
+        $oldChannel->shouldReceive('basic_qos')->once();
+        $oldChannel->shouldReceive('basic_consume')
+            ->once()
+            ->with($queue, $this->app['config']['pigeon.consumer.tag'], false, false, false, false, Mockery::type('closure'));
+        $oldChannel->shouldReceive('wait')
+            ->once()
+            ->with(null, null, 5)
+            ->andThrow(new AMQPConnectionClosedException('CONNECTION_FORCED'));
+
+        // New channel after reconnect: setup + wait succeeds
+        $newChannel->callbacks = ['callback'];
+        $newChannel->shouldReceive('basic_qos')->once();
+        $newChannel->shouldReceive('basic_consume')
+            ->once()
+            ->with($queue, $this->app['config']['pigeon.consumer.tag'], false, false, false, false, Mockery::type('closure'));
+        $newChannel->shouldReceive('wait')
+            ->once()
+            ->with(null, null, 5)
+            ->andReturnUsing(function () use ($newChannel) {
+                $newChannel->callbacks = [];
+            });
+
+        $consumer = new Consumer($this->app, $driver, $queue);
+        $consumer->consume(5, true);
+    }
+
+    public function test_it_should_throw_when_max_reconnect_attempts_exceeded()
+    {
+        // Satisfy setUp's getChannel()->once() expectation
+        new Consumer($this->app, $this->driver, 'setup.queue');
+
+        $this->app['config']->set('pigeon.consumer.reconnect_attempts', 1);
+
+        $queue = 'some.queue';
+        $oldChannel = Mockery::mock(AMQPChannel::class);
+        $driver = Mockery::mock(RabbitDriver::class);
+
+        $callCount = 0;
+        $driver->shouldReceive('getChannel')
+            ->andReturnUsing(function () use (&$callCount, $oldChannel) {
+                $callCount++;
+                if ($callCount === 1) {
+                    return $oldChannel;
+                }
+                throw new \RuntimeException('Connection refused');
+            });
+
+        $oldChannel->shouldReceive('basic_qos')->once();
+        $oldChannel->shouldReceive('basic_consume')
+            ->once()
+            ->with($queue, $this->app['config']['pigeon.consumer.tag'], false, false, false, false, Mockery::type('closure'));
+        $oldChannel->shouldReceive('wait')
+            ->once()
+            ->andThrow(new AMQPConnectionClosedException('CONNECTION_FORCED'));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Pigeon: failed to reconnect after 1 attempts for queue [{$queue}].");
+
+        $consumer = new Consumer($this->app, $driver, $queue);
+        $consumer->consume(5, true);
     }
 }
