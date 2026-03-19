@@ -67,7 +67,7 @@ class Consumer implements ConsumerContract
         $this->channel->basic_qos(null, 1, null);
         $this->channel->basic_consume(
             $this->queue,
-            $consumer_tag = $this->app['config']['amqp.consumer.tag'],
+            $consumer_tag = $this->app['config']['pigeon.consumer.tag'],
             $no_local = false,
             $no_ack = false,
             $exclusive = false,

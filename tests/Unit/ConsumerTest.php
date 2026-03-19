@@ -101,6 +101,24 @@ class ConsumerTest extends TestCase
         $this->assertInstanceOf(MessageProcessor::class, $processor);
     }
 
+    public function test_it_should_use_consumer_tag_from_config()
+    {
+        $queue = 'some.queue';
+        $customTag = 'my-custom-consumer-tag';
+
+        $this->app['config']->set('pigeon.consumer.tag', $customTag);
+
+        $this->channel->shouldReceive('basic_qos')->once();
+        $this->channel->shouldReceive('basic_consume')
+            ->once()
+            ->with($queue, $customTag, false, false, false, false, Mockery::type('closure'));
+        $this->channel->shouldReceive('wait')->once()->with(null, null, 5);
+        $this->channel->callbacks = ['callback'];
+
+        $consumer = new Consumer($this->app, $this->driver, $queue);
+        $consumer->consume(5, false);
+    }
+
     public function test_it_should_reconnect_when_connection_is_lost()
     {
         // Satisfy setUp's getChannel()->once() expectation
