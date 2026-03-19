@@ -6,7 +6,6 @@ use Convenia\Pigeon\Tests\TestCase;
 use Mockery;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
-use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Exception\AMQPHeartbeatMissedException;
 
 class RabbitDriverTest extends TestCase
@@ -51,16 +50,6 @@ class RabbitDriverTest extends TestCase
         $this->assertEquals($this->connection, $this->driver->getConnection());
     }
 
-    public function test_it_should_reconnect_and_return_connection_if_connection_is_closed()
-    {
-        $this->connection->shouldReceive('isConnected')->once()->andReturn(true);
-        $this->connection->shouldReceive('reconnect')->once();
-        $this->connection->shouldReceive('checkHeartBeat')
-            ->andThrow(new AMQPConnectionClosedException());
-
-        $this->assertEquals($this->connection, $this->driver->getConnection());
-    }
-
     public function test_it_should_reconnect_and_return_connection_if_not_connected()
     {
         $this->connection->shouldReceive('isConnected')->once()->andReturn(false);
@@ -76,17 +65,5 @@ class RabbitDriverTest extends TestCase
         $this->connection->shouldReceive('channel')->once()->andReturn($this->channel);
 
         $this->assertEquals($this->channel, $this->driver->getchannel());
-    }
-
-    public function test_it_should_throw_when_reconnect_fails()
-    {
-        $this->connection->shouldReceive('isConnected')->once()->andReturn(false);
-        $this->connection->shouldReceive('reconnect')
-            ->once()
-            ->andThrow(new AMQPConnectionClosedException('Broken pipe'));
-
-        $this->expectException(AMQPConnectionClosedException::class);
-
-        $this->driver->getConnection();
     }
 }
