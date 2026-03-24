@@ -6,10 +6,12 @@ use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Resolver\ResolverContract;
 use Convenia\Pigeon\Tests\Integration\TestCase;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
+#[AllowMockObjectsWithoutExpectations]
 class DriverTest extends TestCase
 {
     /**

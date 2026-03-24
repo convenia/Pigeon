@@ -8,10 +8,12 @@ use Convenia\Pigeon\Publisher\PublisherContract;
 use Convenia\Pigeon\Tests\TestCase;
 use Illuminate\Support\Str;
 use Mockery;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
+#[AllowMockObjectsWithoutExpectations]
 class DriverTest extends TestCase
 {
     /**
