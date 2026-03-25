@@ -30,6 +30,8 @@ return [
         'tag'           => env('PIGEON_CONSUMER_TAG', null),
         'automatic_ack' => false,
         'on_failure' => 'ack', // 'ack' or 'reject'
+        'reconnect_attempts' => env('PIGEON_RECONNECT_ATTEMPTS', 3),
+        'enable_consumer_logs' => env('PIGEON_ENABLE_CONSUMER_LOGS', true),
     ],
     'queue_declare' => env('PIGEON_DECLARE_QUEUES', true),
     'queue_declare_exists' => Constants::IGNORE_PRECONDITION,
