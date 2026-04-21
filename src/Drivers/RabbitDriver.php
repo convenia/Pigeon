@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Exception\AMQPHeartbeatMissedException;
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 class RabbitDriver extends Driver
 {
@@ -89,7 +89,7 @@ class RabbitDriver extends Driver
     {
         try {
             $this->connection->checkHeartBeat();
-        } catch (AMQPHeartbeatMissedException $exception) {
+        } catch (AMQPConnectionClosedException $exception) {
             return true;
         }
 
