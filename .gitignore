@@ -7,3 +7,4 @@ coverage/
 .coverage/
 composer.lock
 phpunit.xml
+.codex
