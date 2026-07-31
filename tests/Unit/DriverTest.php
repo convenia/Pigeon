@@ -6,6 +6,7 @@ use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Drivers\Driver;
 use Convenia\Pigeon\Publisher\PublisherContract;
 use Convenia\Pigeon\Tests\TestCase;
+use Exception;
 use Illuminate\Support\Str;
 use Mockery;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -255,6 +256,45 @@ class DriverTest extends TestCase
             'x-dead-letter-routing-key' => $routing,
             'another_prop' => $propValue,
         ], $props->getNativeData());
+    }
+
+    public function test_it_should_not_declare_a_queue_when_auto_declaration_is_skipped()
+    {
+        $this->app['config']->set('pigeon.skip_auto_declaration', true);
+        $this->driver->expects($this->never())->method('queueDeclare');
+
+        $consumer = $this->driver->queue($this->queue);
+        $this->assertInstanceOf(ConsumerContract::class, $consumer);
+    }
+
+    public function test_it_should_not_declare_exchange_when_auto_declaration_is_skipped()
+    {
+        $exchange = 'my.exchange';
+        $type = 'fanout';
+        $this->app['config']->set('pigeon.skip_auto_declaration', true);
+        $this->channel->shouldNotReceive('exchange_declare');
+
+        $publisher = $this->driver->exchange($exchange, $type);
+        $this->assertInstanceOf(PublisherContract::class, $publisher);
+    }
+
+    public function test_it_should_not_declare_routing_exchange_when_auto_declaration_is_skipped()
+    {
+        $this->app['config']->set('pigeon.skip_auto_declaration', true);
+        $this->channel->shouldNotReceive('exchange_declare');
+
+        $publisher = $this->driver->routing('DOOM');
+        $this->assertInstanceOf(PublisherContract::class, $publisher);
+    }
+
+    public function test_auto_declaration_configuration_should_be_boolean()
+    {
+        $this->app['config']->set('pigeon.skip_auto_declaration', 'not boolean');
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('The "pigeon.skip_auto_declaration" config value must be a boolean.');
+
+        $this->driver->routing('DOOM');
     }
 
     public function test_it_should_return_props_without_dead_letter()

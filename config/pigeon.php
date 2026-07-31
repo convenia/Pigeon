@@ -33,5 +33,6 @@ return [
     ],
     'queue_declare' => env('PIGEON_DECLARE_QUEUES', true),
     'queue_declare_exists' => Constants::IGNORE_PRECONDITION,
+    'skip_auto_declaration' => env('PIGEON_SKIP_AUTO_DECLARATION', false),
     'headers' => [],
 ];
