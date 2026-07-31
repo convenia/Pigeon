@@ -7,6 +7,7 @@ use Convenia\Pigeon\Consumer\ConsumerContract;
 use Convenia\Pigeon\Exceptions\Events\EmptyEventException;
 use Convenia\Pigeon\Publisher\Publisher;
 use Convenia\Pigeon\Publisher\PublisherContract;
+use Exception;
 use Illuminate\Foundation\Application;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -37,14 +38,14 @@ abstract class Driver implements DriverContract
 
     public function queue(string $name, array $properties = []): ConsumerContract
     {
-        $this->queueDeclare($name, $properties);
+        $this->skipAutoDeclaration() ?: $this->queueDeclare($name, $properties);
 
         return new Consumer($this->app, $this, $name);
     }
 
     public function exchange(string $name, string $type = 'direct'): PublisherContract
     {
-        ($name !== '') && $this->getChannel(2)->exchange_declare($name, $type, false, true, false, false, false, $this->getProps());
+        ($name !== '' && ! $this->skipAutoDeclaration()) && $this->getChannel(2)->exchange_declare($name, $type, false, true, false, false, false, $this->getProps());
 
         return new Publisher($this->app, $this, $name);
     }
@@ -54,9 +55,19 @@ abstract class Driver implements DriverContract
         $exchange = $this->app['config']['pigeon.exchange'];
         $type = $this->app['config']['pigeon.exchange_type'];
 
-        $this->getChannel(2)->exchange_declare($exchange, $type, false, true, false, false, false, $this->getProps());
+        $this->skipAutoDeclaration() ?: $this->getChannel(2)->exchange_declare($exchange, $type, false, true, false, false, false, $this->getProps());
 
         return (new Publisher($this->app, $this, $exchange))->routing($name);
+    }
+
+    protected function skipAutoDeclaration(): bool
+    {
+        throw_unless(
+            is_bool($this->app['config']['pigeon.skip_auto_declaration']),
+            new Exception('The "pigeon.skip_auto_declaration" config value must be a boolean.')
+        );
+
+        return $this->app['config']['pigeon.skip_auto_declaration'];
     }
 
     public function dispatch(string $eventName, array $event, array $meta = []): void
